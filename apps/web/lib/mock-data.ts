@@ -25,7 +25,9 @@ export const mockProjects: Project[] = [
 ];
 
 export const mockNotes: Note[] = [
-  { id: 'n1', title: 'Ide fitur aplikasi', content: '## Ide\n- Dark mode\n- Widget kalender', category: 'Ideas', tags: ['app'], pinned: true, updatedAt: '2026-10-03' },
+  { id: 'n1', title: 'Ide fitur aplikasi', content: '## Ide\n- Dark mode\n- Widget kalender\n\n> Fokus pada MVP dulu.\n\n`Cmd+K` untuk pencarian cepat.', category: 'Ideas', tags: ['app'], pinned: true, updatedAt: '2026-10-03' },
+  { id: 'n5', title: 'Catatan rapat mingguan', content: '## Agenda\n1. Review sprint\n2. Blokir & risiko\n\n**Action:** update dashboard widget.', category: 'Career', updatedAt: '2026-10-04' },
+  { id: 'n6', title: 'Daftar bacaan', content: '- [ ] Atomic Habits\n- [x] Deep Work\n- [ ] Designing Data-Intensive Applications', category: 'Personal', tags: ['books'], archived: true, updatedAt: '2026-09-25' },
   { id: 'n2', title: 'Ringkasan buku Deep Work', content: 'Fokus tanpa distraksi selama 90 menit.', category: 'Personal', updatedAt: '2026-10-02' },
   { id: 'n3', title: 'Cheat sheet Git', content: '`git rebase -i HEAD~3`', category: 'Programming', tags: ['git'], updatedAt: '2026-10-01' },
   { id: 'n4', title: 'Rencana karir Q4', content: 'Update portfolio + lamar 5 perusahaan.', category: 'Career', pinned: true, updatedAt: '2026-09-30' },

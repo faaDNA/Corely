@@ -34,6 +34,7 @@ export interface Note {
   category: string;
   tags?: string[];
   pinned?: boolean;
+  archived?: boolean;
   updatedAt: string;
 }
 
