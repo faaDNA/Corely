@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Dashboard — Satu Workspace untuk Seluruh Produktivitas Anda</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .glass { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px); }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-blue-500 selection:text-white">
+
+  <!-- Header / Navigation -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-lg shadow-blue-500/20">
+          PD
+        </div>
+        <span class="font-bold text-lg tracking-tight">Personal Dashboard</span>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+        <a href="#problem" class="hover:text-white transition">Masalah</a>
+        <a href="#features" class="hover:text-white transition">Fitur</a>
+        <a href="#preview" class="hover:text-white transition">Pratinjau</a>
+        <a href="#benefits" class="hover:text-white transition">Keunggulan</a>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <a href="#preview" class="hidden sm:inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-slate-300 bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
+          Lihat Tampilan
+        </a>
+        <a href="#get-started" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-500 transition shadow-lg shadow-blue-600/30">
+          Mulai Sekarang
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="pt-32 pb-20 md:pt-40 md:pb-28 relative overflow-hidden">
+    <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-600/20 blur-[120px] rounded-full pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold uppercase tracking-wider mb-6">
+        <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+        Aplikasi Produktivitas Pribadi
+      </div>
+      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight max-w-4xl mx-auto leading-tight">
+        Satu Dashboard untuk <span class="bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">Seluruh Kehidupan Digital Anda</span>
+      </h1>
+      <p class="mt-6 text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto font-normal leading-relaxed">
+        Kelola tugas, proyek, catatan, bookmark, kebiasaan harian, dan jadwal — semua dalam satu aplikasi pribadi yang rapi dan terpusat.
+      </p>
+
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="#features" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 font-semibold text-white shadow-xl shadow-blue-600/25 transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-sparkles"></i> Jelajahi Fitur
+        </a>
+        <a href="#preview" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 font-semibold text-slate-300 transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-gauge-high"></i> Lihat Tampilan Dashboard
+        </a>
+      </div>
+
+      <!-- Quick Highlights -->
+      <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto border-t border-slate-800/80 pt-8 text-left">
+        <div>
+          <div class="text-2xl font-bold text-white">12 Modul</div>
+          <div class="text-xs text-slate-400 mt-0.5">Fitur produktivitas lengkap</div>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-white">100% Pribadi</div>
+          <div class="text-xs text-slate-400 mt-0.5">Data Anda tetap milik Anda</div>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-white">Dark Mode</div>
+          <div class="text-xs text-slate-400 mt-0.5">Tema terang & gelap</div>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-white">Semua Layar</div>
+          <div class="text-xs text-slate-400 mt-0.5">Desktop, tablet, dan mobile</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem & Solution Section -->
+  <section id="problem" class="py-20 bg-slate-900/50 border-y border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-3xl font-bold text-white">Mengapa Personal Dashboard?</h2>
+        <p class="mt-4 text-slate-400">Aktivitas harian kita sering tersebar di banyak aplikasi berbeda, sehingga sulit melihat prioritas dalam satu pandangan.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Problem -->
+        <div class="p-8 rounded-2xl bg-red-950/20 border border-red-900/30">
+          <div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center text-xl font-bold mb-6">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-white mb-4">Masalah: Semuanya Terpencar</h3>
+          <ul class="space-y-3 text-slate-300 text-sm">
+            <li class="flex items-start gap-3">
+              <i class="fa-solid fa-xmark text-red-400 mt-1"></i>
+              <span>Tugas ada di satu aplikasi, catatan di aplikasi lain.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i class="fa-solid fa-xmark text-red-400 mt-1"></i>
+              <span>Bookmark tercecer di browser, jadwal di kalender terpisah.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i class="fa-solid fa-xmark text-red-400 mt-1"></i>
+              <span>Progres proyek sulit dipantau tanpa gambaran menyeluruh.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i class="fa-solid fa-xmark text-red-400 mt-1"></i>
+              <span>Waktu habis berpindah-pindah aplikasi hanya untuk cek prioritas.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Solution -->
+        <div class="p-8 rounded-2xl bg-blue-950/20 border border-blue-900/30">
+          <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-xl font-bold mb-6">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-white mb-4">Solusi: Semua di Satu Tempat</h3>
+          <ul class="space-y-3 text-slate-300 text-sm">
+            <li class="flex items-start gap-3">
+              <i class="fa-solid fa-check text-blue-400 mt-1"></i>
+              <span>Satu dashboard untuk melihat seluruh aktivitas harian Anda.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i class="fa-solid fa-check text-blue-400 mt-1"></i>
+              <span>Tugas, proyek, catatan, dan jadwal saling terhubung.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i class="fa-solid fa-check text-blue-400 mt-1"></i>
+              <span>Statistik produktivitas membantu Anda tetap konsisten.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i class="fa-solid fa-check text-blue-400 mt-1"></i>
+              <span>Ringkas, cepat, dan nyaman digunakan setiap hari.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-3xl font-bold text-white">Fitur-Fitur Personal Dashboard</h2>
+        <p class="mt-4 text-slate-400">Aplikasi ini menyediakan modul lengkap untuk mengelola seluruh kebutuhan produktivitas pribadi Anda.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Feature 1 -->
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
+          <div class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Dashboard Utama</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Sapaan personal, tanggal hari ini, ringkasan tugas, proyek aktif, batas waktu terdekat, dan aksi cepat untuk menambah konten baru.
+          </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
+          <div class="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-list-check"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Manajemen Tugas</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Tambah, ubah, dan selesaikan tugas dengan status TODO, In Progress, dan Completed. Atur prioritas, tenggat, tag, serta tampilan daftar atau Kanban.
+          </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
+          <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-diagram-project"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Pengelolaan Proyek</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Kelompokkan aktivitas jangka panjang ke dalam proyek, pantau progres, tenggat waktu, teknologi yang dipakai, serta tugas-tugas terkait.
+          </p>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
+          <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-note-sticky"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Catatan Markdown</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Simpan pengetahuan pribadi dengan format Markdown — judul, daftar, kutipan, dan blok kode. Sertakan kategori, tag, pin, serta arsip.
+          </p>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
+          <div class="w-10 h-10 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-bookmark"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Koleksi Bookmark</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Simpan situs dan sumber daya penting, lengkap dengan kategori, tag, favorit, dan pencarian agar mudah ditemukan kembali.
+          </p>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
+          <div class="w-10 h-10 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-fire"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Pelacak Kebiasaan</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Bangun kebiasaan baik dengan penandaan harian, riwayat kalender, streak aktif, streak terpanjang, dan tingkat penyelesaian.
+          </p>
+        </div>
+
+        <!-- Feature 7 -->
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
+          <div class="w-10 h-10 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-calendar-days"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Kalender Terpadu</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Satukan acara pribadi, tenggat tugas, dan batas waktu proyek dalam satu kalender dengan tampilan bulan, minggu, dan hari.
+          </p>
+        </div>
+
+        <!-- Feature 8 -->
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
+          <div class="w-10 h-10 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Pencarian Global</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Cari apa saja dari satu kolom — tugas, proyek, catatan, dan bookmark — dengan hasil dikelompokkan menurut jenisnya.
+          </p>
+        </div>
+
+        <!-- Feature 9 -->
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
+          <div class="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-chart-pie"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Statistik & Analitik</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Lihat tingkat penyelesaian tugas, progres proyek, dan konsistensi kebiasaan dalam rentang harian, mingguan, dan bulanan.
+          </p>
+        </div>
+
+        <!-- Feature 10 -->
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
+          <div class="w-10 h-10 rounded-lg bg-teal-500/10 text-teal-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-bell"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Notifikasi</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Pengingat untuk tenggat tugas yang mendekat, batas waktu proyek, acara mendatang, dan kebiasaan harian Anda.
+          </p>
+        </div>
+
+        <!-- Feature 11 -->
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
+          <div class="w-10 h-10 rounded-lg bg-fuchsia-500/10 text-fuchsia-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-user-gear"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Profil & Pengaturan</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Sesuaikan profil, tampilan tema terang/gelap, format tanggal & jam, serta preferensi tampilan tugas sesuai kebutuhan.
+          </p>
+        </div>
+
+        <!-- Feature 12 -->
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
+          <div class="w-10 h-10 rounded-lg bg-slate-500/10 text-slate-300 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Akun Aman & Pribadi</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Login dan sesi yang aman, dengan setiap data hanya dapat diakses oleh pemiliknya — penuh terisolasi antar pengguna.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Dashboard Preview Mock -->
+  <section id="preview" class="py-20 bg-slate-900/40 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <h2 class="text-3xl font-bold text-white">Tampilan Dashboard</h2>
+        <p class="mt-4 text-slate-400">Antarmuka modern dan bersih yang menampilkan ringkasan harian Anda dalam satu layar.</p>
+      </div>
+
+      <!-- App Mockup Window -->
+      <div class="rounded-2xl border border-slate-800 bg-slate-950 shadow-2xl overflow-hidden max-w-5xl mx-auto">
+        <!-- Window Bar -->
+        <div class="bg-slate-900 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-500/80 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-yellow-500/80 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-green-500/80 inline-block"></span>
+            <span class="text-xs text-slate-500 font-mono ml-2">app.personaldashboard.dev/dashboard</span>
+          </div>
+          <div class="text-xs text-slate-400 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Tersinkronisasi
+          </div>
+        </div>
+
+        <!-- App Layout -->
+        <div class="grid md:grid-cols-5 min-h-[480px]">
+          <!-- Sidebar -->
+          <div class="md:col-span-1 bg-slate-900/60 border-r border-slate-800 p-4 space-y-6 text-sm">
+            <div class="space-y-1">
+              <div class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider px-2 mb-2">Menu Utama</div>
+              <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-blue-600/10 text-blue-400 font-medium">
+                <i class="fa-solid fa-house text-xs"></i> Dashboard
+              </a>
+              <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                <i class="fa-solid fa-check-double text-xs"></i> Tugas
+              </a>
+              <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                <i class="fa-solid fa-folder text-xs"></i> Proyek
+              </a>
+              <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                <i class="fa-solid fa-book text-xs"></i> Catatan
+              </a>
+              <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                <i class="fa-solid fa-fire text-xs"></i> Kebiasaan
+              </a>
+              <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                <i class="fa-solid fa-calendar text-xs"></i> Kalender
+              </a>
+            </div>
+
+            <div class="space-y-1 pt-4 border-t border-slate-800">
+              <div class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider px-2 mb-2">Preferensi</div>
+              <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                <i class="fa-solid fa-gear text-xs"></i> Pengaturan
+              </a>
+            </div>
+          </div>
+
+          <!-- Main Dashboard Content -->
+          <div class="md:col-span-4 p-6 space-y-6 bg-slate-950">
+            <!-- Header greeting -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <h3 class="text-xl font-bold text-white">Selamat Datang kembali! 👋</h3>
+                <p class="text-xs text-slate-400 mt-1">Sabtu, 3 Oktober 2026 • 4 tugas aktif hari ini</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition flex items-center gap-1.5">
+                  <i class="fa-solid fa-plus"></i> Tugas Baru
+                </button>
+              </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+                <div class="text-xs text-slate-400">Tugas Tertunda</div>
+                <div class="text-2xl font-bold text-white mt-1">8</div>
+                <div class="text-[10px] text-emerald-400 mt-1">↑ 2 selesai hari ini</div>
+              </div>
+              <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+                <div class="text-xs text-slate-400">Proyek Aktif</div>
+                <div class="text-2xl font-bold text-white mt-1">3</div>
+                <div class="text-[10px] text-blue-400 mt-1">1 mendekati tenggat</div>
+              </div>
+              <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+                <div class="text-xs text-slate-400">Streak Kebiasaan</div>
+                <div class="text-2xl font-bold text-amber-400 mt-1">12 Hari</div>
+                <div class="text-[10px] text-slate-400 mt-1">Rekor: 24 hari</div>
+              </div>
+              <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+                <div class="text-xs text-slate-400">Catatan</div>
+                <div class="text-2xl font-bold text-white mt-1">24</div>
+                <div class="text-[10px] text-purple-400 mt-1">3 disematkan</div>
+              </div>
+            </div>
+
+            <!-- Two Column Section -->
+            <div class="grid md:grid-cols-2 gap-6">
+              <!-- Today's Tasks -->
+              <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-semibold text-white">Tugas Hari Ini</span>
+                  <span class="text-xs text-blue-400 cursor-pointer">Lihat Semua</span>
+                </div>
+                <div class="space-y-2">
+                  <div class="flex items-center gap-3 p-2.5 rounded-lg bg-slate-950 border border-slate-800/80 text-xs">
+                    <input type="checkbox" class="rounded bg-slate-800 border-slate-700 text-blue-600 focus:ring-0">
+                    <span class="flex-1 text-slate-200">Rapikan rencana minggu ini</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] bg-red-500/10 text-red-400 border border-red-500/20">TINGGI</span>
+                  </div>
+                  <div class="flex items-center gap-3 p-2.5 rounded-lg bg-slate-950 border border-slate-800/80 text-xs">
+                    <input type="checkbox" checked class="rounded bg-slate-800 border-slate-700 text-blue-600 focus:ring-0">
+                    <span class="flex-1 text-slate-400 line-through">Tulis catatan ide baru</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20">SEDANG</span>
+                  </div>
+                  <div class="flex items-center gap-3 p-2.5 rounded-lg bg-slate-950 border border-slate-800/80 text-xs">
+                    <input type="checkbox" class="rounded bg-slate-800 border-slate-700 text-blue-600 focus:ring-0">
+                    <span class="flex-1 text-slate-200">Baca 20 halaman buku</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] bg-slate-500/10 text-slate-400 border border-slate-500/20">RENDAH</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Active Projects -->
+              <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-semibold text-white">Proyek Aktif</span>
+                  <span class="text-xs text-blue-400 cursor-pointer">Detail</span>
+                </div>
+                <div class="space-y-3">
+                  <div>
+                    <div class="flex justify-between text-xs mb-1">
+                      <span class="text-slate-200 font-medium">Belajar Bahasa Jepang</span>
+                      <span class="text-blue-400 font-mono">65%</span>
+                    </div>
+                    <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                      <div class="h-full bg-blue-500 w-[65%] rounded-full"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="flex justify-between text-xs mb-1">
+                      <span class="text-slate-200 font-medium">Renovasi Rumah</span>
+                      <span class="text-emerald-400 font-mono">40%</span>
+                    </div>
+                    <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                      <div class="h-full bg-emerald-500 w-[40%] rounded-full"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="flex justify-between text-xs mb-1">
+                      <span class="text-slate-200 font-medium">Persiapan Pindahan</span>
+                      <span class="text-amber-400 font-mono">85%</span>
+                    </div>
+                    <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                      <div class="h-full bg-amber-500 w-[85%] rounded-full"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits Section -->
+  <section id="benefits" class="py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-3xl font-bold text-white">Dirancang untuk Penggunaan Sehari-hari</h2>
+        <p class="mt-4 text-slate-400">Antarmuka yang bersih dan konsisten membuat aplikasi ini nyaman dipakai kapan saja.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800">
+          <div class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <h3 class="font-semibold text-white mb-2">Cepat & Ringan</h3>
+          <p class="text-sm text-slate-400">Halaman muat cepat dengan interaksi yang responsif.</p>
+        </div>
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800">
+          <div class="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-mobile-screen"></i>
+          </div>
+          <h3 class="font-semibold text-white mb-2">Responsif di Semua Layar</h3>
+          <p class="text-sm text-slate-400">Nyaman di desktop, tablet, maupun ponsel.</p>
+        </div>
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800">
+          <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-universal-access"></i>
+          </div>
+          <h3 class="font-semibold text-white mb-2">Aksesibel</h3>
+          <p class="text-sm text-slate-400">Kontras jelas, navigasi mudah, dan struktur semantik.</p>
+        </div>
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800">
+          <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-lock"></i>
+          </div>
+          <h3 class="font-semibold text-white mb-2">Privat & Aman</h3>
+          <p class="text-sm text-slate-400">Data pribadi Anda tetap terisolasi dan aman.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section id="get-started" class="py-20 relative overflow-hidden">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      <div class="p-10 sm:p-16 rounded-3xl bg-gradient-to-b from-blue-900/40 to-slate-900 border border-blue-500/30">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Mulai Kelola Produktivitas Anda Hari Ini</h2>
+        <p class="mt-4 text-slate-300 max-w-2xl mx-auto text-sm sm:text-base">
+          Satu tempat untuk tugas, proyek, catatan, dan jadwal Anda. Rapi, terpusat, dan siap digunakan setiap hari.
+        </p>
+        <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+          <a href="#" class="px-8 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 font-semibold text-white shadow-xl shadow-blue-600/30 transition">
+            Buka Dashboard
+          </a>
+          <a href="#features" class="px-8 py-3.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-slate-600 font-semibold text-slate-300 transition">
+            Lihat Semua Fitur
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-8 border-t border-slate-800 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        © 2026 Personal Dashboard. Seluruh hak cipta dilindungi.
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="#features" class="hover:text-slate-300 transition">Fitur</a>
+        <a href="#preview" class="hover:text-slate-300 transition">Tampilan</a>
+        <a href="#benefits" class="hover:text-slate-300 transition">Keunggulan</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
