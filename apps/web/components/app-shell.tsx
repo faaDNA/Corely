@@ -19,10 +19,11 @@ import {
   Moon,
   Menu,
   X,
-  Plus,
   Search,
 } from 'lucide-react';
 import { cn } from '@repo/ui';
+import { QuickAddModal } from './quick-add-modal';
+import { logout } from '@/app/(auth)/actions';
 
 export const NAV_ITEMS = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -128,22 +129,21 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       </nav>
 
       <div className="border-t border-slate-800 p-3">
-        <div className="flex items-center gap-3 rounded-lg p-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
-            U
-          </div>
-          <div className="min-w-0 flex-1 leading-tight">
-            <p className="truncate text-sm font-medium text-white">User</p>
-            <p className="truncate text-[11px] text-slate-500">user@mail.com</p>
-          </div>
+        <form action={logout}>
           <button
-            aria-label="Logout"
-            className="rounded-md p-1.5 text-slate-500 transition hover:bg-slate-800 hover:text-slate-200"
-            type="button"
+            className="flex w-full items-center gap-3 rounded-lg p-2 text-left transition hover:bg-slate-800"
+            type="submit"
           >
-            <LogOut className="h-4 w-4" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
+              U
+            </div>
+            <div className="min-w-0 flex-1 leading-tight">
+              <p className="truncate text-sm font-medium text-white">User</p>
+              <p className="truncate text-[11px] text-slate-500">user@mail.com · Keluar</p>
+            </div>
+            <LogOut className="h-4 w-4 text-slate-500" />
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );
@@ -162,10 +162,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Mobile drawer */}
       {mobileOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
-          <div
-            className="absolute inset-0 bg-black/60"
-            onClick={() => setMobileOpen(false)}
-          />
+          <div className="absolute inset-0 bg-black/60" onClick={() => setMobileOpen(false)} />
           <aside className="absolute left-0 top-0 h-full w-72 border-r border-slate-800 bg-slate-950">
             <SidebarContent onNavigate={() => setMobileOpen(false)} />
           </aside>
@@ -184,19 +181,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
 
-          <button
-            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-3.5 py-2 text-sm font-medium text-white shadow-lg shadow-blue-600/25 transition hover:bg-blue-500"
-            type="button"
-          >
-            <Plus className="h-4 w-4" />
-            <span className="hidden sm:inline">Quick Add</span>
-          </button>
+          <QuickAddModal />
 
           <div className="ml-auto flex items-center gap-2">
             <ThemeToggle />
-            <div className="hidden h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white sm:flex">
+            <Link href="/settings" className="hidden h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white sm:flex">
               U
-            </div>
+            </Link>
           </div>
         </header>
 
