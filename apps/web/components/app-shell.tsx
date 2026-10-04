@@ -22,7 +22,6 @@ import {
   Search,
 } from 'lucide-react';
 import { cn } from '@repo/ui';
-import { QuickAddModal } from './quick-add-modal';
 import { GlobalSearch } from './global-search';
 import { ToastHost } from './toast';
 import { logout } from '@/app/(auth)/actions';
@@ -70,10 +69,10 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
     <div className="flex h-full flex-col">
       <Link href="/dashboard" className="flex items-center gap-3 px-3 py-4" onClick={onNavigate}>
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 font-bold text-white shadow-lg shadow-blue-500/20">
-          PD
+          C
         </div>
         <div className="leading-tight">
-          <p className="font-bold text-white">Personal Dashboard</p>
+          <p className="font-bold text-white">Corely</p>
           <p className="text-[11px] text-slate-500">Your productivity hub</p>
         </div>
       </Link>
@@ -183,8 +182,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           >
             {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
-
-          <QuickAddModal />
 
           <div className="ml-auto flex items-center gap-2">
             <ThemeToggle />

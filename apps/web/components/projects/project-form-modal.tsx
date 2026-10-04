@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { X } from 'lucide-react';
 import { Button } from '@repo/ui';
 import type { Project } from '@repo/types';
-import { projectSchema, type ProjectFormValues, PROJECT_STATUS_LABELS } from './project-schema';
+import { projectSchema, type ProjectFormValues } from './project-schema';
 
 interface Props {
   open: boolean;
@@ -18,13 +18,12 @@ interface Props {
 const inputCls =
   'w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none';
 
-const statuses = Object.entries(PROJECT_STATUS_LABELS);
-
 function defaults(p?: Project | null): ProjectFormValues {
   return {
     name: p?.name ?? '',
     description: p?.description ?? '',
-    status: (p?.status as ProjectFormValues['status']) ?? 'PLANNING',
+    onHold: p?.onHold ?? false,
+    archived: p?.archived ?? false,
     progress: p?.progress ?? 0,
     deadline: p?.deadline ?? '',
     technologies: p?.technologies?.join(', ') ?? '',
@@ -80,17 +79,27 @@ export function ProjectFormModal({ open, initial, onSubmit, onClose }: Props) {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label htmlFor="p-status" className="text-xs font-medium text-slate-300">Status</label>
-              <select id="p-status" {...register('status')} className={inputCls}>
-                {statuses.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
-              </select>
-            </div>
-            <div className="space-y-1.5">
-              <label htmlFor="p-progress" className="text-xs font-medium text-slate-300">Progress (%)</label>
+              <label htmlFor="p-progress" className="text-xs font-medium text-slate-300">Progress manual (%) — bila belum ada tugas</label>
               <input id="p-progress" type="number" min={0} max={100} {...register('progress')} className={inputCls} />
               {errors.progress && <p className="text-xs text-red-400">{errors.progress.message}</p>}
             </div>
+            <div className="space-y-1.5">
+              <p className="text-xs font-medium text-slate-300">Override manual</p>
+              <div className="flex flex-col gap-2 pt-1 text-sm text-slate-300">
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" {...register('onHold')} className="h-4 w-4 rounded border-slate-600 bg-slate-950" />
+                  On Hold (jeda)
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" {...register('archived')} className="h-4 w-4 rounded border-slate-600 bg-slate-950" />
+                  Archived (arsip)
+                </label>
+              </div>
+            </div>
           </div>
+          <p className="text-[11px] leading-relaxed text-slate-500">
+            Status lain otomatis: In Progress → Completed saat semua tugas selesai.
+          </p>
 
           <div className="space-y-1.5">
             <label htmlFor="p-deadline" className="text-xs font-medium text-slate-300">Tenggat</label>

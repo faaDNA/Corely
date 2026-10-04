@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Search, CheckSquare, FolderKanban, NotebookPen, Bookmark, CornerDownLeft } from 'lucide-react';
 import { cn } from '@repo/ui';
 import { mockTasks, mockProjects, mockNotes, mockBookmarks } from '@/lib/mock-data';
+import { deriveProjectStatus, projectProgress } from '@/lib/project-status';
 
 interface Result {
   id: string;
@@ -51,7 +52,7 @@ export function GlobalSearch() {
 
     mockProjects
       .filter((p) => p.name.toLowerCase().includes(qq))
-      .forEach((p) => out.push({ id: `p-${p.id}`, label: p.name, sub: `${p.progress}% · ${p.status}`, group: 'Projects', href: `/projects/${p.id}`, icon: <FolderKanban className="h-4 w-4" /> }));
+      .forEach((p) => out.push({ id: `p-${p.id}`, label: p.name, sub: `${projectProgress(p, mockTasks)}% · ${deriveProjectStatus(p, mockTasks).replace('_', ' ')}`, group: 'Projects', href: `/projects/${p.id}`, icon: <FolderKanban className="h-4 w-4" /> }));
 
     mockNotes
       .filter((n) => n.title.toLowerCase().includes(qq) || n.content.toLowerCase().includes(qq))

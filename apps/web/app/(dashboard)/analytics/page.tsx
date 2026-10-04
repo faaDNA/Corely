@@ -18,6 +18,7 @@ import {
 } from 'recharts';
 import { cn } from '@repo/ui';
 import { mockTasks, mockProjects, mockHabits } from '@/lib/mock-data';
+import { deriveProjectStatus, projectProgress } from '@/lib/project-status';
 
 type Period = 'daily' | 'weekly' | 'monthly';
 
@@ -57,7 +58,6 @@ const SERIES: Record<Period, { label: string; data: { name: string; selesai: num
 
 const STATUS_COLORS: Record<string, string> = {
   TODO: '#94a3b8',
-  IN_PROGRESS: '#3b82f6',
   COMPLETED: '#10b981',
 };
 
@@ -78,15 +78,15 @@ export default function AnalyticsPage() {
   const pending = mockTasks.filter((t) => t.status !== 'COMPLETED').length;
   const completionRate = mockTasks.length ? Math.round((completed / mockTasks.length) * 100) : 0;
 
-  const statusData = ['TODO', 'IN_PROGRESS', 'COMPLETED'].map((s) => ({
-    name: s === 'IN_PROGRESS' ? 'In Progress' : s === 'TODO' ? 'Todo' : 'Completed',
+  const statusData = ['TODO', 'COMPLETED'].map((s) => ({
+    name: s === 'TODO' ? 'Todo' : 'Completed',
     value: mockTasks.filter((t) => t.status === s).length,
     key: s,
   }));
 
-  const projectData = mockProjects.filter((p) => p.status === 'IN_PROGRESS').map((p) => ({
+  const projectData = mockProjects.filter((p) => deriveProjectStatus(p, mockTasks) === 'IN_PROGRESS').map((p) => ({
     name: p.name.length > 16 ? p.name.slice(0, 16) + '…' : p.name,
-    progress: p.progress,
+    progress: projectProgress(p, mockTasks),
   }));
 
   const habitData = mockHabits.map((h) => ({
@@ -129,7 +129,7 @@ export default function AnalyticsPage() {
         <StatCard label="Tugas Selesai" value={String(completed)} sub={`${completionRate}% completion rate`} color="#10b981" />
         <StatCard label="Tugas Tertunda" value={String(pending)} sub="Belum diselesaikan" color="#3b82f6" />
         <StatCard label="Streak Terpanjang" value={`${Math.max(...mockHabits.map((h) => h.longestStreak))} Hari`} sub="Dari semua kebiasaan" color="#f59e0b" />
-        <StatCard label="Progres Proyek" value={`${Math.round(mockProjects.filter((p) => p.status === 'IN_PROGRESS').reduce((a, p) => a + p.progress, 0) / Math.max(1, mockProjects.filter((p) => p.status === 'IN_PROGRESS').length))}%`} sub="Rata-rata proyek aktif" color="#a78bfa" />
+        <StatCard label="Progres Proyek" value={`${Math.round(mockProjects.filter((p) => deriveProjectStatus(p, mockTasks) === 'IN_PROGRESS').reduce((a, p) => a + projectProgress(p, mockTasks), 0) / Math.max(1, mockProjects.filter((p) => deriveProjectStatus(p, mockTasks) === 'IN_PROGRESS').length))}%`} sub="Rata-rata proyek aktif" color="#a78bfa" />
       </div>
 
       {/* Completion over time */}

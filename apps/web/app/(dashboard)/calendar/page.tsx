@@ -3,17 +3,34 @@
 import { useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, Plus, Trash2 } from 'lucide-react';
 import { Button, cn } from '@repo/ui';
-import type { EventItem } from '@repo/types';
-import { mockEvents } from '@/lib/mock-data';
+import type { EventItem, Task } from '@repo/types';
+import { mockEvents, mockTasks, mockProjects } from '@/lib/mock-data';
 
 type ViewMode = 'month' | 'week' | 'day';
 
 const TYPE_BADGE: Record<string, string> = {
   personal: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
   task: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+  schedule: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
   project: 'bg-purple-500/15 text-purple-400 border-purple-500/30',
   habit: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
 };
+
+/** Semua item kalender diturunkan otomatis — user tidak perlu input dua kali. */
+function deriveItems(events: EventItem[], tasks: Task[]): EventItem[] {
+  const fromTasks: EventItem[] = tasks
+    .filter((t) => t.dueDate && t.status !== 'COMPLETED')
+    .map((t) => ({
+      id: `task-${t.id}`,
+      title: t.dateMode === 'schedule' ? `${t.title}${t.dueTime ? ` · ${t.dueTime}` : ''}` : t.title,
+      startDate: t.dueDate!,
+      type: t.dateMode === 'schedule' ? 'schedule' : 'task',
+    }));
+  const fromProjects: EventItem[] = mockProjects
+    .filter((p) => p.deadline && !p.archived)
+    .map((p) => ({ id: `proj-${p.id}`, title: p.name, startDate: p.deadline!, type: 'project' as const }));
+  return [...events, ...fromTasks, ...fromProjects];
+}
 
 function toISO(d: Date) {
   return d.toISOString().slice(0, 10);
@@ -21,6 +38,7 @@ function toISO(d: Date) {
 
 export default function CalendarPage() {
   const [events, setEvents] = useState<EventItem[]>(mockEvents);
+  const items = useMemo(() => deriveItems(events, mockTasks), [events]);
   const [view, setView] = useState<ViewMode>('month');
   const [cursor, setCursor] = useState(new Date('2026-10-01T00:00:00'));
   const [selected, setSelected] = useState(toISO(new Date('2026-10-04T00:00:00')));
@@ -51,7 +69,7 @@ export default function CalendarPage() {
   );
 
   function eventsOn(iso: string) {
-    return events.filter((e) => e.startDate === iso);
+    return items.filter((e) => e.startDate === iso);
   }
 
   function move(delta: number) {
@@ -188,7 +206,9 @@ export default function CalendarPage() {
                   <span className={cn('rounded border px-2 py-0.5 text-[10px] uppercase', TYPE_BADGE[e.type])}>{e.type}</span>
                   <span className="flex-1 text-slate-200">{e.title}</span>
                   <span className="text-xs text-slate-500">{e.startDate}</span>
-                  <button type="button" onClick={() => setEvents((prev) => prev.filter((x) => x.id !== e.id))} aria-label="Delete" className="text-slate-600 hover:text-red-400"><Trash2 className="h-4 w-4" /></button>
+                  {!e.id.startsWith('task-') && !e.id.startsWith('proj-') && (
+                    <button type="button" onClick={() => setEvents((prev) => prev.filter((x) => x.id !== e.id))} aria-label="Delete" className="text-slate-600 hover:text-red-400"><Trash2 className="h-4 w-4" /></button>
+                  )}
                 </div>
               ))}
               {selectedEvents.length === 0 && <p className="rounded-lg border border-dashed border-slate-800 p-6 text-center text-xs text-slate-500">Tidak ada acara pada tanggal ini.</p>}
@@ -199,10 +219,11 @@ export default function CalendarPage() {
 
       {/* Legend */}
       <div className="flex flex-wrap gap-3 text-xs text-slate-400">
-        <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-blue-500" />Personal</span>
+        <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-blue-500" />Personal / Jadwal Tugas</span>
         <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-amber-500" />Tenggat Tugas</span>
         <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-purple-500" />Batas Proyek</span>
         <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-emerald-500" />Habit</span>
+        <span className="text-[11px] text-slate-500">Tenggat &amp; jadwal tugas serta batas proyek muncul otomatis.</span>
       </div>
 
       {open && (

@@ -6,22 +6,23 @@ export const mockUser = {
 };
 
 export const mockTasks: Task[] = [
-  { id: 't1', title: 'Rapikan rencana minggu ini', description: 'Susun prioritas 7 hari ke depan', status: 'TODO', priority: 'HIGH', dueDate: '2026-10-04', projectId: 'p1', tags: ['urgent'] },
-  { id: 't2', title: 'Tulis catatan ide aplikasi baru', description: 'Brainstorm 3 ide side project', status: 'IN_PROGRESS', priority: 'MEDIUM', dueDate: '2026-10-05', tags: ['ideas'] },
-  { id: 't3', title: 'Baca 20 halaman buku', description: 'Buku "Deep Work"', status: 'TODO', priority: 'LOW', dueDate: '2026-10-04', tags: ['self'] },
-  { id: 't4', title: 'Review desain landing page', status: 'COMPLETED', priority: 'MEDIUM', dueDate: '2026-10-03', completedAt: '2026-10-03', projectId: 'p1' },
-  { id: 't5', title: 'Latihan bahasa Jepang — 30 menit', status: 'TODO', priority: 'MEDIUM', dueDate: '2026-10-04', projectId: 'p3', tags: ['learning'] },
-  { id: 't6', title: 'Kirim email ke klien', status: 'COMPLETED', priority: 'HIGH', dueDate: '2026-10-03', completedAt: '2026-10-03' },
-  { id: 't7', title: 'Siapkan daftar belanja renovasi', status: 'IN_PROGRESS', priority: 'LOW', dueDate: '2026-10-10', projectId: 'p2' },
-  { id: 't8', title: 'Struktur outline tugas kuliah', status: 'TODO', priority: 'HIGH', dueDate: '2026-10-08', tags: ['university'] },
+  { id: 't1', title: 'Rapikan rencana minggu ini', description: 'Susun prioritas 7 hari ke depan', status: 'TODO', priority: 'HIGH', dateMode: 'deadline', dueDate: '2026-10-04', projectId: 'p1', tags: ['urgent'] },
+  { id: 't2', title: 'Tulis catatan ide aplikasi baru', description: 'Brainstorm 3 ide side project', status: 'TODO', priority: 'MEDIUM', dateMode: 'deadline', dueDate: '2026-10-05', tags: ['ideas'] },
+  { id: 't3', title: 'Baca 20 halaman buku', description: 'Buku "Deep Work"', status: 'TODO', priority: 'LOW', dateMode: 'deadline', dueDate: '2026-10-04', tags: ['self'] },
+  { id: 't4', title: 'Review desain landing page', status: 'COMPLETED', priority: 'MEDIUM', dateMode: 'deadline', dueDate: '2026-10-03', completedAt: '2026-10-03', projectId: 'p1' },
+  { id: 't5', title: 'Latihan bahasa Jepang — 30 menit', status: 'TODO', priority: 'MEDIUM', dateMode: 'deadline', dueDate: '2026-10-04', projectId: 'p3', tags: ['learning'] },
+  { id: 't6', title: 'Kirim email ke klien', status: 'COMPLETED', priority: 'HIGH', dateMode: 'deadline', dueDate: '2026-10-03', completedAt: '2026-10-03' },
+  { id: 't7', title: 'Siapkan daftar belanja renovasi', status: 'TODO', priority: 'LOW', dateMode: 'deadline', dueDate: '2026-10-10', projectId: 'p2' },
+  { id: 't8', title: 'Struktur outline tugas kuliah', status: 'TODO', priority: 'HIGH', dateMode: 'deadline', dueDate: '2026-10-08', tags: ['university'] },
+  { id: 't9', title: 'Interview pekerjaan — PT Nusantara', description: 'Datang 15 menit lebih awal, bawa CV cetak', status: 'TODO', priority: 'HIGH', dateMode: 'schedule', dueDate: '2026-10-07', dueTime: '10:00', tags: ['career'] },
 ];
 
 export const mockProjects: Project[] = [
-  { id: 'p1', name: 'Personal Dashboard', description: 'Aplikasi produktivitas pribadi', status: 'IN_PROGRESS', progress: 65, deadline: '2026-11-01', technologies: ['Next.js', 'TypeScript'], repoUrl: 'https://github.com/user/personal-dashboard' },
-  { id: 'p2', name: 'Renovasi Rumah', description: 'Rencana & anggaran renovasi', status: 'IN_PROGRESS', progress: 40, deadline: '2026-12-15' },
-  { id: 'p3', name: 'Belajar Bahasa Jepang', description: 'Target JLPT N5', status: 'IN_PROGRESS', progress: 85, deadline: '2026-12-01', technologies: ['Anki'] },
-  { id: 'p4', name: 'Kumpulan Resep Masak', status: 'PLANNING', progress: 10 },
-  { id: 'p5', name: 'Setup Blog Pribadi', status: 'COMPLETED', progress: 100, deployUrl: 'https://blog.example.com' },
+  { id: 'p1', name: 'Corely', description: 'Aplikasi produktivitas pribadi', progress: 50, deadline: '2026-11-01', technologies: ['Next.js', 'TypeScript'], repoUrl: 'https://github.com/user/corely' },
+  { id: 'p2', name: 'Renovasi Rumah', description: 'Rencana & anggaran renovasi', progress: 0, deadline: '2026-12-15' },
+  { id: 'p3', name: 'Belajar Bahasa Jepang', description: 'Target JLPT N5', progress: 0, deadline: '2026-12-01', technologies: ['Anki'] },
+  { id: 'p4', name: 'Kumpulan Resep Masak', progress: 10, onHold: true },
+  { id: 'p5', name: 'Setup Blog Pribadi', progress: 100, deployUrl: 'https://blog.example.com' },
 ];
 
 export const mockNotes: Note[] = [

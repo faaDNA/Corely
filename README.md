@@ -1,34 +1,28 @@
-# Personal Dashboard
+# Corely
 
-Full-stack personal productivity workspace: tasks, projects, notes, bookmarks, habits, and calendar in one dashboard.
+Ruang produktivitas pribadi — tugas, proyek, catatan, bookmark, kebiasaan, dan kalender terpadu.
 
-## Struktur
+## Cara Jalankan
 
-```
-personal-dashboard/
-├── apps/web/          # Next.js app (App Router)
-├── packages/ui/       # Shared UI components
-├── packages/types/    # Shared TypeScript types
-├── packages/config/   # Shared configs
-├── pnpm-workspace.yaml
-└── turbo.json
-```
-
-## Menjalankan
-
-```bash
+```powershell
 pnpm install
-pnpm dev          # turbo run dev
+pnpm -C apps/web dev --port 3100
 ```
 
-Buka http://localhost:3000. Alur: Landing `/` → `/login` (dummy, email/password apa saja valid) → `/dashboard`.
+Buka http://localhost:3100. Alur: Landing `/` → `/login` (dummy) → `/dashboard`.
 
 ## Halaman
 
-`/` landing · `/login` `/register` dummy auth · `/dashboard` · `/tasks` (list+kanban) · `/projects` + `/projects/[id]` · `/notes` · `/bookmarks` · `/habits` · `/calendar` (month/week/day) · `/analytics` · `/settings`
+`/` landing · `/login` `/register` dummy auth · `/dashboard` · `/tasks` (list view + mode tenggat/jadwal) · `/projects` + `/projects/[id]` (status & progres otomatis) · `/notes` · `/bookmarks` · `/habits` · `/calendar` (agregat otomatis) · `/analytics` · `/settings`
 
-Semua data masih **dummy** (`lib/mock-data.ts`), tersimpan di local state. Backend/auth asli belum ada.
+## Fitur Utama & Penyederhanaan
+- **Tugas**: Status Todo & Completed (tanpa In Progress). Opsi tipe **Tenggat** (tanggal) vs **Jadwal** (tanggal + jam).
+- **Proyek**: Status (**In Progress** & **Completed**) dan progres (%) diturunkan otomatis dari tugas terkait. Opsi manual: **On Hold** (jeda) & **Archived** (arsip).
+- **Kalender**: Mengumpulkan otomatis tenggat tugas, jadwal hari-H, dan batas proyek tanpa input ulang.
+- **Pencarian Global**: `Ctrl+K` untuk cari di seluruh modul.
 
-## Tech Stack
+Semua data masih **dummy** (`lib/mock-data.ts`), tersimpan di local state.
 
-Next.js 14 · React 18 · TypeScript · Tailwind CSS · Radix UI · Lucide · next-themes · Recharts · @dnd-kit · react-hook-form · Zod · Turborepo · pnpm
+## Stack
+
+Next.js 14 · React 18 · TypeScript · Tailwind CSS · Radix UI · Lucide · next-themes · Recharts · react-hook-form · Zod · Turborepo · pnpm

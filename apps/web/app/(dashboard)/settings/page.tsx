@@ -14,7 +14,6 @@ export default function SettingsPage() {
   const [profile, setProfile] = useState(mockUser);
   const [dateFormat, setDateFormat] = useState('id-ID');
   const [timeFormat, setTimeFormat] = useState('24h');
-  const [defaultTaskView, setDefaultTaskView] = useState('list');
 
   useEffect(() => setMounted(true), []);
 
@@ -104,7 +103,7 @@ export default function SettingsPage() {
           <CardTitle className="flex items-center gap-2 text-base"><SlidersHorizontal className="h-4 w-4 text-emerald-400" />Preferensi</CardTitle>
           <CardDescription>Format dan tampilan default.</CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-3 sm:grid-cols-3">
+        <CardContent className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1.5">
             <label htmlFor="s-date" className="text-xs font-medium text-slate-300">Format Tanggal</label>
             <select id="s-date" value={dateFormat} onChange={(e) => setDateFormat(e.target.value)} className={inputCls}>
@@ -120,14 +119,7 @@ export default function SettingsPage() {
               <option value="12h">12 jam (AM/PM)</option>
             </select>
           </div>
-          <div className="space-y-1.5">
-            <label htmlFor="s-view" className="text-xs font-medium text-slate-300">Tampilan Tugas Default</label>
-            <select id="s-view" value={defaultTaskView} onChange={(e) => setDefaultTaskView(e.target.value)} className={inputCls}>
-              <option value="list">List</option>
-              <option value="kanban">Kanban</option>
-            </select>
-          </div>
-          <div className="sm:col-span-3">
+          <div className="sm:col-span-2">
             <Button size="sm" variant="outline" onClick={savePreferences}><Check className="mr-2 h-4 w-4" />Simpan Preferensi</Button>
           </div>
         </CardContent>

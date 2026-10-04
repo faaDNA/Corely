@@ -3,7 +3,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Personal Dashboard',
+  title: 'Corely',
   description: 'Satu workspace untuk seluruh produktivitas Anda.',
 };
 

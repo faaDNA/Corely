@@ -2,21 +2,21 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Personal Dashboard — Satu Workspace untuk Seluruh Produktivitas Anda',
+  title: 'Corely — Satu Workspace untuk Seluruh Produktivitas Anda',
 };
 
 const FEATURES = [
   { icon: '📊', title: 'Dashboard Utama', desc: 'Sapaan personal, tanggal hari ini, ringkasan tugas, proyek aktif, tenggat terdekat, dan aksi cepat.' },
-  { icon: '✅', title: 'Manajemen Tugas', desc: 'Tambah, ubah, selesaikan tugas dengan status TODO, In Progress, Completed. Prioritas, tenggat, tag, list & Kanban.' },
-  { icon: '📁', title: 'Pengelolaan Proyek', desc: 'Kelompokkan aktivitas jangka panjang, pantau progres, tenggat, teknologi, dan tugas terkait.' },
+  { icon: '✅', title: 'Manajemen Tugas', desc: 'Status ringkas Todo & Completed, prioritas, tag, dan list view yang bersih. Tugas bisa bertipe Tenggat atau Jadwal hari-H dengan jam.' },
+  { icon: '📁', title: 'Pengelolaan Proyek', desc: 'Kelompokkan aktivitas jangka panjang. Progres & status diturunkan otomatis dari tugas — tanpa bolak-balik mengubah status.' },
   { icon: '📝', title: 'Catatan Markdown', desc: 'Simpan pengetahuan pribadi format Markdown dengan kategori, tag, pin, dan arsip.' },
   { icon: '🔖', title: 'Koleksi Bookmark', desc: 'Simpan situs dan sumber daya penting dengan kategori, tag, favorit, dan pencarian.' },
   { icon: '🔥', title: 'Pelacak Kebiasaan', desc: 'Penandaan harian, riwayat kalender, streak aktif, streak terpanjang, dan tingkat penyelesaian.' },
-  { icon: '📅', title: 'Kalender Terpadu', desc: 'Satukan acara pribadi, tenggat tugas, dan batas proyek dalam tampilan bulan, minggu, dan hari.' },
+  { icon: '📅', title: 'Kalender Terpadu', desc: 'Tenggat & jadwal tugas serta batas proyek muncul otomatis dalam tampilan bulan, minggu, dan hari — tanpa input dua kali.' },
   { icon: '🔍', title: 'Pencarian Global', desc: 'Cari tugas, proyek, catatan, dan bookmark dari satu kolom dengan hasil dikelompokkan.' },
   { icon: '📈', title: 'Statistik & Analitik', desc: 'Tingkat penyelesaian tugas, progres proyek, dan konsistensi kebiasaan harian/mingguan/bulanan.' },
   { icon: '🔔', title: 'Notifikasi', desc: 'Pengingat tenggat tugas, batas proyek, acara mendatang, dan kebiasaan harian.' },
-  { icon: '⚙️', title: 'Profil & Pengaturan', desc: 'Atur profil, tema terang/gelap, format tanggal & jam, serta preferensi tampilan tugas.' },
+  { icon: '⚙️', title: 'Profil & Pengaturan', desc: 'Atur profil, tema terang/gelap, format tanggal & jam, serta preferensi tampilan.' },
   { icon: '🔒', title: 'Akun Aman & Pribadi', desc: 'Login dan sesi aman, dengan setiap data hanya dapat diakses oleh pemiliknya.' },
 ];
 
@@ -35,9 +35,9 @@ export default function LandingPage() {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 font-bold text-white shadow-lg shadow-blue-500/20">
-              PD
+              C
             </div>
-            <span className="text-lg font-bold tracking-tight">Personal Dashboard</span>
+            <span className="text-lg font-bold tracking-tight">Corely</span>
           </div>
           <nav className="hidden items-center gap-8 text-sm font-medium text-slate-400 md:flex">
             <a href="#problem" className="transition hover:text-white">Masalah</a>
@@ -94,7 +94,7 @@ export default function LandingPage() {
       <section id="problem" className="border-y border-slate-800 bg-slate-900/50 py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-16 max-w-3xl text-center">
-            <h2 className="text-3xl font-bold text-white">Mengapa Personal Dashboard?</h2>
+            <h2 className="text-3xl font-bold text-white">Mengapa Corely?</h2>
             <p className="mt-4 text-slate-400">Aktivitas harian kita sering tersebar di banyak aplikasi berbeda, sehingga sulit melihat prioritas dalam satu pandangan.</p>
           </div>
           <div className="grid gap-8 md:grid-cols-2">
@@ -126,7 +126,7 @@ export default function LandingPage() {
       <section id="features" className="py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-16 max-w-3xl text-center">
-            <h2 className="text-3xl font-bold text-white">Fitur-Fitur Personal Dashboard</h2>
+            <h2 className="text-3xl font-bold text-white">Fitur-Fitur Corely</h2>
             <p className="mt-4 text-slate-400">Aplikasi ini menyediakan modul lengkap untuk mengelola seluruh kebutuhan produktivitas pribadi Anda.</p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -154,7 +154,7 @@ export default function LandingPage() {
                 <span className="inline-block h-3 w-3 rounded-full bg-red-500/80" />
                 <span className="inline-block h-3 w-3 rounded-full bg-yellow-500/80" />
                 <span className="inline-block h-3 w-3 rounded-full bg-green-500/80" />
-                <span className="ml-2 font-mono text-xs text-slate-500">app.personaldashboard.dev/dashboard</span>
+                <span className="ml-2 font-mono text-xs text-slate-500">app.corely.dev/dashboard</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-slate-400">
                 <span className="h-2 w-2 rounded-full bg-emerald-400" /> Tersinkronisasi
@@ -235,7 +235,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-slate-800 py-8 text-center text-xs text-slate-500">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 sm:flex-row">
-          <div>© 2026 Personal Dashboard. Seluruh hak cipta dilindungi.</div>
+          <div>© 2026 Corely. Seluruh hak cipta dilindungi.</div>
           <div className="flex items-center gap-6">
             <a href="#features" className="transition hover:text-slate-300">Fitur</a>
             <a href="#preview" className="transition hover:text-slate-300">Tampilan</a>

@@ -1,20 +1,17 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { LayoutList, Kanban, Plus, Search } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import { Button, cn } from '@repo/ui';
 import type { Task, TaskStatus, TaskPriority } from '@repo/types';
 import type { TaskFormValues } from '@/components/tasks/task-schema';
 import { TaskFormModal } from '@/components/tasks/task-form-modal';
-import { TaskKanbanView, TaskListView } from '@/components/tasks/task-views';
+import { TaskListView } from '@/components/tasks/task-views';
 import { mockTasks, mockProjects } from '@/lib/mock-data';
 import { toast } from '@/components/toast';
 
-type ViewMode = 'list' | 'kanban';
-
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>(mockTasks);
-  const [view, setView] = useState<ViewMode>('list');
   const [q, setQ] = useState('');
   const [status, setStatus] = useState('all');
   const [priority, setPriority] = useState('all');
@@ -43,7 +40,6 @@ export default function TasksPage() {
   const confirmCount: Record<string, number> = {
     all: tasks.length,
     TODO: tasks.filter((t) => t.status === 'TODO').length,
-    IN_PROGRESS: tasks.filter((t) => t.status === 'IN_PROGRESS').length,
     COMPLETED: tasks.filter((t) => t.status === 'COMPLETED').length,
   };
 
@@ -69,6 +65,8 @@ export default function TasksPage() {
       status: values.status as TaskStatus,
       priority: values.priority as TaskPriority,
       dueDate: values.dueDate || undefined,
+      dueTime: values.dateMode === 'schedule' ? values.dueTime || undefined : undefined,
+      dateMode: values.dateMode,
       projectId: values.projectId || undefined,
       tags: values.tags ? values.tags.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
       completedAt: values.status === 'COMPLETED' ? new Date().toISOString().slice(0, 10) : undefined,
@@ -82,10 +80,6 @@ export default function TasksPage() {
       toast('Tugas ditambahkan.');
     }
     setModal({ open: false });
-  }
-
-  function handleDrop(id: string, newStatus: TaskStatus) {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, status: newStatus } : t)));
   }
 
   function handleDelete(id: string) {
@@ -105,7 +99,7 @@ export default function TasksPage() {
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Tugas</h1>
-          <p className="mt-1 text-sm text-slate-400">Kelola tugas harian — klik checkbox untuk menyelesaikan, seret antar kolom untuk ubah status.</p>
+          <p className="mt-1 text-sm text-slate-400">Kelola tugas harian — klik checkbox untuk menyelesaikan.</p>
         </div>
         <Button onClick={() => setModal({ open: true, initial: null })}>
           <Plus className="mr-2 h-4 w-4" />Tugas Baru
@@ -130,7 +124,6 @@ export default function TasksPage() {
               [
                 ['all', 'All'],
                 ['TODO', 'Todo'],
-                ['IN_PROGRESS', 'Progress'],
                 ['COMPLETED', 'Completed'],
               ] as const
             ).map(([v, l]) => (
@@ -180,31 +173,10 @@ export default function TasksPage() {
             <option value="due">Sort: Due date</option>
             <option value="new">Sort: Newest</option>
           </select>
-
-          <div className="ml-auto flex rounded-lg border border-slate-700">
-            <button
-              type="button"
-              onClick={() => setView('list')}
-              className={cn('inline-flex items-center gap-1.5 rounded-l-lg px-3 py-1.5 text-xs transition', view === 'list' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200')}
-            >
-              <LayoutList className="h-3.5 w-3.5" /> List
-            </button>
-            <button
-              type="button"
-              onClick={() => setView('kanban')}
-              className={cn('inline-flex items-center gap-1.5 rounded-r-lg px-3 py-1.5 text-xs transition', view === 'kanban' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200')}
-            >
-              <Kanban className="h-3.5 w-3.5" /> Kanban
-            </button>
-          </div>
         </div>
       </div>
 
-      {view === 'list' ? (
-        <TaskListView tasks={filtered} onToggle={handleToggle} onEdit={(t) => setModal({ open: true, initial: t })} onDelete={handleDelete} />
-      ) : (
-        <TaskKanbanView tasks={filtered} onToggle={handleToggle} onEdit={(t) => setModal({ open: true, initial: t })} onDelete={handleDelete} onDrop={handleDrop} />
-      )}
+      <TaskListView tasks={filtered} onToggle={handleToggle} onEdit={(t) => setModal({ open: true, initial: t })} onDelete={handleDelete} />
 
       <TaskFormModal
         open={modal.open}

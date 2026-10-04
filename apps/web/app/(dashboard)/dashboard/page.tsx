@@ -8,9 +8,10 @@ import {
   FolderKanban,
   CalendarClock,
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, Button, cn } from '@repo/ui';
+import { Card, CardContent, CardHeader, CardTitle, cn } from '@repo/ui';
 import { Greeting } from '@/components/greeting';
 import { mockTasks, mockProjects, mockNotes, mockHabits, mockEvents, mockStats } from '@/lib/mock-data';
+import { deriveProjectStatus, projectProgress } from '@/lib/project-status';
 
 const PRIORITY_BADGE: Record<string, string> = {
   HIGH: 'bg-red-500/10 text-red-400 border-red-500/20',
@@ -21,11 +22,16 @@ const PRIORITY_BADGE: Record<string, string> = {
 export default function DashboardPage() {
   const today = '2026-10-04';
   const todayTasks = mockTasks.filter((t) => t.dueDate === today);
-  const activeProjects = mockProjects.filter((p) => p.status === 'IN_PROGRESS');
+  const activeProjects = mockProjects
+    .filter((p) => deriveProjectStatus(p, mockTasks) === 'IN_PROGRESS')
+    .map((p) => ({ ...p, progress: projectProgress(p, mockTasks) }));
   const upcomingDeadlines = mockTasks
-    .filter((t) => t.dueDate && t.dueDate > today && t.status !== 'COMPLETED')
+    .filter((t) => t.dueDate && t.dueDate > today && t.status !== 'COMPLETED' && t.dateMode !== 'schedule')
     .sort((a, b) => (a.dueDate! < b.dueDate! ? -1 : 1))
     .slice(0, 4);
+  const upcomingSchedules = mockTasks
+    .filter((t) => t.dueDate && t.status !== 'COMPLETED' && t.dateMode === 'schedule')
+    .sort((a, b) => (a.dueDate! < b.dueDate! ? -1 : 1));
   const recentNotes = [...mockNotes].sort((a, b) => (a.updatedAt > b.updatedAt ? -1 : 1)).slice(0, 3);
 
   const stats = [
@@ -40,9 +46,9 @@ export default function DashboardPage() {
       <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <Greeting />
         <div className="flex gap-2">
-          <Button size="sm" variant="outline"><CheckCircle2 className="mr-2 h-4 w-4" />Tugas</Button>
-          <Button size="sm" variant="outline"><FolderKanban className="mr-2 h-4 w-4" />Proyek</Button>
-          <Button size="sm" variant="outline"><NotebookPen className="mr-2 h-4 w-4" />Catatan</Button>
+          <Link href="/tasks" className="inline-flex items-center rounded-lg border border-slate-700 px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-800"><CheckCircle2 className="mr-2 h-4 w-4" />Tugas</Link>
+          <Link href="/projects" className="inline-flex items-center rounded-lg border border-slate-700 px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-800"><FolderKanban className="mr-2 h-4 w-4" />Proyek</Link>
+          <Link href="/notes" className="inline-flex items-center rounded-lg border border-slate-700 px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-800"><NotebookPen className="mr-2 h-4 w-4" />Catatan</Link>
         </div>
       </header>
 
@@ -186,13 +192,20 @@ export default function DashboardPage() {
       {/* Upcoming events */}
       <Card>
         <CardHeader className="flex-row items-center justify-between space-y-0">
-          <CardTitle className="text-base">Acara Mendatang</CardTitle>
+          <CardTitle className="text-base">Acara &amp; Jadwal Mendatang</CardTitle>
           <Link href="/calendar" className="text-xs text-blue-400 hover:text-blue-300">Kalender</Link>
         </CardHeader>
         <CardContent className="flex flex-wrap gap-2">
+          {upcomingSchedules.map((t) => (
+            <span key={t.id} className="inline-flex items-center gap-2 rounded-lg border border-blue-500/30 bg-blue-500/10 px-3 py-2 text-xs text-blue-300">
+              <CalendarClock className="h-4 w-4 text-blue-400" />
+              <span className="font-medium">{t.title}</span>
+              <span className="text-blue-400/80">{t.dueDate}{t.dueTime ? ` · ${t.dueTime}` : ''}</span>
+            </span>
+          ))}
           {mockEvents.map((e) => (
             <span key={e.id} className="inline-flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-950 px-3 py-2 text-xs text-slate-300">
-              <CalendarClock className="h-4 w-4 text-blue-400" />
+              <CalendarClock className="h-4 w-4 text-slate-400" />
               {e.title}
               <span className="text-slate-500">{e.startDate}</span>
             </span>

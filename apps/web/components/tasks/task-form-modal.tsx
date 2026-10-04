@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { X } from 'lucide-react';
-import { Button, cn } from '@repo/ui';
+import { Button } from '@repo/ui';
 import type { Task } from '@repo/types';
 import { mockProjects } from '@/lib/mock-data';
 import { taskSchema, type TaskFormValues, STATUS_LABELS, PRIORITY_LABELS } from './task-schema';
@@ -24,6 +24,7 @@ export function TaskFormModal({ open, initial, onSubmit, onClose }: Props) {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
@@ -32,11 +33,15 @@ export function TaskFormModal({ open, initial, onSubmit, onClose }: Props) {
       description: initial?.description ?? '',
       status: initial?.status ?? 'TODO',
       priority: initial?.priority ?? 'MEDIUM',
+      dateMode: initial?.dateMode ?? 'deadline',
       dueDate: initial?.dueDate ?? '',
+      dueTime: initial?.dueTime ?? '',
       projectId: initial?.projectId ?? '',
       tags: initial?.tags?.join(', ') ?? '',
     },
   });
+
+  const dateMode = watch('dateMode');
 
   useEffect(() => {
     if (open) {
@@ -45,7 +50,9 @@ export function TaskFormModal({ open, initial, onSubmit, onClose }: Props) {
         description: initial?.description ?? '',
         status: initial?.status ?? 'TODO',
         priority: initial?.priority ?? 'MEDIUM',
+        dateMode: initial?.dateMode ?? 'deadline',
         dueDate: initial?.dueDate ?? '',
+        dueTime: initial?.dueTime ?? '',
         projectId: initial?.projectId ?? '',
         tags: initial?.tags?.join(', ') ?? '',
       });
@@ -104,11 +111,44 @@ export function TaskFormModal({ open, initial, onSubmit, onClose }: Props) {
             </div>
           </div>
 
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-slate-300">Tipe Waktu</label>
+            <div className="flex gap-4 pt-1 text-xs text-slate-300">
+              <label className="flex items-center gap-1.5">
+                <input type="radio" value="deadline" {...register('dateMode')} className="text-blue-600" />
+                Tenggat (batas waktu)
+              </label>
+              <label className="flex items-center gap-1.5">
+                <input type="radio" value="schedule" {...register('dateMode')} className="text-blue-600" />
+                Jadwal (hari-H)
+              </label>
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label htmlFor="t-due" className="text-xs font-medium text-slate-300">Tenggat</label>
+              <label htmlFor="t-due" className="text-xs font-medium text-slate-300">Tanggal</label>
               <input id="t-due" type="date" {...register('dueDate')} className={inputCls} />
             </div>
+            {dateMode === 'schedule' ? (
+              <div className="space-y-1.5">
+                <label htmlFor="t-time" className="text-xs font-medium text-slate-300">Jam (WIB)</label>
+                <input id="t-time" type="time" {...register('dueTime')} className={inputCls} />
+              </div>
+            ) : (
+              <div className="space-y-1.5">
+                <label htmlFor="t-project" className="text-xs font-medium text-slate-300">Proyek</label>
+                <select id="t-project" {...register('projectId')} className={inputCls}>
+                  <option value="">— Tanpa proyek —</option>
+                  {mockProjects.map((p) => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+
+          {dateMode === 'schedule' && (
             <div className="space-y-1.5">
               <label htmlFor="t-project" className="text-xs font-medium text-slate-300">Proyek</label>
               <select id="t-project" {...register('projectId')} className={inputCls}>
@@ -118,7 +158,7 @@ export function TaskFormModal({ open, initial, onSubmit, onClose }: Props) {
                 ))}
               </select>
             </div>
-          </div>
+          )}
 
           <div className="space-y-1.5">
             <label htmlFor="t-tags" className="text-xs font-medium text-slate-300">Tag (pisahkan koma)</label>

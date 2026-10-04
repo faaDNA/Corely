@@ -7,6 +7,7 @@ import { ArrowLeft, Github, ExternalLink, Calendar, Cpu, CheckCircle2, Circle } 
 import { cn } from '@repo/ui';
 import { mockProjects, mockTasks } from '@/lib/mock-data';
 import { PROJECT_STATUS_BADGE, PROJECT_STATUS_LABELS } from '@/components/projects/project-schema';
+import { deriveProjectStatus, projectProgress } from '@/lib/project-status';
 
 const PRIORITY_BADGE: Record<string, string> = {
   HIGH: 'bg-red-500/10 text-red-400 border-red-500/20',
@@ -33,7 +34,8 @@ export default function ProjectDetailPage() {
   }
 
   const done = related.filter((t) => t.status === 'COMPLETED').length;
-  const pct = related.length ? Math.round((done / related.length) * 100) : project.progress;
+  const pct = projectProgress(project, mockTasks);
+  const status = deriveProjectStatus(project, mockTasks);
 
   return (
     <div className="space-y-4">
@@ -47,18 +49,18 @@ export default function ProjectDetailPage() {
             <h1 className="text-xl font-bold text-white">{project.name}</h1>
             {project.description && <p className="mt-1.5 text-sm text-slate-400">{project.description}</p>}
           </div>
-          <span className={cn('rounded border px-2 py-1 text-[11px] font-medium', PROJECT_STATUS_BADGE[project.status])}>
-            {PROJECT_STATUS_LABELS[project.status as keyof typeof PROJECT_STATUS_LABELS]}
+          <span className={cn('rounded border px-2 py-1 text-[11px] font-medium', PROJECT_STATUS_BADGE[status])}>
+            {PROJECT_STATUS_LABELS[status as keyof typeof PROJECT_STATUS_LABELS]}
           </span>
         </div>
 
         <div className="mt-4">
           <div className="mb-1 flex justify-between text-xs">
             <span className="text-slate-400">Progress</span>
-            <span className="font-mono text-blue-400">{project.progress}%</span>
+            <span className="font-mono text-blue-400">{pct}%</span>
           </div>
           <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-800">
-            <div className="h-full rounded-full bg-blue-500" style={{ width: `${project.progress}%` }} />
+            <div className="h-full rounded-full bg-blue-500" style={{ width: `${pct}%` }} />
           </div>
         </div>
 

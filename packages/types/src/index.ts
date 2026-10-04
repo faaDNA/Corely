@@ -1,5 +1,7 @@
-export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'COMPLETED';
+export type TaskStatus = 'TODO' | 'COMPLETED';
 export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH';
+/** deadline = tenggat (tanpa jam) · schedule = jadwal hari-H (tanggal + jam) */
+export type TaskDateMode = 'deadline' | 'schedule';
 
 export interface Task {
   id: string;
@@ -8,18 +10,24 @@ export interface Task {
   status: TaskStatus;
   priority: TaskPriority;
   dueDate?: string;
+  /** hanya untuk mode schedule */
+  dueTime?: string;
+  dateMode?: TaskDateMode;
   projectId?: string;
   tags?: string[];
   completedAt?: string;
 }
 
-export type ProjectStatus = 'PLANNING' | 'IN_PROGRESS' | 'COMPLETED' | 'ON_HOLD' | 'ARCHIVED';
+export type ProjectStatus = 'IN_PROGRESS' | 'COMPLETED' | 'ON_HOLD' | 'ARCHIVED';
 
 export interface Project {
   id: string;
   name: string;
   description?: string;
-  status: ProjectStatus;
+  /** override manual — status lain diturunkan dari progress */
+  onHold?: boolean;
+  archived?: boolean;
+  /** fallback bila belum ada tugas terkait */
   progress: number;
   deadline?: string;
   technologies?: string[];
@@ -62,5 +70,5 @@ export interface EventItem {
   title: string;
   startDate: string;
   endDate?: string;
-  type: 'personal' | 'task' | 'project' | 'habit';
+  type: 'personal' | 'task' | 'schedule' | 'project' | 'habit';
 }

@@ -8,6 +8,7 @@ import type { Project } from '@repo/types';
 import { mockProjects, mockTasks } from '@/lib/mock-data';
 import { ProjectFormModal } from '@/components/projects/project-form-modal';
 import { PROJECT_STATUS_BADGE, PROJECT_STATUS_LABELS, type ProjectFormValues } from '@/components/projects/project-schema';
+import { deriveProjectStatus, projectProgress } from '@/lib/project-status';
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>(mockProjects);
@@ -16,21 +17,27 @@ export default function ProjectsPage() {
   const [modal, setModal] = useState<{ open: boolean; initial?: Project | null }>({ open: false });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
+  const withStatus = useMemo(
+    () => projects.map((p) => ({ p, status: deriveProjectStatus(p, mockTasks), progress: projectProgress(p, mockTasks) })),
+    [projects]
+  );
+
   const filtered = useMemo(() => {
-    let out = [...projects];
+    let out = withStatus;
     if (q) {
       const qq = q.toLowerCase();
-      out = out.filter((p) => p.name.toLowerCase().includes(qq) || p.description?.toLowerCase().includes(qq));
+      out = out.filter(({ p }) => p.name.toLowerCase().includes(qq) || p.description?.toLowerCase().includes(qq));
     }
-    if (status !== 'all') out = out.filter((p) => p.status === status);
+    if (status !== 'all') out = out.filter((x) => x.status === status);
     return out;
-  }, [projects, q, status]);
+  }, [withStatus, q, status]);
 
   const confirmCount: Record<string, number> = {
     all: projects.length,
-    PLANNING: projects.filter((p) => p.status === 'PLANNING').length,
-    IN_PROGRESS: projects.filter((p) => p.status === 'IN_PROGRESS').length,
-    COMPLETED: projects.filter((p) => p.status === 'COMPLETED').length,
+    IN_PROGRESS: withStatus.filter((x) => x.status === 'IN_PROGRESS').length,
+    COMPLETED: withStatus.filter((x) => x.status === 'COMPLETED').length,
+    ON_HOLD: withStatus.filter((x) => x.status === 'ON_HOLD').length,
+    ARCHIVED: withStatus.filter((x) => x.status === 'ARCHIVED').length,
   };
 
   function relatedCount(id: string) {
@@ -42,8 +49,9 @@ export default function ProjectsPage() {
       id: modal.initial?.id ?? `p${Date.now()}`,
       name: values.name,
       description: values.description || undefined,
-      status: values.status as Project['status'],
       progress: Number(values.progress),
+      onHold: values.onHold || undefined,
+      archived: values.archived || undefined,
       deadline: values.deadline || undefined,
       technologies: values.technologies ? values.technologies.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
       repoUrl: values.repoUrl || undefined,
@@ -79,9 +87,10 @@ export default function ProjectsPage() {
           {(
             [
               ['all', 'All'],
-              ['PLANNING', 'Planning'],
               ['IN_PROGRESS', 'In Progress'],
               ['COMPLETED', 'Completed'],
+              ['ON_HOLD', 'On Hold'],
+              ['ARCHIVED', 'Archived'],
             ] as const
           ).map(([v, l]) => (
             <button
@@ -106,14 +115,14 @@ export default function ProjectsPage() {
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((p) => (
+          {filtered.map(({ p, status: st, progress: pr }) => (
             <div key={p.id} className="group flex flex-col rounded-xl border border-slate-800 bg-slate-900/60 p-4">
               <div className="flex items-start justify-between gap-2">
                 <h3 className="text-sm font-semibold text-white">
                   <Link href={`/projects/${p.id}`} className="hover:text-blue-400">{p.name}</Link>
                 </h3>
-                <span className={cn('shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-medium', PROJECT_STATUS_BADGE[p.status])}>
-                  {PROJECT_STATUS_LABELS[p.status as keyof typeof PROJECT_STATUS_LABELS]}
+                <span className={cn('shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-medium', PROJECT_STATUS_BADGE[st])}>
+                  {PROJECT_STATUS_LABELS[st as keyof typeof PROJECT_STATUS_LABELS]}
                 </span>
               </div>
 
@@ -122,10 +131,10 @@ export default function ProjectsPage() {
               <div className="mt-3">
                 <div className="mb-1 flex justify-between text-[11px]">
                   <span className="text-slate-400">Progress</span>
-                  <span className="font-mono text-blue-400">{p.progress}%</span>
+                  <span className="font-mono text-blue-400">{pr}%</span>
                 </div>
                 <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
-                  <div className="h-full rounded-full bg-blue-500 transition-all" style={{ width: `${p.progress}%` }} />
+                  <div className="h-full rounded-full bg-blue-500 transition-all" style={{ width: `${pr}%` }} />
                 </div>
                 <div className="mt-1.5 flex flex-wrap gap-1.5">
                   {p.technologies?.map((t) => (
