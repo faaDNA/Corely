@@ -21,7 +21,13 @@ pnpm install
 pnpm dev          # turbo run dev
 ```
 
-Buka http://localhost:3000 (redirect ke /dashboard).
+Buka http://localhost:3000. Alur: Landing `/` → `/login` (dummy, email/password apa saja valid) → `/dashboard`.
+
+## Halaman
+
+`/` landing · `/login` `/register` dummy auth · `/dashboard` · `/tasks` (list+kanban) · `/projects` + `/projects/[id]` · `/notes` · `/bookmarks` · `/habits` · `/calendar` (month/week/day) · `/analytics` · `/settings`
+
+Semua data masih **dummy** (`lib/mock-data.ts`), tersimpan di local state. Backend/auth asli belum ada.
 
 ## Tech Stack
 
