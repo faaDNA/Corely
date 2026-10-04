@@ -8,6 +8,7 @@ import type { TaskFormValues } from '@/components/tasks/task-schema';
 import { TaskFormModal } from '@/components/tasks/task-form-modal';
 import { TaskKanbanView, TaskListView } from '@/components/tasks/task-views';
 import { mockTasks, mockProjects } from '@/lib/mock-data';
+import { toast } from '@/components/toast';
 
 type ViewMode = 'list' | 'kanban';
 
@@ -75,8 +76,10 @@ export default function TasksPage() {
 
     if (modal.initial) {
       setTasks((prev) => prev.map((t) => (t.id === modal.initial!.id ? payload : t)));
+      toast('Tugas diperbarui.');
     } else {
       setTasks((prev) => [...prev, payload]);
+      toast('Tugas ditambahkan.');
     }
     setModal({ open: false });
   }
@@ -93,6 +96,7 @@ export default function TasksPage() {
     if (pendingDelete) {
       setTasks((prev) => prev.filter((t) => t.id !== pendingDelete));
       setPendingDelete(null);
+      toast('Tugas dihapus.');
     }
   }
 

@@ -23,6 +23,8 @@ import {
 } from 'lucide-react';
 import { cn } from '@repo/ui';
 import { QuickAddModal } from './quick-add-modal';
+import { GlobalSearch } from './global-search';
+import { ToastHost } from './toast';
 import { logout } from '@/app/(auth)/actions';
 
 export const NAV_ITEMS = [
@@ -79,6 +81,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       <button
         className="mx-3 mb-3 flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-400 transition hover:border-slate-700 hover:text-slate-200"
         type="button"
+        onClick={() => window.dispatchEvent(new Event('pd-open-search'))}
       >
         <Search className="h-4 w-4" />
         <span>Search...</span>
@@ -193,6 +196,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6">{children}</main>
       </div>
+
+      <GlobalSearch />
+      <ToastHost />
     </div>
   );
 }
