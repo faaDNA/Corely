@@ -49,7 +49,6 @@ export default function ProjectsPage() {
       id: modal.initial?.id ?? `p${Date.now()}`,
       name: values.name,
       description: values.description || undefined,
-      progress: Number(values.progress),
       onHold: values.onHold || undefined,
       archived: values.archived || undefined,
       deadline: values.deadline || undefined,

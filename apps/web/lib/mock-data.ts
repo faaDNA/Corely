@@ -18,11 +18,11 @@ export const mockTasks: Task[] = [
 ];
 
 export const mockProjects: Project[] = [
-  { id: 'p1', name: 'Corely', description: 'Aplikasi produktivitas pribadi', progress: 50, deadline: '2026-11-01', technologies: ['Next.js', 'TypeScript'], repoUrl: 'https://github.com/user/corely' },
-  { id: 'p2', name: 'Renovasi Rumah', description: 'Rencana & anggaran renovasi', progress: 0, deadline: '2026-12-15' },
-  { id: 'p3', name: 'Belajar Bahasa Jepang', description: 'Target JLPT N5', progress: 0, deadline: '2026-12-01', technologies: ['Anki'] },
-  { id: 'p4', name: 'Kumpulan Resep Masak', progress: 10, onHold: true },
-  { id: 'p5', name: 'Setup Blog Pribadi', progress: 100, deployUrl: 'https://blog.example.com' },
+  { id: 'p1', name: 'Corely', description: 'Aplikasi produktivitas pribadi', deadline: '2026-11-01', technologies: ['Next.js', 'TypeScript'], repoUrl: 'https://github.com/user/corely' },
+  { id: 'p2', name: 'Renovasi Rumah', description: 'Rencana & anggaran renovasi', deadline: '2026-12-15' },
+  { id: 'p3', name: 'Belajar Bahasa Jepang', description: 'Target JLPT N5', deadline: '2026-12-01', technologies: ['Anki'] },
+  { id: 'p4', name: 'Kumpulan Resep Masak', onHold: true },
+  { id: 'p5', name: 'Setup Blog Pribadi', deployUrl: 'https://blog.example.com' },
 ];
 
 export const mockNotes: Note[] = [

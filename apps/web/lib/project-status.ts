@@ -1,9 +1,9 @@
 import type { Project, ProjectStatus, Task } from '@repo/types';
 
-/** Progress nyata: rasio tugas selesai. Fallback ke progress manual bila belum ada tugas. */
+/** Progress nyata: selesai/total dari tugas terkait. 0 tugas = 0%. */
 export function projectProgress(p: Project, tasks: Task[]): number {
   const related = tasks.filter((t) => t.projectId === p.id);
-  if (related.length === 0) return p.progress;
+  if (related.length === 0) return 0;
   return Math.round((related.filter((t) => t.status === 'COMPLETED').length / related.length) * 100);
 }
 

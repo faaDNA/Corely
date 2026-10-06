@@ -3,7 +3,6 @@ import { z } from 'zod';
 export const projectSchema = z.object({
   name: z.string().min(1, 'Nama wajib diisi').max(120, 'Maksimal 120 karakter'),
   description: z.string().max(500, 'Maksimal 500 karakter').optional(),
-  progress: z.coerce.number().min(0).max(100),
   onHold: z.boolean().optional(),
   archived: z.boolean().optional(),
   deadline: z.string().optional(),

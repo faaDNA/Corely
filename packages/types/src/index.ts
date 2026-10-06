@@ -27,8 +27,6 @@ export interface Project {
   /** override manual — status lain diturunkan dari progress */
   onHold?: boolean;
   archived?: boolean;
-  /** fallback bila belum ada tugas terkait */
-  progress: number;
   deadline?: string;
   technologies?: string[];
   repoUrl?: string;

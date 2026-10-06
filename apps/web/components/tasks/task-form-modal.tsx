@@ -12,6 +12,7 @@ import { taskSchema, type TaskFormValues, STATUS_LABELS, PRIORITY_LABELS } from 
 interface Props {
   open: boolean;
   initial?: Task | null;
+  defaultProjectId?: string;
   onSubmit: (values: TaskFormValues) => void;
   onClose: () => void;
 }
@@ -19,7 +20,7 @@ interface Props {
 const inputCls =
   'w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none';
 
-export function TaskFormModal({ open, initial, onSubmit, onClose }: Props) {
+export function TaskFormModal({ open, initial, defaultProjectId, onSubmit, onClose }: Props) {
   const {
     register,
     handleSubmit,
@@ -36,7 +37,7 @@ export function TaskFormModal({ open, initial, onSubmit, onClose }: Props) {
       dateMode: initial?.dateMode ?? 'deadline',
       dueDate: initial?.dueDate ?? '',
       dueTime: initial?.dueTime ?? '',
-      projectId: initial?.projectId ?? '',
+      projectId: initial?.projectId ?? defaultProjectId ?? '',
       tags: initial?.tags?.join(', ') ?? '',
     },
   });
@@ -53,11 +54,11 @@ export function TaskFormModal({ open, initial, onSubmit, onClose }: Props) {
         dateMode: initial?.dateMode ?? 'deadline',
         dueDate: initial?.dueDate ?? '',
         dueTime: initial?.dueTime ?? '',
-        projectId: initial?.projectId ?? '',
+        projectId: initial?.projectId ?? defaultProjectId ?? '',
         tags: initial?.tags?.join(', ') ?? '',
       });
     }
-  }, [open, initial, reset]);
+  }, [open, initial, defaultProjectId, reset]);
 
   if (!open) return null;
 

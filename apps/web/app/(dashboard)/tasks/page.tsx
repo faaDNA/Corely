@@ -15,7 +15,8 @@ export default function TasksPage() {
   const [q, setQ] = useState('');
   const [status, setStatus] = useState('all');
   const [priority, setPriority] = useState('all');
-  const [project, setProject] = useState('all');
+  /** default: hanya tugas tanpa proyek. 'all' = semua termasuk tugas proyek. */
+  const [project, setProject] = useState('none');
   const [sort, setSort] = useState<'due' | 'new'>('due');
   const [modal, setModal] = useState<{ open: boolean; initial?: Task | null }>({ open: false });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
@@ -29,7 +30,8 @@ export default function TasksPage() {
     }
     if (status !== 'all') out = out.filter((t) => t.status === status);
     if (priority !== 'all') out = out.filter((t) => t.priority === priority);
-    if (project !== 'all') out = out.filter((t) => t.projectId === project);
+    if (project === 'none') out = out.filter((t) => !t.projectId);
+    else if (project !== 'all') out = out.filter((t) => t.projectId === project);
 
     if (sort === 'due') out.sort((a, b) => (a.dueDate ?? '') < (b.dueDate ?? '') ? -1 : 1);
     else out.sort((a, b) => (a.id < b.id ? 1 : -1));
@@ -37,10 +39,16 @@ export default function TasksPage() {
     return out;
   }, [tasks, q, status, priority, project, sort]);
 
+  const scoped = useMemo(() => {
+    if (project === 'none') return tasks.filter((t) => !t.projectId);
+    if (project === 'all') return tasks;
+    return tasks.filter((t) => t.projectId === project);
+  }, [tasks, project]);
+
   const confirmCount: Record<string, number> = {
-    all: tasks.length,
-    TODO: tasks.filter((t) => t.status === 'TODO').length,
-    COMPLETED: tasks.filter((t) => t.status === 'COMPLETED').length,
+    all: scoped.length,
+    TODO: scoped.filter((t) => t.status === 'TODO').length,
+    COMPLETED: scoped.filter((t) => t.status === 'COMPLETED').length,
   };
 
   function handleToggle(id: string) {
@@ -159,7 +167,8 @@ export default function TasksPage() {
             onChange={(e) => setProject(e.target.value)}
             className="rounded-lg border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-xs text-slate-200 focus:border-blue-500 focus:outline-none"
           >
-            <option value="all">All Projects</option>
+            <option value="none">Tanpa proyek</option>
+            <option value="all">Semua tasks</option>
             {mockProjects.map((p) => (
               <option key={p.id} value={p.id}>{p.name}</option>
             ))}

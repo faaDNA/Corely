@@ -1,24 +1,22 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Github, ExternalLink, Calendar, Cpu, CheckCircle2, Circle } from 'lucide-react';
+import { ArrowLeft, Github, ExternalLink, Calendar, Cpu } from 'lucide-react';
 import { cn } from '@repo/ui';
+import type { Task } from '@repo/types';
 import { mockProjects, mockTasks } from '@/lib/mock-data';
 import { PROJECT_STATUS_BADGE, PROJECT_STATUS_LABELS } from '@/components/projects/project-schema';
 import { deriveProjectStatus, projectProgress } from '@/lib/project-status';
-
-const PRIORITY_BADGE: Record<string, string> = {
-  HIGH: 'bg-red-500/10 text-red-400 border-red-500/20',
-  MEDIUM: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-  LOW: 'bg-slate-500/10 text-slate-400 border-slate-500/20',
-};
+import { ProjectTasksPanel } from '@/components/projects/project-tasks-panel';
 
 export default function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const [tasks, setTasks] = useState<Task[]>(mockTasks);
+
   const project = useMemo(() => mockProjects.find((p) => p.id === id), [id]);
-  const related = useMemo(() => mockTasks.filter((t) => t.projectId === id), [id]);
+  const related = useMemo(() => tasks.filter((t) => t.projectId === id), [tasks, id]);
 
   if (!project) {
     return (
@@ -33,9 +31,8 @@ export default function ProjectDetailPage() {
     );
   }
 
-  const done = related.filter((t) => t.status === 'COMPLETED').length;
-  const pct = projectProgress(project, mockTasks);
-  const status = deriveProjectStatus(project, mockTasks);
+  const pct = projectProgress(project, tasks);
+  const status = deriveProjectStatus(project, tasks);
 
   return (
     <div className="space-y-4">
@@ -84,23 +81,7 @@ export default function ProjectDetailPage() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-        <h2 className="text-sm font-semibold text-white">Tugas Terkait ({done}/{related.length} selesai · {pct}%)</h2>
-
-        {related.length === 0 ? (
-          <p className="mt-3 text-sm text-slate-500">Belum ada tugas untuk proyek ini.</p>
-        ) : (
-          <div className="mt-3 space-y-2">
-            {related.map((t) => (
-              <div key={t.id} className="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-950 p-3 text-xs">
-                {t.status === 'COMPLETED' ? <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" /> : <Circle className="h-4 w-4 shrink-0 text-slate-600" />}
-                <span className={cn('flex-1 text-slate-200', t.status === 'COMPLETED' && 'text-slate-400 line-through')}>{t.title}</span>
-                <span className={cn('rounded border px-1.5 py-0.5 text-[10px]', PRIORITY_BADGE[t.priority])}>{t.priority}</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      <ProjectTasksPanel projectId={project.id} projectName={project.name} tasks={tasks} setTasks={setTasks} />
     </div>
   );
 }

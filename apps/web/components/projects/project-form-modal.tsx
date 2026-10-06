@@ -24,7 +24,6 @@ function defaults(p?: Project | null): ProjectFormValues {
     description: p?.description ?? '',
     onHold: p?.onHold ?? false,
     archived: p?.archived ?? false,
-    progress: p?.progress ?? 0,
     deadline: p?.deadline ?? '',
     technologies: p?.technologies?.join(', ') ?? '',
     repoUrl: p?.repoUrl ?? '',
@@ -77,28 +76,21 @@ export function ProjectFormModal({ open, initial, onSubmit, onClose }: Props) {
             {errors.description && <p className="text-xs text-red-400">{errors.description.message}</p>}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label htmlFor="p-progress" className="text-xs font-medium text-slate-300">Progress manual (%) — bila belum ada tugas</label>
-              <input id="p-progress" type="number" min={0} max={100} {...register('progress')} className={inputCls} />
-              {errors.progress && <p className="text-xs text-red-400">{errors.progress.message}</p>}
-            </div>
-            <div className="space-y-1.5">
-              <p className="text-xs font-medium text-slate-300">Override manual</p>
-              <div className="flex flex-col gap-2 pt-1 text-sm text-slate-300">
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" {...register('onHold')} className="h-4 w-4 rounded border-slate-600 bg-slate-950" />
-                  On Hold (jeda)
-                </label>
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" {...register('archived')} className="h-4 w-4 rounded border-slate-600 bg-slate-950" />
-                  Archived (arsip)
-                </label>
-              </div>
+          <div className="space-y-1.5">
+            <p className="text-xs font-medium text-slate-300">Status manual</p>
+            <div className="flex gap-4 pt-1 text-sm text-slate-300">
+              <label className="flex items-center gap-2">
+                <input type="checkbox" {...register('onHold')} className="h-4 w-4 rounded border-slate-600 bg-slate-950" />
+                On Hold (jeda)
+              </label>
+              <label className="flex items-center gap-2">
+                <input type="checkbox" {...register('archived')} className="h-4 w-4 rounded border-slate-600 bg-slate-950" />
+                Archived (arsip)
+              </label>
             </div>
           </div>
           <p className="text-[11px] leading-relaxed text-slate-500">
-            Status lain otomatis: In Progress → Completed saat semua tugas selesai.
+            Progres &amp; status utama (In Progress / Completed) dihitung otomatis dari rasio tugas selesai.
           </p>
 
           <div className="space-y-1.5">
