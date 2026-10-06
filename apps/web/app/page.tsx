@@ -29,9 +29,9 @@ const BENEFITS = [
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       {/* Header */}
-      <header className="glass fixed inset-x-0 top-0 z-50 border-b border-slate-800">
+      <header className="glass fixed inset-x-0 top-0 z-50 border-b border-slate-200 dark:border-slate-800">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 font-bold text-white shadow-lg shadow-blue-500/20">
@@ -39,14 +39,14 @@ export default function LandingPage() {
             </div>
             <span className="text-lg font-bold tracking-tight">Corely</span>
           </div>
-          <nav className="hidden items-center gap-8 text-sm font-medium text-slate-400 md:flex">
-            <a href="#problem" className="transition hover:text-white">Masalah</a>
-            <a href="#features" className="transition hover:text-white">Fitur</a>
-            <a href="#preview" className="transition hover:text-white">Pratinjau</a>
-            <a href="#benefits" className="transition hover:text-white">Keunggulan</a>
+          <nav className="hidden items-center gap-8 text-sm font-medium text-slate-500 dark:text-slate-400 md:flex">
+            <a href="#problem" className="transition hover:text-slate-900 dark:hover:text-white">Masalah</a>
+            <a href="#features" className="transition hover:text-slate-900 dark:hover:text-white">Fitur</a>
+            <a href="#preview" className="transition hover:text-slate-900 dark:hover:text-white">Pratinjau</a>
+            <a href="#benefits" className="transition hover:text-slate-900 dark:hover:text-white">Keunggulan</a>
           </nav>
           <div className="flex items-center gap-3">
-            <Link href="/login" className="rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-slate-700">
+            <Link href="/login" className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700">
               Masuk
             </Link>
             <Link href="/register" className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-blue-600/30 transition hover:bg-blue-500">
@@ -60,58 +60,58 @@ export default function LandingPage() {
       <section className="relative overflow-hidden pb-20 pt-32 md:pb-28 md:pt-40">
         <div className="pointer-events-none absolute -top-40 left-1/2 h-[400px] w-[800px] -translate-x-1/2 rounded-full bg-blue-600/20 blur-[120px]" />
         <div className="relative z-10 mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-blue-400">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-blue-400" />
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-blue-500 dark:bg-blue-400" />
             Aplikasi Produktivitas Pribadi
           </div>
           <h1 className="mx-auto max-w-4xl text-4xl font-extrabold leading-tight tracking-tight sm:text-6xl">
             Satu Dashboard untuk{' '}
-            <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:via-indigo-300 dark:to-purple-400">
               Seluruh Kehidupan Digital Anda
             </span>
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-400 sm:text-xl">
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-600 dark:text-slate-400 sm:text-xl">
             Kelola tugas, proyek, catatan, bookmark, kebiasaan harian, dan jadwal — semua dalam satu aplikasi pribadi yang rapi dan terpusat.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link href="/login" className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-8 py-3.5 font-semibold text-white shadow-xl shadow-blue-600/25 transition hover:bg-blue-500 sm:w-auto">
               🚀 Mulai Sekarang
             </Link>
-            <a href="#features" className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-800 bg-slate-900 px-8 py-3.5 font-semibold text-slate-300 transition hover:border-slate-700 sm:w-auto">
+            <a href="#features" className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-8 py-3.5 font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700 sm:w-auto">
               Jelajahi Fitur
             </a>
           </div>
-          <div className="mx-auto mt-16 grid max-w-4xl grid-cols-2 gap-4 border-t border-slate-800/80 pt-8 text-left md:grid-cols-4">
-            <div><div className="text-2xl font-bold text-white">12 Modul</div><div className="mt-0.5 text-xs text-slate-400">Fitur produktivitas lengkap</div></div>
-            <div><div className="text-2xl font-bold text-white">100% Pribadi</div><div className="mt-0.5 text-xs text-slate-400">Data Anda tetap milik Anda</div></div>
-            <div><div className="text-2xl font-bold text-white">Dark Mode</div><div className="mt-0.5 text-xs text-slate-400">Tema terang & gelap</div></div>
-            <div><div className="text-2xl font-bold text-white">Semua Layar</div><div className="mt-0.5 text-xs text-slate-400">Desktop, tablet, mobile</div></div>
+          <div className="mx-auto mt-16 grid max-w-4xl grid-cols-2 gap-4 border-t border-slate-200 dark:border-slate-800/80 pt-8 text-left md:grid-cols-4">
+            <div><div className="text-2xl font-bold text-slate-900 dark:text-white">12 Modul</div><div className="mt-0.5 text-xs text-slate-400">Fitur produktivitas lengkap</div></div>
+            <div><div className="text-2xl font-bold text-slate-900 dark:text-white">100% Pribadi</div><div className="mt-0.5 text-xs text-slate-400">Data Anda tetap milik Anda</div></div>
+            <div><div className="text-2xl font-bold text-slate-900 dark:text-white">Dark Mode</div><div className="mt-0.5 text-xs text-slate-400">Tema terang & gelap</div></div>
+            <div><div className="text-2xl font-bold text-slate-900 dark:text-white">Semua Layar</div><div className="mt-0.5 text-xs text-slate-400">Desktop, tablet, mobile</div></div>
           </div>
         </div>
       </section>
 
       {/* Problem / Solution */}
-      <section id="problem" className="border-y border-slate-800 bg-slate-900/50 py-20">
+      <section id="problem" className="border-y border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900/50 py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-16 max-w-3xl text-center">
-            <h2 className="text-3xl font-bold text-white">Mengapa Corely?</h2>
-            <p className="mt-4 text-slate-400">Aktivitas harian kita sering tersebar di banyak aplikasi berbeda, sehingga sulit melihat prioritas dalam satu pandangan.</p>
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Mengapa Corely?</h2>
+            <p className="mt-4 text-slate-600 dark:text-slate-400">Aktivitas harian kita sering tersebar di banyak aplikasi berbeda, sehingga sulit melihat prioritas dalam satu pandangan.</p>
           </div>
           <div className="grid gap-8 md:grid-cols-2">
-            <div className="rounded-2xl border border-red-900/30 bg-red-950/20 p-8">
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 text-xl text-red-400">⚠️</div>
-              <h3 className="mb-4 text-xl font-semibold text-white">Masalah: Semuanya Terpencar</h3>
-              <ul className="space-y-3 text-sm text-slate-300">
+            <div className="rounded-2xl border border-red-200 bg-red-50 p-8 dark:border-red-900/30 dark:bg-red-950/20">
+              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 text-xl text-red-600 dark:text-red-400">⚠️</div>
+              <h3 className="mb-4 text-xl font-semibold text-slate-900 dark:text-white">Masalah: Semuanya Terpencar</h3>
+              <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
                 <li>✕ Tugas ada di satu aplikasi, catatan di aplikasi lain.</li>
                 <li>✕ Bookmark tercecer di browser, jadwal di kalender terpisah.</li>
                 <li>✕ Progres proyek sulit dipantau tanpa gambaran menyeluruh.</li>
                 <li>✕ Waktu habis berpindah-pindah aplikasi hanya untuk cek prioritas.</li>
               </ul>
             </div>
-            <div className="rounded-2xl border border-blue-900/30 bg-blue-950/20 p-8">
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 text-xl text-blue-400">✓</div>
-              <h3 className="mb-4 text-xl font-semibold text-white">Solusi: Semua di Satu Tempat</h3>
-              <ul className="space-y-3 text-sm text-slate-300">
+            <div className="rounded-2xl border border-blue-200 bg-blue-50 p-8 dark:border-blue-900/30 dark:bg-blue-950/20">
+              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 text-xl text-blue-600 dark:text-blue-400">✓</div>
+              <h3 className="mb-4 text-xl font-semibold text-slate-900 dark:text-white">Solusi: Semua di Satu Tempat</h3>
+              <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
                 <li>✓ Satu dashboard untuk melihat seluruh aktivitas harian Anda.</li>
                 <li>✓ Tugas, proyek, catatan, dan jadwal saling terhubung.</li>
                 <li>✓ Statistik produktivitas membantu Anda tetap konsisten.</li>
@@ -126,15 +126,15 @@ export default function LandingPage() {
       <section id="features" className="py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-16 max-w-3xl text-center">
-            <h2 className="text-3xl font-bold text-white">Fitur-Fitur Corely</h2>
-            <p className="mt-4 text-slate-400">Aplikasi ini menyediakan modul lengkap untuk mengelola seluruh kebutuhan produktivitas pribadi Anda.</p>
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Fitur-Fitur Corely</h2>
+            <p className="mt-4 text-slate-600 dark:text-slate-400">Aplikasi ini menyediakan modul lengkap untuk mengelola seluruh kebutuhan produktivitas pribadi Anda.</p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f) => (
-              <div key={f.title} className="rounded-2xl border border-slate-800 bg-slate-900 p-6 transition hover:border-slate-700">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-slate-800 text-lg">{f.icon}</div>
-                <h3 className="mb-2 text-lg font-semibold text-white">{f.title}</h3>
-                <p className="text-sm leading-relaxed text-slate-400">{f.desc}</p>
+              <div key={f.title} className="rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 transition hover:border-slate-700">
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-lg dark:bg-slate-800">{f.icon}</div>
+                <h3 className="mb-2 text-lg font-semibold text-slate-900 dark:text-white">{f.title}</h3>
+                <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -142,14 +142,14 @@ export default function LandingPage() {
       </section>
 
       {/* Preview */}
-      <section id="preview" className="border-t border-slate-800 bg-slate-900/40 py-20">
+      <section id="preview" className="border-t border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900/40 py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-12 max-w-3xl text-center">
-            <h2 className="text-3xl font-bold text-white">Tampilan Dashboard</h2>
-            <p className="mt-4 text-slate-400">Antarmuka modern dan bersih yang menampilkan ringkasan harian Anda dalam satu layar.</p>
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Tampilan Dashboard</h2>
+            <p className="mt-4 text-slate-600 dark:text-slate-400">Antarmuka modern dan bersih yang menampilkan ringkasan harian Anda dalam satu layar.</p>
           </div>
-          <div className="mx-auto max-w-5xl overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 bg-slate-900 px-4 py-3">
+          <div className="mx-auto max-w-5xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-950">
+            <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-900">
               <div className="flex items-center gap-2">
                 <span className="inline-block h-3 w-3 rounded-full bg-red-500/80" />
                 <span className="inline-block h-3 w-3 rounded-full bg-yellow-500/80" />
@@ -161,27 +161,27 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="grid min-h-[320px] md:grid-cols-5">
-              <div className="space-y-1 border-r border-slate-800 bg-slate-900/60 p-4 text-sm">
+              <div className="space-y-1 border-r border-slate-200 bg-slate-50 p-4 text-sm dark:border-slate-800 dark:bg-slate-900/60">
                 <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Menu Utama</p>
                 {['Dashboard', 'Tugas', 'Proyek', 'Catatan', 'Kebiasaan', 'Kalender'].map((m, i) => (
-                  <div key={m} className={`rounded-lg px-3 py-2 ${i === 0 ? 'bg-blue-600/10 font-medium text-blue-400' : 'text-slate-400'}`}>{m}</div>
+                  <div key={m} className={`rounded-lg px-3 py-2 ${i === 0 ? 'bg-blue-600/10 font-medium text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400'}`}>{m}</div>
                 ))}
               </div>
               <div className="space-y-4 p-6 md:col-span-4">
                 <div>
-                  <h3 className="text-lg font-bold text-white">Selamat Datang kembali! 👋</h3>
-                  <p className="mt-1 text-xs text-slate-400">Sabtu, 3 Oktober 2026 • 4 tugas aktif hari ini</p>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">Selamat Datang kembali! 👋</h3>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Sabtu, 3 Oktober 2026 • 4 tugas aktif hari ini</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                   {[['Tugas Tertunda', '8'], ['Proyek Aktif', '3'], ['Streak', '12 Hari'], ['Catatan', '24']].map(([l, v]) => (
-                    <div key={l} className="rounded-xl border border-slate-800 bg-slate-900 p-4">
+                    <div key={l} className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-4">
                       <div className="text-xs text-slate-400">{l}</div>
-                      <div className="mt-1 text-2xl font-bold text-white">{v}</div>
+                      <div className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{v}</div>
                     </div>
                   ))}
                 </div>
-                <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-                  <p className="mb-2 text-sm font-semibold text-white">Proyek Aktif</p>
+                <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-4">
+                  <p className="mb-2 text-sm font-semibold text-slate-900 dark:text-white">Proyek Aktif</p>
                   <div className="space-y-2">
                     <div className="h-2 w-[65%] rounded-full bg-blue-500" />
                     <div className="h-2 w-[40%] rounded-full bg-emerald-500" />
@@ -197,15 +197,15 @@ export default function LandingPage() {
       <section id="benefits" className="py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-16 max-w-3xl text-center">
-            <h2 className="text-3xl font-bold text-white">Dirancang untuk Penggunaan Sehari-hari</h2>
-            <p className="mt-4 text-slate-400">Antarmuka yang bersih dan konsisten membuat aplikasi ini nyaman dipakai kapan saja.</p>
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Dirancang untuk Penggunaan Sehari-hari</h2>
+            <p className="mt-4 text-slate-600 dark:text-slate-400">Antarmuka yang bersih dan konsisten membuat aplikasi ini nyaman dipakai kapan saja.</p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {BENEFITS.map((b) => (
-              <div key={b.title} className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-slate-800 text-lg">{b.icon}</div>
-                <h3 className="mb-2 font-semibold text-white">{b.title}</h3>
-                <p className="text-sm text-slate-400">{b.desc}</p>
+              <div key={b.title} className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-lg dark:bg-slate-800">{b.icon}</div>
+                <h3 className="mb-2 font-semibold text-slate-900 dark:text-white">{b.title}</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">{b.desc}</p>
               </div>
             ))}
           </div>
@@ -215,16 +215,16 @@ export default function LandingPage() {
       {/* CTA */}
       <section className="relative overflow-hidden py-20">
         <div className="mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
-          <div className="rounded-3xl border border-blue-500/30 bg-gradient-to-b from-blue-900/40 to-slate-900 p-10 sm:p-16">
-            <h2 className="text-3xl font-extrabold text-white sm:text-4xl">Mulai Kelola Produktivitas Anda Hari Ini</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-sm text-slate-300 sm:text-base">
+          <div className="rounded-3xl border border-blue-200 bg-gradient-to-b from-blue-50 to-white p-10 dark:border-blue-500/30 dark:from-blue-900/40 dark:to-slate-900 sm:p-16">
+            <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white sm:text-4xl">Mulai Kelola Produktivitas Anda Hari Ini</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-sm text-slate-600 dark:text-slate-300 sm:text-base">
               Satu tempat untuk tugas, proyek, catatan, dan jadwal Anda. Rapi, terpusat, dan siap digunakan setiap hari.
             </p>
             <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
               <Link href="/login" className="rounded-xl bg-blue-600 px-8 py-3.5 font-semibold text-white shadow-xl shadow-blue-600/30 transition hover:bg-blue-500">
                 Masuk ke Dashboard
               </Link>
-              <Link href="/register" className="rounded-xl border border-slate-700 bg-slate-900 px-8 py-3.5 font-semibold text-slate-300 transition hover:border-slate-600">
+              <Link href="/register" className="rounded-xl border border-slate-200 bg-white px-8 py-3.5 font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-600">
                 Buat Akun
               </Link>
             </div>
@@ -233,13 +233,13 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800 py-8 text-center text-xs text-slate-500">
+      <footer className="border-t border-slate-200 py-8 text-center text-xs text-slate-500 dark:border-slate-800">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 sm:flex-row">
           <div>© 2026 Corely. Seluruh hak cipta dilindungi.</div>
           <div className="flex items-center gap-6">
-            <a href="#features" className="transition hover:text-slate-300">Fitur</a>
-            <a href="#preview" className="transition hover:text-slate-300">Tampilan</a>
-            <a href="#benefits" className="transition hover:text-slate-300">Keunggulan</a>
+            <a href="#features" className="transition hover:text-slate-900 dark:hover:text-slate-300">Fitur</a>
+            <a href="#preview" className="transition hover:text-slate-900 dark:hover:text-slate-300">Tampilan</a>
+            <a href="#benefits" className="transition hover:text-slate-900 dark:hover:text-slate-300">Keunggulan</a>
           </div>
         </div>
       </footer>

@@ -20,8 +20,8 @@ export const PROJECT_STATUS_LABELS = {
 } as const;
 
 export const PROJECT_STATUS_BADGE: Record<string, string> = {
-  IN_PROGRESS: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-  COMPLETED: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-  ON_HOLD: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-  ARCHIVED: 'bg-slate-700/30 text-slate-500 border-slate-700/40',
+  IN_PROGRESS: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20',
+  COMPLETED: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
+  ON_HOLD: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
+  ARCHIVED: 'bg-slate-200 text-slate-600 dark:bg-slate-700/30 dark:text-slate-500 border-slate-300 dark:border-slate-700/40',
 };

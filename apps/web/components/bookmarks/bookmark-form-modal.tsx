@@ -16,7 +16,7 @@ interface Props {
 }
 
 const inputCls =
-  'w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none';
+  'w-full rounded-lg border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500 focus:outline-none';
 
 export function BookmarkFormModal({ open, initial, onSubmit, onClose }: Props) {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<BookmarkFormValues>({
@@ -47,36 +47,36 @@ export function BookmarkFormModal({ open, initial, onSubmit, onClose }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <form onSubmit={handleSubmit(onSubmit)} className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
-        <button type="button" onClick={onClose} className="absolute right-3 top-3 rounded-lg p-2 text-slate-500 hover:bg-slate-800 hover:text-slate-200" aria-label="Close">
+      <form onSubmit={handleSubmit(onSubmit)} className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 shadow-2xl">
+        <button type="button" onClick={onClose} className="absolute right-3 top-3 rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200" aria-label="Close">
           <X className="h-4 w-4" />
         </button>
-        <h3 className="text-lg font-semibold text-white">{initial ? 'Edit Bookmark' : 'Bookmark Baru'}</h3>
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{initial ? 'Edit Bookmark' : 'Bookmark Baru'}</h3>
         <div className="mt-4 space-y-4">
           <div className="space-y-1.5">
-            <label htmlFor="b-title" className="text-xs font-medium text-slate-300">Judul *</label>
+            <label htmlFor="b-title" className="text-xs font-medium text-slate-600 dark:text-slate-300">Judul *</label>
             <input id="b-title" {...register('title')} className={inputCls} placeholder="Nama situs / sumber" />
             {errors.title && <p className="text-xs text-red-400">{errors.title.message}</p>}
           </div>
           <div className="space-y-1.5">
-            <label htmlFor="b-url" className="text-xs font-medium text-slate-300">URL *</label>
+            <label htmlFor="b-url" className="text-xs font-medium text-slate-600 dark:text-slate-300">URL *</label>
             <input id="b-url" {...register('url')} className={inputCls} placeholder="https://..." />
             {errors.url && <p className="text-xs text-red-400">{errors.url.message}</p>}
           </div>
           <div className="space-y-1.5">
-            <label htmlFor="b-desc" className="text-xs font-medium text-slate-300">Deskripsi</label>
+            <label htmlFor="b-desc" className="text-xs font-medium text-slate-600 dark:text-slate-300">Deskripsi</label>
             <textarea id="b-desc" {...register('description')} rows={2} className={inputCls} placeholder="Catatan singkat..." />
             {errors.description && <p className="text-xs text-red-400">{errors.description.message}</p>}
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label htmlFor="b-cat" className="text-xs font-medium text-slate-300">Kategori</label>
+              <label htmlFor="b-cat" className="text-xs font-medium text-slate-600 dark:text-slate-300">Kategori</label>
               <select id="b-cat" {...register('category')} className={inputCls}>
                 {BOOKMARK_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div className="space-y-1.5">
-              <label htmlFor="b-tags" className="text-xs font-medium text-slate-300">Tag (pisahkan koma)</label>
+              <label htmlFor="b-tags" className="text-xs font-medium text-slate-600 dark:text-slate-300">Tag (pisahkan koma)</label>
               <input id="b-tags" {...register('tags')} className={inputCls} placeholder="docs, react" />
             </div>
           </div>

@@ -108,8 +108,8 @@ export default function TasksPage() {
     <div className="space-y-4">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Tugas</h1>
-          <p className="mt-1 text-sm text-slate-400">Kelola tugas harian — klik checkbox untuk menyelesaikan.</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Tugas</h1>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Kelola tugas harian — klik checkbox untuk menyelesaikan.</p>
         </div>
         <Button onClick={() => setModal({ open: true, initial: null })}>
           <Plus className="mr-2 h-4 w-4" />Tugas Baru
@@ -117,7 +117,7 @@ export default function TasksPage() {
       </header>
 
       {/* Toolbar */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-3">
+      <div className="rounded-xl border border-slate-200 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/40">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
           <div className="relative flex-1">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
@@ -125,7 +125,7 @@ export default function TasksPage() {
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Cari tugas (judul / deskripsi)..."
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 py-2 pl-9 pr-3 text-sm text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500"
             />
           </div>
 
@@ -143,7 +143,7 @@ export default function TasksPage() {
                 onClick={() => setStatus(v)}
                 className={cn(
                   'rounded-lg border px-2.5 py-1 text-xs font-medium transition',
-                  status === v ? 'border-blue-600 bg-blue-600/10 text-blue-400' : 'border-slate-700 text-slate-400 hover:border-slate-600'
+                  status === v ? 'border-blue-600 bg-blue-600/10 text-blue-600 dark:text-blue-400' : 'border-slate-300 text-slate-500 hover:border-slate-400 dark:border-slate-700 dark:text-slate-400 dark:hover:border-slate-600'
                 )}
               >
                 {l} ({confirmCount[v]})
@@ -156,7 +156,7 @@ export default function TasksPage() {
           <select
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-xs text-slate-200 focus:border-blue-500 focus:outline-none"
+            className="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
           >
             <option value="all">All Priorities</option>
             <option value="HIGH">High</option>
@@ -167,7 +167,7 @@ export default function TasksPage() {
           <select
             value={project}
             onChange={(e) => setProject(e.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-xs text-slate-200 focus:border-blue-500 focus:outline-none"
+            className="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
           >
             <option value="none">Tanpa proyek</option>
             <option value="all">Semua tasks</option>
@@ -179,7 +179,7 @@ export default function TasksPage() {
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as never)}
-            className="rounded-lg border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-xs text-slate-200 focus:border-blue-500 focus:outline-none"
+            className="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
           >
             <option value="due">Sort: Due date</option>
             <option value="new">Sort: Newest</option>
@@ -199,9 +199,9 @@ export default function TasksPage() {
       {pendingDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60" onClick={() => setPendingDelete(null)} />
-          <div className="relative w-full max-w-sm rounded-xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
-            <h3 className="text-sm font-semibold text-white">Hapus tugas ini?</h3>
-            <p className="mt-2 text-xs text-slate-400">Tindakan ini tidak bisa dibatalkan.</p>
+          <div className="relative w-full max-w-sm rounded-xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Hapus tugas ini?</h3>
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Tindakan ini tidak bisa dibatalkan.</p>
             <div className="mt-4 flex justify-end gap-2">
               <Button variant="ghost" size="sm" onClick={() => setPendingDelete(null)}>Batal</Button>
               <Button variant="danger" size="sm" onClick={confirmDelete}>Hapus</Button>

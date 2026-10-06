@@ -6,9 +6,9 @@ import type { Task } from '@repo/types';
 import { mockProjects } from '@/lib/mock-data';
 
 const PRIORITY_BADGE: Record<string, string> = {
-  HIGH: 'bg-red-500/10 text-red-400 border-red-500/20',
-  MEDIUM: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-  LOW: 'bg-slate-500/10 text-slate-400 border-slate-500/20',
+  HIGH: 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20',
+  MEDIUM: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20',
+  LOW: 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20',
 };
 
 function projectName(id?: string) {
@@ -23,15 +23,15 @@ export function TaskBadges({ task }: { task: Task }) {
         {task.priority}
       </span>
       {task.dueDate && (
-        <span className={cn('rounded px-1.5 py-0.5 text-[10px]', isSchedule ? 'bg-blue-500/10 text-blue-400' : 'bg-slate-800 text-slate-400')}>
+        <span className={cn('rounded px-1.5 py-0.5 text-[10px]', isSchedule ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400' : 'bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400')}>
           {isSchedule ? '🗓' : '📅'} {task.dueDate}{isSchedule && task.dueTime ? ` · ${task.dueTime}` : ''}
         </span>
       )}
       {projectName(task.projectId) && (
-        <span className="rounded bg-blue-500/10 px-1.5 py-0.5 text-[10px] text-blue-400">📁 {projectName(task.projectId)}</span>
+        <span className="rounded bg-blue-500/10 px-1.5 py-0.5 text-[10px] text-blue-600 dark:text-blue-400">📁 {projectName(task.projectId)}</span>
       )}
       {task.tags?.map((tag) => (
-        <span key={tag} className="rounded bg-purple-500/10 px-1.5 py-0.5 text-[10px] text-purple-400">#{tag}</span>
+        <span key={tag} className="rounded bg-purple-500/10 px-1.5 py-0.5 text-[10px] text-purple-600 dark:text-purple-400">#{tag}</span>
       ))}
     </div>
   );
@@ -41,8 +41,8 @@ function ToggleButton({ task, onToggle }: { task: Task; onToggle: () => void }) 
   return (
     <button type="button" onClick={onToggle} aria-label="Toggle complete" className="shrink-0">
       {task.status === 'COMPLETED'
-        ? <CheckCircle2 className="h-5 w-5 text-emerald-400" />
-        : <Circle className="h-5 w-5 text-slate-600 transition hover:text-emerald-400" />}
+        ? <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+        : <Circle className="h-5 w-5 text-slate-400 transition hover:text-emerald-600 dark:text-slate-600 dark:hover:text-emerald-400" />}
     </button>
   );
 }
@@ -59,20 +59,20 @@ function TaskRow({
   onDelete: () => void;
 }) {
   return (
-    <div className="group flex items-start gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+    <div className="group flex items-start gap-3 rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4">
       <div className="mt-0.5"><ToggleButton task={task} onToggle={onToggle} /></div>
       <div className="min-w-0 flex-1 space-y-1.5">
-        <p className={cn('text-sm font-medium text-slate-100', task.status === 'COMPLETED' && 'text-slate-400 line-through')}>
+        <p className={cn('text-sm font-medium text-slate-900 dark:text-slate-100', task.status === 'COMPLETED' && 'text-slate-400 line-through')}>
           {task.title}
         </p>
         {task.description && <p className="text-xs text-slate-500">{task.description}</p>}
         <TaskBadges task={task} />
       </div>
       <div className="flex shrink-0 gap-1 opacity-0 transition group-hover:opacity-100">
-        <button type="button" onClick={onEdit} aria-label="Edit" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-800 hover:text-slate-200">
+        <button type="button" onClick={onEdit} aria-label="Edit" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-200">
           <Pencil className="h-4 w-4" />
         </button>
-        <button type="button" onClick={onDelete} aria-label="Delete" className="rounded-lg p-1.5 text-slate-500 hover:bg-red-950 hover:text-red-400">
+        <button type="button" onClick={onDelete} aria-label="Delete" className="rounded-lg p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400">
           <Trash2 className="h-4 w-4" />
         </button>
       </div>
@@ -93,8 +93,8 @@ export function TaskListView({
 }) {
   if (tasks.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-slate-800 bg-slate-900/40 p-12 text-center">
-        <p className="text-sm text-slate-400">Tidak ada tugas yang cocok. 🎉</p>
+      <div className="rounded-xl border border-dashed border-slate-300 bg-white p-12 text-center dark:border-slate-800 dark:bg-slate-900/40">
+        <p className="text-sm text-slate-500 dark:text-slate-400">Tidak ada tugas yang cocok. 🎉</p>
         <p className="mt-1 text-xs text-slate-500">Ubah filter atau tambah tugas baru.</p>
       </div>
     );

@@ -16,7 +16,7 @@ interface Props {
 }
 
 const inputCls =
-  'w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none';
+  'w-full rounded-lg border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500 focus:outline-none';
 
 export function NoteFormModal({ open, initial, onSubmit, onClose }: Props) {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<NoteFormValues>({
@@ -45,39 +45,39 @@ export function NoteFormModal({ open, initial, onSubmit, onClose }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <form onSubmit={handleSubmit(onSubmit)} className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
-        <button type="button" onClick={onClose} className="absolute right-3 top-3 rounded-lg p-2 text-slate-500 hover:bg-slate-800 hover:text-slate-200" aria-label="Close">
+      <form onSubmit={handleSubmit(onSubmit)} className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 shadow-2xl">
+        <button type="button" onClick={onClose} className="absolute right-3 top-3 rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200" aria-label="Close">
           <X className="h-4 w-4" />
         </button>
-        <h3 className="text-lg font-semibold text-white">{initial ? 'Edit Judul / Kategori / Tag' : 'Catatan Baru'}</h3>
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{initial ? 'Edit Judul / Kategori / Tag' : 'Catatan Baru'}</h3>
         <div className="mt-4 space-y-4">
           <div className="space-y-1.5">
-            <label htmlFor="n-title" className="text-xs font-medium text-slate-300">Judul *</label>
+            <label htmlFor="n-title" className="text-xs font-medium text-slate-600 dark:text-slate-300">Judul *</label>
             <input id="n-title" {...register('title')} className={inputCls} placeholder="Judul catatan" />
             {errors.title && <p className="text-xs text-red-400">{errors.title.message}</p>}
           </div>
           {!initial && (
             <div className="space-y-1.5">
-              <label htmlFor="n-content" className="text-xs font-medium text-slate-300">Isi (Markdown)</label>
+              <label htmlFor="n-content" className="text-xs font-medium text-slate-600 dark:text-slate-300">Isi (Markdown)</label>
               <textarea id="n-content" {...register('content')} rows={6} className={`${inputCls} font-mono text-xs`} placeholder="## Judul&#10;- point&#10;`kode`&#10;> quote" />
               {errors.content && <p className="text-xs text-red-400">{errors.content.message}</p>}
             </div>
           )}
           {initial && (
-            <p className="rounded-lg border border-slate-800 bg-slate-950 px-3 py-2 text-[11px] leading-relaxed text-slate-500">
+            <p className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-3 py-2 text-[11px] leading-relaxed text-slate-500">
               Isi catatan diedit langsung di panel kanan (klik teks untuk menulis) — tanpa modal.
             </p>
           )}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label htmlFor="n-cat" className="text-xs font-medium text-slate-300">Kategori</label>
+              <label htmlFor="n-cat" className="text-xs font-medium text-slate-600 dark:text-slate-300">Kategori</label>
               <select id="n-cat" {...register('category')} className={inputCls}>
                 {NOTE_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
               {errors.category && <p className="text-xs text-red-400">{errors.category.message}</p>}
             </div>
             <div className="space-y-1.5">
-              <label htmlFor="n-tags" className="text-xs font-medium text-slate-300">Tag (pisahkan koma)</label>
+              <label htmlFor="n-tags" className="text-xs font-medium text-slate-600 dark:text-slate-300">Tag (pisahkan koma)</label>
               <input id="n-tags" {...register('tags')} className={inputCls} placeholder="app, karir" />
             </div>
           </div>

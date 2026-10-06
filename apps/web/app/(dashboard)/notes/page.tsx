@@ -66,8 +66,8 @@ export default function NotesPage() {
     <div className="space-y-4">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Catatan</h1>
-          <p className="mt-1 text-sm text-slate-400">Knowledge base Markdown dengan kategori, tag, dan pinning.</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Catatan</h1>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Knowledge base Markdown dengan kategori, tag, dan pinning.</p>
         </div>
         <Button onClick={() => setModal({ open: true, initial: null })}><Plus className="mr-2 h-4 w-4" />Catatan Baru</Button>
       </header>
@@ -80,13 +80,13 @@ export default function NotesPage() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Cari catatan (judul, isi, tag)..."
-            className="w-full rounded-lg border border-slate-700 bg-slate-950 py-2 pl-9 pr-3 text-sm text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-lg border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500"
           />
         </div>
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 focus:border-blue-500 focus:outline-none"
+          className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-700 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
         >
           <option value="all">Semua Kategori</option>
           {NOTE_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
@@ -96,7 +96,7 @@ export default function NotesPage() {
           onClick={() => setShowArchived((v) => !v)}
           className={cn(
             'inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition',
-            showArchived ? 'border-amber-600 bg-amber-600/10 text-amber-400' : 'border-slate-700 text-slate-400 hover:border-slate-600'
+            showArchived ? 'border-amber-600 bg-amber-600/10 text-amber-600 dark:text-amber-400' : 'border-slate-300 text-slate-500 hover:border-slate-400 dark:border-slate-700 dark:text-slate-400 dark:hover:border-slate-600'
           )}
         >
           <Archive className="h-3.5 w-3.5" />{showArchived ? 'Arsip' : 'Aktif'}
@@ -109,7 +109,7 @@ export default function NotesPage() {
         <div className="lg:col-span-2">
           <div className="space-y-2">
             {visible.length === 0 && (
-              <div className="rounded-xl border border-dashed border-slate-800 bg-slate-900/40 p-8 text-center text-xs text-slate-500">
+              <div className="rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center text-xs text-slate-500 dark:border-slate-800 dark:bg-slate-900/40">
                 Belum ada catatan di sini.
               </div>
             )}
@@ -122,18 +122,18 @@ export default function NotesPage() {
                   'w-full rounded-xl border p-3 text-left transition',
                   selected?.id === n.id
                     ? 'border-blue-600 bg-blue-600/10'
-                    : 'border-slate-800 bg-slate-900/60 hover:border-slate-700'
+                    : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-slate-700'
                 )}
               >
                 <div className="flex items-center gap-2">
-                  {n.pinned && <Pin className="h-3.5 w-3.5 shrink-0 text-amber-400" />}
-                  <p className="flex-1 truncate text-sm font-medium text-white">{n.title}</p>
+                  {n.pinned && <Pin className="h-3.5 w-3.5 shrink-0 text-amber-500 dark:text-amber-400" />}
+                  <p className="flex-1 truncate text-sm font-medium text-slate-900 dark:text-white">{n.title}</p>
                 </div>
                 <p className="mt-1 line-clamp-2 text-xs text-slate-500">{n.content}</p>
                 <div className="mt-2 flex flex-wrap gap-1">
-                  <span className="rounded bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-400">{n.category}</span>
+                  <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-600 dark:bg-slate-800 dark:text-slate-400">{n.category}</span>
                   {n.tags?.map((t) => (
-                    <span key={t} className="rounded bg-purple-500/10 px-1.5 py-0.5 text-[10px] text-purple-400">#{t}</span>
+                    <span key={t} className="rounded bg-purple-500/10 px-1.5 py-0.5 text-[10px] text-purple-600 dark:text-purple-400">#{t}</span>
                   ))}
                   <span className="ml-auto text-[10px] text-slate-600">{n.updatedAt}</span>
                 </div>
@@ -154,9 +154,9 @@ export default function NotesPage() {
               onSaveContent={handleInlineSave}
             />
           ) : (
-            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-800 bg-slate-900/40 p-12 text-center">
+            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white p-12 text-center dark:border-slate-800 dark:bg-slate-900/40">
               <FileText className="h-8 w-8 text-slate-600" />
-              <p className="mt-3 text-sm text-slate-400">Pilih catatan di samping</p>
+              <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">Pilih catatan di samping</p>
               <p className="mt-1 text-xs text-slate-500">atau buat catatan baru untuk mulai menulis.</p>
             </div>
           )}
@@ -168,8 +168,8 @@ export default function NotesPage() {
       {pendingDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60" onClick={() => setPendingDelete(null)} />
-          <div className="relative w-full max-w-sm rounded-xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
-            <h3 className="text-sm font-semibold text-white">Hapus catatan ini?</h3>
+          <div className="relative w-full max-w-sm rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 shadow-2xl">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Hapus catatan ini?</h3>
             <p className="mt-2 text-xs text-slate-400">Tindakan ini tidak bisa dibatalkan.</p>
             <div className="mt-4 flex justify-end gap-2">
               <Button variant="ghost" size="sm" onClick={() => setPendingDelete(null)}>Batal</Button>

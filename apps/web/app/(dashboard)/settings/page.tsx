@@ -33,12 +33,12 @@ export default function SettingsPage() {
   ] as const;
 
   const inputCls =
-    'w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none';
+    'w-full rounded-lg border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500 focus:outline-none';
 
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-bold text-white">Pengaturan</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Pengaturan</h1>
         <p className="mt-1 text-sm text-slate-400">Kelola profil, tampilan, dan preferensi aplikasi.</p>
       </header>
 
@@ -55,11 +55,11 @@ export default function SettingsPage() {
             </div>
             <div className="grid flex-1 gap-3 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <label htmlFor="s-name" className="text-xs font-medium text-slate-300">Nama</label>
+                <label htmlFor="s-name" className="text-xs font-medium text-slate-600 dark:text-slate-300">Nama</label>
                 <input id="s-name" value={profile.name} onChange={(e) => setProfile((p) => ({ ...p, name: e.target.value }))} className={inputCls} />
               </div>
               <div className="space-y-1.5">
-                <label htmlFor="s-email" className="text-xs font-medium text-slate-300">Email</label>
+                <label htmlFor="s-email" className="text-xs font-medium text-slate-600 dark:text-slate-300">Email</label>
                 <input id="s-email" type="email" value={profile.email} onChange={(e) => setProfile((p) => ({ ...p, email: e.target.value }))} className={inputCls} />
               </div>
               <div className="sm:col-span-2">
@@ -85,7 +85,7 @@ export default function SettingsPage() {
                 onClick={() => setTheme(key)}
                 className={cn(
                   'flex items-center gap-3 rounded-xl border p-4 text-left transition',
-                  mounted && theme === key ? 'border-blue-600 bg-blue-600/10 text-blue-400' : 'border-slate-800 bg-slate-950 text-slate-300 hover:border-slate-700'
+                  mounted && theme === key ? 'border-blue-600 bg-blue-600/10 text-blue-600 dark:text-blue-400' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:border-slate-700'
                 )}
               >
                 <Icon className="h-5 w-5" />
@@ -105,7 +105,7 @@ export default function SettingsPage() {
         </CardHeader>
         <CardContent className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1.5">
-            <label htmlFor="s-date" className="text-xs font-medium text-slate-300">Format Tanggal</label>
+            <label htmlFor="s-date" className="text-xs font-medium text-slate-600 dark:text-slate-300">Format Tanggal</label>
             <select id="s-date" value={dateFormat} onChange={(e) => setDateFormat(e.target.value)} className={inputCls}>
               <option value="id-ID">DD/MM/YYYY (Indonesia)</option>
               <option value="en-US">MM/DD/YYYY (US)</option>
@@ -113,7 +113,7 @@ export default function SettingsPage() {
             </select>
           </div>
           <div className="space-y-1.5">
-            <label htmlFor="s-time" className="text-xs font-medium text-slate-300">Format Jam</label>
+            <label htmlFor="s-time" className="text-xs font-medium text-slate-600 dark:text-slate-300">Format Jam</label>
             <select id="s-time" value={timeFormat} onChange={(e) => setTimeFormat(e.target.value)} className={inputCls}>
               <option value="24h">24 jam</option>
               <option value="12h">12 jam (AM/PM)</option>

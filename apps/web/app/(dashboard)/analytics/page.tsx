@@ -63,7 +63,7 @@ const STATUS_COLORS: Record<string, string> = {
 
 function StatCard({ label, value, sub, color }: { label: string; value: string; sub?: string; color?: string }) {
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+    <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4">
       <div className="text-xs text-slate-400">{label}</div>
       <div className="mt-1 text-2xl font-bold" style={{ color: color ?? '#fff' }}>{value}</div>
       {sub && <div className="mt-1 text-[11px] text-slate-500">{sub}</div>}
@@ -107,16 +107,16 @@ export default function AnalyticsPage() {
     <div className="space-y-6">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Analitik</h1>
-          <p className="mt-1 text-sm text-slate-400">Statistik produktivitas — tugas, proyek, dan konsistensi kebiasaan.</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Analitik</h1>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Statistik produktivitas — tugas, proyek, dan konsistensi kebiasaan.</p>
         </div>
-        <div className="flex rounded-lg border border-slate-700">
+        <div className="flex rounded-lg border border-slate-200 dark:border-slate-700">
           {(Object.keys(SERIES) as Period[]).map((p) => (
             <button
               key={p}
               type="button"
               onClick={() => setPeriod(p)}
-              className={cn('rounded-lg px-3 py-1.5 text-xs transition', period === p ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200')}
+              className={cn('rounded-lg px-3 py-1.5 text-xs transition', period === p ? 'bg-blue-600 text-white' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200')}
             >
               {SERIES[p].label}
             </button>
@@ -133,8 +133,8 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Completion over time */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-        <h2 className="mb-3 text-sm font-semibold text-white">Tugas Selesai vs Dibuat — {SERIES[period].label}</h2>
+      <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4">
+        <h2 className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">Tugas Selesai vs Dibuat — {SERIES[period].label}</h2>
         <ResponsiveContainer width="100%" height={260}>
           <AreaChart data={SERIES[period].data}>
             <defs>
@@ -160,8 +160,8 @@ export default function AnalyticsPage() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Status distribution */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-          <h2 className="mb-3 text-sm font-semibold text-white">Distribusi Status Tugas</h2>
+        <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4">
+          <h2 className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">Distribusi Status Tugas</h2>
           <ResponsiveContainer width="100%" height={240}>
             <PieChart>
               <Pie data={statusData} dataKey="value" nameKey="name" innerRadius={55} outerRadius={85} paddingAngle={4}>
@@ -174,8 +174,8 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Project progress */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-          <h2 className="mb-3 text-sm font-semibold text-white">Progres Proyek Aktif (%)</h2>
+        <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4">
+          <h2 className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">Progres Proyek Aktif (%)</h2>
           <ResponsiveContainer width="100%" height={240}>
             <BarChart data={projectData} layout="vertical" margin={{ left: 8 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
@@ -188,8 +188,8 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Habit streaks */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 lg:col-span-2">
-          <h2 className="mb-3 text-sm font-semibold text-white">Konsistensi Kebiasaan — Streak Aktif vs Rekor</h2>
+        <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4 lg:col-span-2">
+          <h2 className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">Konsistensi Kebiasaan — Streak Aktif vs Rekor</h2>
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={habitData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />

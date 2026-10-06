@@ -65,7 +65,7 @@ export default function ProjectsPage() {
     <div className="space-y-4">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Proyek</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Proyek</h1>
           <p className="mt-1 text-sm text-slate-400">Aktivitas jangka panjang dengan progres, teknologi, dan tugas terkait.</p>
         </div>
         <Button onClick={() => setModal({ open: true, initial: null })}><Plus className="mr-2 h-4 w-4" />Proyek Baru</Button>
@@ -79,7 +79,7 @@ export default function ProjectsPage() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Cari proyek..."
-            className="w-full rounded-lg border border-slate-700 bg-slate-950 py-2 pl-9 pr-3 text-sm text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-lg border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500"
           />
         </div>
         <div className="flex flex-wrap gap-2">
@@ -98,7 +98,7 @@ export default function ProjectsPage() {
               onClick={() => setStatus(v)}
               className={cn(
                 'rounded-lg border px-2.5 py-1 text-xs font-medium transition',
-                status === v ? 'border-blue-600 bg-blue-600/10 text-blue-400' : 'border-slate-700 text-slate-400 hover:border-slate-600'
+                status === v ? 'border-blue-600 bg-blue-600/10 text-blue-600 dark:text-blue-400' : 'border-slate-300 text-slate-500 hover:border-slate-400 dark:border-slate-700 dark:text-slate-400 dark:hover:border-slate-600'
               )}
             >
               {l} ({confirmCount[v]})
@@ -109,15 +109,15 @@ export default function ProjectsPage() {
 
       {/* Grid */}
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-slate-800 bg-slate-900/40 p-12 text-center text-sm text-slate-500">
+        <div className="rounded-xl border border-dashed border-slate-300 dark:border-slate-800 bg-slate-900/40 p-12 text-center text-sm text-slate-500">
           Tidak ada proyek yang cocok.
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map(({ p, status: st, progress: pr }) => (
-            <div key={p.id} className="group flex flex-col rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+            <div key={p.id} className="group flex flex-col rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4">
               <div className="flex items-start justify-between gap-2">
-                <h3 className="text-sm font-semibold text-white">
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
                   <Link href={`/projects/${p.id}`} className="hover:text-blue-400">{p.name}</Link>
                 </h3>
                 <span className={cn('shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-medium', PROJECT_STATUS_BADGE[st])}>
@@ -130,14 +130,14 @@ export default function ProjectsPage() {
               <div className="mt-3">
                 <div className="mb-1 flex justify-between text-[11px]">
                   <span className="text-slate-400">Progress</span>
-                  <span className="font-mono text-blue-400">{pr}%</span>
+                  <span className="font-mono text-blue-600 dark:text-blue-400">{pr}%</span>
                 </div>
-                <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
+                <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
                   <div className="h-full rounded-full bg-blue-500 transition-all" style={{ width: `${pr}%` }} />
                 </div>
                 <div className="mt-1.5 flex flex-wrap gap-1.5">
                   {p.technologies?.map((t) => (
-                    <span key={t} className="rounded bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-400">{t}</span>
+                    <span key={t} className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-600 dark:bg-slate-800 dark:text-slate-400">{t}</span>
                   ))}
                 </div>
               </div>
@@ -155,9 +155,9 @@ export default function ProjectsPage() {
                 </div>
               )}
 
-              <div className="mt-3 flex justify-end gap-1 border-t border-slate-800 pt-3 opacity-0 transition group-hover:opacity-100">
-                <button type="button" onClick={() => setModal({ open: true, initial: p })} aria-label="Edit" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-800 hover:text-slate-200"><Pencil className="h-4 w-4" /></button>
-                <button type="button" onClick={() => setPendingDelete(p.id)} aria-label="Delete" className="rounded-lg p-1.5 text-slate-500 hover:bg-red-950 hover:text-red-400"><Trash2 className="h-4 w-4" /></button>
+              <div className="mt-3 flex justify-end gap-1 border-t border-slate-200 pt-3 opacity-0 transition group-hover:opacity-100 dark:border-slate-800">
+                <button type="button" onClick={() => setModal({ open: true, initial: p })} aria-label="Edit" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"><Pencil className="h-4 w-4" /></button>
+                <button type="button" onClick={() => setPendingDelete(p.id)} aria-label="Delete" className="rounded-lg p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"><Trash2 className="h-4 w-4" /></button>
               </div>
             </div>
           ))}
@@ -174,8 +174,8 @@ export default function ProjectsPage() {
       {pendingDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60" onClick={() => setPendingDelete(null)} />
-          <div className="relative w-full max-w-sm rounded-xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
-            <h3 className="text-sm font-semibold text-white">Hapus proyek ini?</h3>
+          <div className="relative w-full max-w-sm rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 shadow-2xl">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Hapus proyek ini?</h3>
             <p className="mt-2 text-xs text-slate-400">Tugas terkait akan dihapus dari proyek (dummy). Tindakan tidak bisa dibatalkan.</p>
             <div className="mt-4 flex justify-end gap-2">
               <Button variant="ghost" size="sm" onClick={() => setPendingDelete(null)}>Batal</Button>

@@ -18,7 +18,7 @@ interface Props {
 }
 
 const inputCls =
-  'w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none';
+  'w-full rounded-lg border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500 focus:outline-none';
 
 export function TaskFormModal({ open, initial, defaultProjectId, onSubmit, onClose }: Props) {
   const {
@@ -67,34 +67,34 @@ export function TaskFormModal({ open, initial, defaultProjectId, onSubmit, onClo
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl"
+        className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 shadow-2xl"
       >
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-3 top-3 rounded-lg p-2 text-slate-500 hover:bg-slate-800 hover:text-slate-200"
+          className="absolute right-3 top-3 rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
           aria-label="Close"
         >
           <X className="h-4 w-4" />
         </button>
 
-        <h3 className="text-lg font-semibold text-white">{initial ? 'Edit Tugas' : 'Tugas Baru'}</h3>
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{initial ? 'Edit Tugas' : 'Tugas Baru'}</h3>
 
         <div className="mt-4 space-y-4">
           <div className="space-y-1.5">
-            <label htmlFor="t-title" className="text-xs font-medium text-slate-300">Judul *</label>
+            <label htmlFor="t-title" className="text-xs font-medium text-slate-600 dark:text-slate-300">Judul *</label>
             <input id="t-title" {...register('title')} className={inputCls} placeholder="Apa yang harus dikerjakan?" />
             {errors.title && <p className="text-xs text-red-400">{errors.title.message}</p>}
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="t-desc" className="text-xs font-medium text-slate-300">Deskripsi</label>
+            <label htmlFor="t-desc" className="text-xs font-medium text-slate-600 dark:text-slate-300">Deskripsi</label>
             <textarea id="t-desc" {...register('description')} rows={2} className={inputCls} placeholder="Detail opsional..." />
             {errors.description && <p className="text-xs text-red-400">{errors.description.message}</p>}
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="t-priority" className="text-xs font-medium text-slate-300">Prioritas</label>
+            <label htmlFor="t-priority" className="text-xs font-medium text-slate-600 dark:text-slate-300">Prioritas</label>
             <select id="t-priority" {...register('priority')} className={inputCls}>
               {Object.entries(PRIORITY_LABELS).map(([v, l]) => (
                 <option key={v} value={v}>{l}</option>
@@ -103,8 +103,8 @@ export function TaskFormModal({ open, initial, defaultProjectId, onSubmit, onClo
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-slate-300">Tipe Waktu</label>
-            <div className="flex gap-4 pt-1 text-xs text-slate-300">
+            <label className="text-xs font-medium text-slate-600 dark:text-slate-300">Tipe Waktu</label>
+            <div className="flex gap-4 pt-1 text-xs text-slate-600 dark:text-slate-300">
               <label className="flex items-center gap-1.5">
                 <input type="radio" value="deadline" {...register('dateMode')} className="text-blue-600" />
                 Tenggat (batas waktu)
@@ -118,17 +118,17 @@ export function TaskFormModal({ open, initial, defaultProjectId, onSubmit, onClo
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label htmlFor="t-due" className="text-xs font-medium text-slate-300">Tanggal</label>
+              <label htmlFor="t-due" className="text-xs font-medium text-slate-600 dark:text-slate-300">Tanggal</label>
               <input id="t-due" type="date" {...register('dueDate')} className={inputCls} />
             </div>
             {dateMode === 'schedule' ? (
               <div className="space-y-1.5">
-                <label htmlFor="t-time" className="text-xs font-medium text-slate-300">Jam (WIB)</label>
+                <label htmlFor="t-time" className="text-xs font-medium text-slate-600 dark:text-slate-300">Jam (WIB)</label>
                 <input id="t-time" type="time" {...register('dueTime')} className={inputCls} />
               </div>
             ) : (
               <div className="space-y-1.5">
-                <label htmlFor="t-project" className="text-xs font-medium text-slate-300">Proyek</label>
+                <label htmlFor="t-project" className="text-xs font-medium text-slate-600 dark:text-slate-300">Proyek</label>
                 <select id="t-project" {...register('projectId')} className={inputCls}>
                   <option value="">— Tanpa proyek —</option>
                   {mockProjects.map((p) => (
@@ -141,7 +141,7 @@ export function TaskFormModal({ open, initial, defaultProjectId, onSubmit, onClo
 
           {dateMode === 'schedule' && (
             <div className="space-y-1.5">
-              <label htmlFor="t-project" className="text-xs font-medium text-slate-300">Proyek</label>
+              <label htmlFor="t-project" className="text-xs font-medium text-slate-600 dark:text-slate-300">Proyek</label>
               <select id="t-project" {...register('projectId')} className={inputCls}>
                 <option value="">— Tanpa proyek —</option>
                 {mockProjects.map((p) => (
@@ -152,7 +152,7 @@ export function TaskFormModal({ open, initial, defaultProjectId, onSubmit, onClo
           )}
 
           <div className="space-y-1.5">
-            <label htmlFor="t-tags" className="text-xs font-medium text-slate-300">Tag (pisahkan koma)</label>
+            <label htmlFor="t-tags" className="text-xs font-medium text-slate-600 dark:text-slate-300">Tag (pisahkan koma)</label>
             <input id="t-tags" {...register('tags')} className={inputCls} placeholder="urgent, kuliah" />
           </div>
         </div>
