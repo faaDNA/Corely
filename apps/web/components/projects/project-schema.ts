@@ -3,8 +3,7 @@ import { z } from 'zod';
 export const projectSchema = z.object({
   name: z.string().min(1, 'Nama wajib diisi').max(120, 'Maksimal 120 karakter'),
   description: z.string().max(500, 'Maksimal 500 karakter').optional(),
-  onHold: z.boolean().optional(),
-  archived: z.boolean().optional(),
+  manualStatus: z.enum(['none', 'on_hold', 'archived']).default('none'),
   deadline: z.string().optional(),
   technologies: z.string().optional(),
   repoUrl: z.string().url('URL tidak valid').optional().or(z.literal('')),

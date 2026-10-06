@@ -7,7 +7,7 @@ import { X } from 'lucide-react';
 import { Button } from '@repo/ui';
 import type { Task } from '@repo/types';
 import { mockProjects } from '@/lib/mock-data';
-import { taskSchema, type TaskFormValues, STATUS_LABELS, PRIORITY_LABELS } from './task-schema';
+import { taskSchema, type TaskFormValues, PRIORITY_LABELS } from './task-schema';
 
 interface Props {
   open: boolean;
@@ -93,23 +93,13 @@ export function TaskFormModal({ open, initial, defaultProjectId, onSubmit, onClo
             {errors.description && <p className="text-xs text-red-400">{errors.description.message}</p>}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label htmlFor="t-status" className="text-xs font-medium text-slate-300">Status</label>
-              <select id="t-status" {...register('status')} className={inputCls}>
-                {Object.entries(STATUS_LABELS).map(([v, l]) => (
-                  <option key={v} value={v}>{l}</option>
-                ))}
-              </select>
-            </div>
-            <div className="space-y-1.5">
-              <label htmlFor="t-priority" className="text-xs font-medium text-slate-300">Prioritas</label>
-              <select id="t-priority" {...register('priority')} className={inputCls}>
-                {Object.entries(PRIORITY_LABELS).map(([v, l]) => (
-                  <option key={v} value={v}>{l}</option>
-                ))}
-              </select>
-            </div>
+          <div className="space-y-1.5">
+            <label htmlFor="t-priority" className="text-xs font-medium text-slate-300">Prioritas</label>
+            <select id="t-priority" {...register('priority')} className={inputCls}>
+              {Object.entries(PRIORITY_LABELS).map(([v, l]) => (
+                <option key={v} value={v}>{l}</option>
+              ))}
+            </select>
           </div>
 
           <div className="space-y-1.5">

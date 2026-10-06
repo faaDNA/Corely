@@ -22,8 +22,7 @@ function defaults(p?: Project | null): ProjectFormValues {
   return {
     name: p?.name ?? '',
     description: p?.description ?? '',
-    onHold: p?.onHold ?? false,
-    archived: p?.archived ?? false,
+    manualStatus: p?.archived ? 'archived' : p?.onHold ? 'on_hold' : 'none',
     deadline: p?.deadline ?? '',
     technologies: p?.technologies?.join(', ') ?? '',
     repoUrl: p?.repoUrl ?? '',
@@ -77,20 +76,15 @@ export function ProjectFormModal({ open, initial, onSubmit, onClose }: Props) {
           </div>
 
           <div className="space-y-1.5">
-            <p className="text-xs font-medium text-slate-300">Status manual</p>
-            <div className="flex gap-4 pt-1 text-sm text-slate-300">
-              <label className="flex items-center gap-2">
-                <input type="checkbox" {...register('onHold')} className="h-4 w-4 rounded border-slate-600 bg-slate-950" />
-                On Hold (jeda)
-              </label>
-              <label className="flex items-center gap-2">
-                <input type="checkbox" {...register('archived')} className="h-4 w-4 rounded border-slate-600 bg-slate-950" />
-                Archived (arsip)
-              </label>
-            </div>
+            <label htmlFor="p-manualStatus" className="text-xs font-medium text-slate-300">Status manual</label>
+            <select id="p-manualStatus" {...register('manualStatus')} className={inputCls}>
+              <option value="none">— Normal (otomatis In Progress / Completed) —</option>
+              <option value="on_hold">On Hold (jeda)</option>
+              <option value="archived">Archived (arsip)</option>
+            </select>
           </div>
           <p className="text-[11px] leading-relaxed text-slate-500">
-            Progres &amp; status utama (In Progress / Completed) dihitung otomatis dari rasio tugas selesai.
+            Default None. On Hold/Archived menimpa status otomatis. Progres selalu dari tugas.
           </p>
 
           <div className="space-y-1.5">

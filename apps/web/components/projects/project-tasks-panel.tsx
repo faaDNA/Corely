@@ -42,18 +42,20 @@ export function ProjectTasksPanel({ projectId, projectName, tasks, setTasks }: {
   }
 
   function submit(values: TaskFormValues) {
+    // status tidak dari form — tugas baru selalu TODO, edit pertahankan status lama
+    const status: TaskStatus = modal.initial?.status ?? 'TODO';
     const payload: Task = {
       id: modal.initial?.id ?? `t${Date.now()}`,
       title: values.title,
       description: values.description || undefined,
-      status: values.status as TaskStatus,
+      status,
       priority: values.priority as TaskPriority,
       dueDate: values.dueDate || undefined,
       dueTime: values.dateMode === 'schedule' ? values.dueTime || undefined : undefined,
       dateMode: values.dateMode,
       projectId,
       tags: values.tags ? values.tags.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
-      completedAt: values.status === 'COMPLETED' ? new Date().toISOString().slice(0, 10) : undefined,
+      completedAt: status === 'COMPLETED' ? modal.initial?.completedAt ?? new Date().toISOString().slice(0, 10) : undefined,
     };
     if (modal.initial) {
       setTasks((prev) => prev.map((t) => (t.id === modal.initial!.id ? payload : t)));

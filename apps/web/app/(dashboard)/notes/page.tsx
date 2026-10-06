@@ -1,12 +1,12 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
-import { Plus, Search, Pin, PinOff, Archive, Pencil, Trash2, FileText } from 'lucide-react';
+import { Plus, Search, Pin, Archive, FileText } from 'lucide-react';
 import { Button, cn } from '@repo/ui';
 import type { Note } from '@repo/types';
 import { mockNotes } from '@/lib/mock-data';
 import { NoteFormModal } from '@/components/notes/note-form-modal';
+import { NoteDetailPanel } from '@/components/notes/note-detail-panel';
 import { NOTE_CATEGORIES, type NoteFormValues } from '@/components/notes/note-schema';
 
 export default function NotesPage() {
@@ -32,11 +32,12 @@ export default function NotesPage() {
 
   const selected = visible.find((n) => n.id === selectedId) ?? visible[0];
 
+  // modal kini hanya untuk judul / kategori / tag (isi edit inline)
   function handleFormSubmit(values: NoteFormValues) {
     const payload: Note = {
       id: modal.initial?.id ?? `n${Date.now()}`,
       title: values.title,
-      content: values.content ?? '',
+      content: modal.initial?.content ?? values.content ?? '',
       category: values.category,
       tags: values.tags ? values.tags.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
       pinned: modal.initial?.pinned,
@@ -47,6 +48,10 @@ export default function NotesPage() {
     else setNotes((prev) => [payload, ...prev]);
     setSelectedId(payload.id);
     setModal({ open: false });
+  }
+
+  function handleInlineSave(id: string, content: string) {
+    setNotes((prev) => prev.map((n) => (n.id === id ? { ...n, content, updatedAt: new Date().toISOString().slice(0, 10) } : n)));
   }
 
   function togglePin(id: string) {
@@ -140,37 +145,14 @@ export default function NotesPage() {
         {/* Editor / preview */}
         <div className="lg:col-span-3">
           {selected ? (
-            <div className="rounded-xl border border-slate-800 bg-slate-900/60">
-              <div className="flex items-start justify-between gap-3 border-b border-slate-800 p-4">
-                <div>
-                  <h2 className="text-base font-semibold text-white">{selected.title}</h2>
-                  <div className="mt-1 flex flex-wrap gap-1">
-                    <span className="rounded bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-400">{selected.category}</span>
-                    {selected.tags?.map((t) => (
-                      <span key={t} className="rounded bg-purple-500/10 px-1.5 py-0.5 text-[10px] text-purple-400">#{t}</span>
-                    ))}
-                  </div>
-                </div>
-                <div className="flex gap-1">
-                  <button type="button" onClick={() => togglePin(selected.id)} aria-label="Pin" className={cn('rounded-lg p-1.5 hover:bg-slate-800', selected.pinned ? 'text-amber-400' : 'text-slate-500')}>
-                    {selected.pinned ? <PinOff className="h-4 w-4" /> : <Pin className="h-4 w-4" />}
-                  </button>
-                  <button type="button" onClick={() => toggleArchive(selected.id)} aria-label="Archive" className={cn('rounded-lg p-1.5 hover:bg-slate-800', selected.archived ? 'text-amber-400' : 'text-slate-500')}>
-                    <Archive className="h-4 w-4" />
-                  </button>
-                  <button type="button" onClick={() => setModal({ open: true, initial: selected })} aria-label="Edit" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-800 hover:text-slate-200">
-                    <Pencil className="h-4 w-4" />
-                  </button>
-                  <button type="button" onClick={() => setPendingDelete(selected.id)} aria-label="Delete" className="rounded-lg p-1.5 text-slate-500 hover:bg-red-950 hover:text-red-400">
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="p-4 text-sm leading-relaxed text-slate-300 [&_code]:rounded [&_code]:bg-slate-800 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-xs [&_code]:text-blue-400 [&_h1]:mb-3 [&_h1]:text-xl [&_h1]:font-bold [&_h1]:text-white [&_h2]:mb-2 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-white [&_li]:ml-5 [&_li]:list-disc [&_p]:mb-2 [&_pre]:mb-3 [&_pre]:rounded-lg [&_pre]:bg-slate-950 [&_pre]:p-3 [&_pre]:font-mono [&_pre]:text-xs [&_blockquote]:border-l-2 [&_blockquote]:border-blue-500 [&_blockquote]:pl-3 [&_blockquote]:italic [&_blockquote]:text-slate-400">
-                <ReactMarkdown>{selected.content}</ReactMarkdown>
-              </div>
-            </div>
+            <NoteDetailPanel
+              note={selected}
+              onMetaEdit={(n) => setModal({ open: true, initial: n })}
+              onDelete={(id) => setPendingDelete(id)}
+              onTogglePin={togglePin}
+              onToggleArchive={toggleArchive}
+              onSaveContent={handleInlineSave}
+            />
           ) : (
             <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-800 bg-slate-900/40 p-12 text-center">
               <FileText className="h-8 w-8 text-slate-600" />

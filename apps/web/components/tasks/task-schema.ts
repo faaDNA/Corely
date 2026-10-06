@@ -3,7 +3,8 @@ import { z } from 'zod';
 export const taskSchema = z.object({
   title: z.string().min(1, 'Judul wajib diisi').max(120, 'Maksimal 120 karakter'),
   description: z.string().max(500, 'Maksimal 500 karakter').optional(),
-  status: z.enum(['TODO', 'COMPLETED']),
+  // status tidak diisi dari form — tugas baru selalu TODO, ubah via centang di list
+  status: z.enum(['TODO', 'COMPLETED']).optional().default('TODO'),
   priority: z.enum(['LOW', 'MEDIUM', 'HIGH']),
   dateMode: z.enum(['deadline', 'schedule']),
   dueDate: z.string().optional(),
