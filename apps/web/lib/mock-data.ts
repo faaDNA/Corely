@@ -1,7 +1,8 @@
 import type { Task, Project, Note, Bookmark, Habit, EventItem } from '@repo/types';
 
 export const mockUser = {
-  name: 'Daffa',
+  name: 'Daffa Naufal',
+  nickname: 'Daffa',
   email: 'daffa@mail.com',
 };
 
