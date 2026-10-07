@@ -54,3 +54,14 @@ export async function logout() {
   cookies().delete(COOKIE);
   redirect('/login');
 }
+
+// ponytail: frontend-only — OAuth Google asli saat backend auth ada
+export async function googleLogin() {
+  cookies().set(COOKIE, 'dummy-session', {
+    httpOnly: true,
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 60 * 60 * 24 * 7,
+  });
+  redirect('/dashboard');
+}
