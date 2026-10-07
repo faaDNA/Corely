@@ -65,8 +65,29 @@ function StatCard({ label, value, sub, color }: { label: string; value: string; 
   return (
     <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4">
       <div className="text-xs text-slate-400">{label}</div>
-      <div className="mt-1 text-2xl font-bold" style={{ color: color ?? '#fff' }}>{value}</div>
+      <div className="mt-1 text-2xl font-bold text-slate-900 dark:text-white" style={color ? { color } : undefined}>{value}</div>
       {sub && <div className="mt-1 text-[11px] text-slate-500">{sub}</div>}
+    </div>
+  );
+}
+
+function ChartTooltip({ active, payload, label }: any) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs shadow-xl dark:border-slate-700 dark:bg-slate-900">
+      {label != null && label !== '' && (
+        <p className="mb-1 font-semibold text-slate-900 dark:text-white">{label}</p>
+      )}
+      {payload.map((p: any, i: number) => {
+        const dot = p.color ?? p.payload?.fill ?? p.fill;
+        const name = p.name ?? label ?? '';
+        return (
+          <p key={`${name}-${i}`} className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
+            {dot && <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: dot }} />}
+            {name}: <span className="font-semibold text-slate-900 dark:text-white">{p.value}</span>
+          </p>
+        );
+      })}
     </div>
   );
 }
@@ -94,14 +115,6 @@ export default function AnalyticsPage() {
     streak: h.streak,
     rekor: h.longestStreak,
   }));
-
-  const tooltipStyle = {
-    backgroundColor: '#0f172a',
-    border: '1px solid #1e293b',
-    borderRadius: '8px',
-    fontSize: 12,
-    color: '#e2e8f0',
-  };
 
   return (
     <div className="space-y-6">
@@ -150,7 +163,7 @@ export default function AnalyticsPage() {
             <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
             <XAxis dataKey="name" stroke="#64748b" fontSize={11} />
             <YAxis stroke="#64748b" fontSize={11} allowDecimals={false} />
-            <Tooltip contentStyle={tooltipStyle} />
+            <Tooltip content={<ChartTooltip />} />
             <Legend wrapperStyle={{ fontSize: 12 }} />
             <Area type="monotone" dataKey="selesai" stroke="#10b981" fillOpacity={1} fill="url(#colorSelesai)" name="Selesai" />
             <Area type="monotone" dataKey="dibuat" stroke="#3b82f6" fillOpacity={1} fill="url(#colorDibuat)" name="Dibuat" />
@@ -167,7 +180,7 @@ export default function AnalyticsPage() {
               <Pie data={statusData} dataKey="value" nameKey="name" innerRadius={55} outerRadius={85} paddingAngle={4}>
                 {statusData.map((d) => <Cell key={d.key} fill={STATUS_COLORS[d.key]} />)}
               </Pie>
-              <Tooltip contentStyle={tooltipStyle} />
+              <Tooltip content={<ChartTooltip />} />
               <Legend wrapperStyle={{ fontSize: 12 }} />
             </PieChart>
           </ResponsiveContainer>
@@ -181,7 +194,7 @@ export default function AnalyticsPage() {
               <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
               <XAxis type="number" domain={[0, 100]} stroke="#64748b" fontSize={11} />
               <YAxis type="category" dataKey="name" width={110} stroke="#64748b" fontSize={11} />
-              <Tooltip contentStyle={tooltipStyle} cursor={{ fill: '#1e293b40' }} />
+              <Tooltip content={<ChartTooltip />} cursor={{ fill: '#1e293b40' }} />
               <Bar dataKey="progress" fill="#3b82f6" radius={[0, 6, 6, 0]} barSize={16} />
             </BarChart>
           </ResponsiveContainer>
@@ -195,7 +208,7 @@ export default function AnalyticsPage() {
               <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
               <XAxis dataKey="name" stroke="#64748b" fontSize={11} />
               <YAxis stroke="#64748b" fontSize={11} allowDecimals={false} />
-              <Tooltip contentStyle={tooltipStyle} cursor={{ fill: '#1e293b40' }} />
+              <Tooltip content={<ChartTooltip />} cursor={{ fill: '#1e293b40' }} />
               <Legend wrapperStyle={{ fontSize: 12 }} />
               <Bar dataKey="streak" fill="#f59e0b" radius={[6, 6, 0, 0]} name="Streak aktif" />
               <Bar dataKey="rekor" fill="#64748b" radius={[6, 6, 0, 0]} name="Rekor" />
