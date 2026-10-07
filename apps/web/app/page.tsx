@@ -1,30 +1,53 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import {
+  LayoutDashboard,
+  ListChecks,
+  FolderKanban,
+  NotebookPen,
+  Bookmark,
+  Flame,
+  CalendarDays,
+  Search,
+  BarChart3,
+  Bell,
+  Settings,
+  Lock,
+  Zap,
+  Smartphone,
+  Accessibility,
+  ShieldCheck,
+  AlertTriangle,
+  CheckCircle2,
+  Rocket,
+  X,
+  Check,
+} from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Corely — Satu Workspace untuk Seluruh Produktivitas Anda',
 };
 
 const FEATURES = [
-  { icon: '📊', title: 'Dashboard Utama', desc: 'Sapaan personal, tanggal hari ini, ringkasan tugas, proyek aktif, tenggat terdekat, dan aksi cepat.' },
-  { icon: '✅', title: 'Manajemen Tugas', desc: 'Status ringkas Todo & Completed, prioritas, tag, dan list view yang bersih. Tugas bisa bertipe Tenggat atau Jadwal hari-H dengan jam.' },
-  { icon: '📁', title: 'Pengelolaan Proyek', desc: 'Kelompokkan aktivitas jangka panjang. Progres & status diturunkan otomatis dari tugas — tanpa bolak-balik mengubah status.' },
-  { icon: '📝', title: 'Catatan Markdown', desc: 'Simpan pengetahuan pribadi format Markdown dengan kategori, tag, pin, dan arsip.' },
-  { icon: '🔖', title: 'Koleksi Bookmark', desc: 'Simpan situs dan sumber daya penting dengan kategori, tag, favorit, dan pencarian.' },
-  { icon: '🔥', title: 'Pelacak Kebiasaan', desc: 'Penandaan harian, riwayat kalender, streak aktif, streak terpanjang, dan tingkat penyelesaian.' },
-  { icon: '📅', title: 'Kalender Terpadu', desc: 'Tenggat & jadwal tugas serta batas proyek muncul otomatis dalam tampilan bulan, minggu, dan hari — tanpa input dua kali.' },
-  { icon: '🔍', title: 'Pencarian Global', desc: 'Cari tugas, proyek, catatan, dan bookmark dari satu kolom dengan hasil dikelompokkan.' },
-  { icon: '📈', title: 'Statistik & Analitik', desc: 'Tingkat penyelesaian tugas, progres proyek, dan konsistensi kebiasaan harian/mingguan/bulanan.' },
-  { icon: '🔔', title: 'Notifikasi', desc: 'Pengingat tenggat tugas, batas proyek, acara mendatang, dan kebiasaan harian.' },
-  { icon: '⚙️', title: 'Profil & Pengaturan', desc: 'Atur profil, tema terang/gelap, format tanggal & jam, serta preferensi tampilan.' },
-  { icon: '🔒', title: 'Akun Aman & Pribadi', desc: 'Login dan sesi aman, dengan setiap data hanya dapat diakses oleh pemiliknya.' },
+  { icon: LayoutDashboard, title: 'Dashboard Utama', desc: 'Sapaan personal, tanggal hari ini, ringkasan tugas, proyek aktif, tenggat terdekat, dan aksi cepat.' },
+  { icon: ListChecks, title: 'Manajemen Tugas', desc: 'Status ringkas Todo & Completed, prioritas, tag, dan list view yang bersih. Tugas bisa bertipe Tenggat atau Jadwal hari-H dengan jam.' },
+  { icon: FolderKanban, title: 'Pengelolaan Proyek', desc: 'Kelompokkan aktivitas jangka panjang. Progres & status diturunkan otomatis dari tugas — tanpa bolak-balik mengubah status.' },
+  { icon: NotebookPen, title: 'Catatan Markdown', desc: 'Simpan pengetahuan pribadi format Markdown dengan kategori, tag, pin, dan arsip.' },
+  { icon: Bookmark, title: 'Koleksi Bookmark', desc: 'Simpan situs dan sumber daya penting dengan kategori, tag, favorit, dan pencarian.' },
+  { icon: Flame, title: 'Pelacak Kebiasaan', desc: 'Penandaan harian, riwayat kalender, streak aktif, streak terpanjang, dan tingkat penyelesaian.' },
+  { icon: CalendarDays, title: 'Kalender Terpadu', desc: 'Tenggat & jadwal tugas serta batas proyek muncul otomatis dalam tampilan bulan, minggu, dan hari — tanpa input dua kali.' },
+  { icon: Search, title: 'Pencarian Global', desc: 'Cari tugas, proyek, catatan, dan bookmark dari satu kolom dengan hasil dikelompokkan.' },
+  { icon: BarChart3, title: 'Statistik & Analitik', desc: 'Tingkat penyelesaian tugas, progres proyek, dan konsistensi kebiasaan harian/mingguan/bulanan.' },
+  { icon: Bell, title: 'Notifikasi', desc: 'Pengingat tenggat tugas, batas proyek, acara mendatang, dan kebiasaan harian.' },
+  { icon: Settings, title: 'Profil & Pengaturan', desc: 'Atur profil, tema terang/gelap, format tanggal & jam, serta preferensi tampilan.' },
+  { icon: Lock, title: 'Akun Aman & Pribadi', desc: 'Login dan sesi aman, dengan setiap data hanya dapat diakses oleh pemiliknya.' },
 ];
 
 const BENEFITS = [
-  { icon: '⚡', title: 'Cepat & Ringan', desc: 'Halaman muat cepat dengan interaksi responsif.' },
-  { icon: '📱', title: 'Responsif di Semua Layar', desc: 'Nyaman di desktop, tablet, maupun ponsel.' },
-  { icon: '♿', title: 'Aksesibel', desc: 'Kontras jelas, navigasi mudah, dan struktur semantik.' },
-  { icon: '🔐', title: 'Privat & Aman', desc: 'Data pribadi Anda tetap terisolasi dan aman.' },
+  { icon: Zap, title: 'Cepat & Ringan', desc: 'Halaman muat cepat dengan interaksi responsif.' },
+  { icon: Smartphone, title: 'Responsif di Semua Layar', desc: 'Nyaman di desktop, tablet, maupun ponsel.' },
+  { icon: Accessibility, title: 'Aksesibel', desc: 'Kontras jelas, navigasi mudah, dan struktur semantik.' },
+  { icon: ShieldCheck, title: 'Privat & Aman', desc: 'Data pribadi Anda tetap terisolasi dan aman.' },
 ];
 
 export default function LandingPage() {
@@ -72,7 +95,7 @@ export default function LandingPage() {
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link href="/login" className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-8 py-3.5 font-semibold text-white shadow-xl shadow-blue-600/25 transition hover:bg-blue-500 sm:w-auto">
-              🚀 Mulai Sekarang
+              <Rocket className="h-5 w-5" /> Mulai Sekarang
             </Link>
             <a href="#features" className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-8 py-3.5 font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700 sm:w-auto">
               Jelajahi Fitur
@@ -96,23 +119,23 @@ export default function LandingPage() {
           </div>
           <div className="grid gap-8 md:grid-cols-2">
             <div className="rounded-2xl border border-red-200 bg-red-50 p-8 dark:border-red-900/30 dark:bg-red-950/20">
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 text-xl text-red-600 dark:text-red-400">⚠️</div>
+              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 text-red-600 dark:text-red-400"><AlertTriangle className="h-6 w-6" /></div>
               <h3 className="mb-4 text-xl font-semibold text-slate-900 dark:text-white">Masalah: Semuanya Terpencar</h3>
               <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                <li>✕ Tugas ada di satu aplikasi, catatan di aplikasi lain.</li>
-                <li>✕ Bookmark tercecer di browser, jadwal di kalender terpisah.</li>
-                <li>✕ Progres proyek sulit dipantau tanpa gambaran menyeluruh.</li>
-                <li>✕ Waktu habis berpindah-pindah aplikasi hanya untuk cek prioritas.</li>
+                <li className="flex items-start gap-2"><X className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />Tugas ada di satu aplikasi, catatan di aplikasi lain.</li>
+                <li className="flex items-start gap-2"><X className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />Bookmark tercecer di browser, jadwal di kalender terpisah.</li>
+                <li className="flex items-start gap-2"><X className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />Progres proyek sulit dipantau tanpa gambaran menyeluruh.</li>
+                <li className="flex items-start gap-2"><X className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />Waktu habis berpindah-pindah aplikasi hanya untuk cek prioritas.</li>
               </ul>
             </div>
             <div className="rounded-2xl border border-blue-200 bg-blue-50 p-8 dark:border-blue-900/30 dark:bg-blue-950/20">
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 text-xl text-blue-600 dark:text-blue-400">✓</div>
+              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400"><CheckCircle2 className="h-6 w-6" /></div>
               <h3 className="mb-4 text-xl font-semibold text-slate-900 dark:text-white">Solusi: Semua di Satu Tempat</h3>
               <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                <li>✓ Satu dashboard untuk melihat seluruh aktivitas harian Anda.</li>
-                <li>✓ Tugas, proyek, catatan, dan jadwal saling terhubung.</li>
-                <li>✓ Statistik produktivitas membantu Anda tetap konsisten.</li>
-                <li>✓ Ringkas, cepat, dan nyaman digunakan setiap hari.</li>
+                <li className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />Satu dashboard untuk melihat seluruh aktivitas harian Anda.</li>
+                <li className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />Tugas, proyek, catatan, dan jadwal saling terhubung.</li>
+                <li className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />Statistik produktivitas membantu Anda tetap konsisten.</li>
+                <li className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />Ringkas, cepat, dan nyaman digunakan setiap hari.</li>
               </ul>
             </div>
           </div>
@@ -129,7 +152,7 @@ export default function LandingPage() {
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f) => (
               <div key={f.title} className="rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 transition hover:border-slate-700">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-lg dark:bg-slate-800">{f.icon}</div>
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600/10 text-blue-600 dark:bg-slate-800 dark:text-blue-400"><f.icon className="h-5 w-5" /></div>
                 <h3 className="mb-2 text-lg font-semibold text-slate-900 dark:text-white">{f.title}</h3>
                 <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">{f.desc}</p>
               </div>
@@ -166,7 +189,7 @@ export default function LandingPage() {
               </div>
               <div className="space-y-4 p-6 md:col-span-4">
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">Selamat Datang kembali! 👋</h3>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">Selamat Datang kembali!</h3>
                   <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Sabtu, 3 Oktober 2026 • 4 tugas aktif hari ini</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -200,7 +223,7 @@ export default function LandingPage() {
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {BENEFITS.map((b) => (
               <div key={b.title} className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-lg dark:bg-slate-800">{b.icon}</div>
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600/10 text-blue-600 dark:bg-slate-800 dark:text-blue-400"><b.icon className="h-5 w-5" /></div>
                 <h3 className="mb-2 font-semibold text-slate-900 dark:text-white">{b.title}</h3>
                 <p className="text-sm text-slate-600 dark:text-slate-400">{b.desc}</p>
               </div>
