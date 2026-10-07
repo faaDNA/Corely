@@ -13,10 +13,14 @@ const TYPE_BADGE: Record<string, string> = {
   task: 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30',
   schedule: 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/30',
   project: 'bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-500/30',
-  habit: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30',
 };
 
-/** Semua item kalender diturunkan otomatis — user tidak perlu input dua kali. */
+/** Badge aman — tipe lama (mis. habit) jatuh ke personal. */
+function badgeFor(type: string): string {
+  return TYPE_BADGE[type] ?? TYPE_BADGE.personal;
+}
+
+/** Semua item kalender diturunkan otomatis — user tidak perlu input dua kali. Habit tidak tampil di kalender (ponytail: tampilkan jika habit punya jadwal spesifik). */
 function deriveItems(events: EventItem[], tasks: Task[]): EventItem[] {
   const fromTasks: EventItem[] = tasks
     .filter((t) => t.dueDate && t.status !== 'COMPLETED')
@@ -33,7 +37,15 @@ function deriveItems(events: EventItem[], tasks: Task[]): EventItem[] {
 }
 
 function toISO(d: Date) {
-  return d.toISOString().slice(0, 10);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const da = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${da}`;
+}
+
+function fromISO(iso: string) {
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(y, m - 1, d);
 }
 
 export default function CalendarPage() {
@@ -73,10 +85,17 @@ export default function CalendarPage() {
   }
 
   function move(delta: number) {
+    if (view === 'day') {
+      const d = fromISO(selected);
+      d.setDate(d.getDate() + delta);
+      const iso = toISO(d);
+      setSelected(iso);
+      setCursor(new Date(d.getFullYear(), d.getMonth(), 1));
+      return;
+    }
     const d = new Date(cursor);
     if (view === 'month') d.setMonth(d.getMonth() + delta);
     else if (view === 'week') d.setDate(d.getDate() + delta * 7);
-    else d.setDate(d.getDate() + delta);
     setCursor(d);
   }
 
@@ -108,7 +127,11 @@ export default function CalendarPage() {
         <div className="flex flex-col gap-3 border-b border-slate-200 dark:border-slate-800 p-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <button type="button" onClick={() => move(-1)} aria-label="Previous" className="rounded-lg border border-slate-200 dark:border-slate-700 p-1.5 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"><ChevronLeft className="h-4 w-4" /></button>
-            <span className="min-w-[160px] text-center text-sm font-semibold text-slate-900 dark:text-white">{monthLabel}</span>
+            <span className="min-w-[160px] text-center text-sm font-semibold text-slate-900 dark:text-white">
+              {view === 'day'
+                ? fromISO(selected).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
+                : monthLabel}
+            </span>
             <button type="button" onClick={() => move(1)} aria-label="Next" className="rounded-lg border border-slate-200 dark:border-slate-700 p-1.5 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"><ChevronRight className="h-4 w-4" /></button>
             <Button variant="outline" size="sm" onClick={() => { const now = new Date('2026-10-04T00:00:00'); setCursor(new Date(now.getFullYear(), now.getMonth(), 1)); setSelected(toISO(now)); }}>Hari Ini</Button>
           </div>
@@ -152,7 +175,7 @@ export default function CalendarPage() {
                     <span className={cn('text-xs font-medium', isSel ? 'text-blue-600 dark:text-blue-400' : 'text-slate-700 dark:text-slate-300')}>{d.getDate()}</span>
                     <div className="mt-1 space-y-0.5">
                       {evs.slice(0, 2).map((e) => (
-                        <div key={e.id} className={cn('truncate rounded border px-1 py-0.5 text-[9px]', TYPE_BADGE[e.type])}>{e.title}</div>
+                        <div key={e.id} className={cn('truncate rounded border px-1 py-0.5 text-[9px]', badgeFor(e.type))}>{e.title}</div>
                       ))}
                       {evs.length > 2 && <div className="text-[9px] text-slate-500">+{evs.length - 2} lagi</div>}
                     </div>
@@ -184,7 +207,7 @@ export default function CalendarPage() {
                   <div className={cn('text-lg font-semibold', isSel ? 'text-blue-600 dark:text-blue-400' : 'text-slate-900 dark:text-white')}>{d.getDate()}</div>
                   <div className="mt-1 space-y-1">
                     {evs.map((e) => (
-                      <div key={e.id} className={cn('truncate rounded border px-1 py-0.5 text-[10px]', TYPE_BADGE[e.type])}>{e.title}</div>
+                      <div key={e.id} className={cn('truncate rounded border px-1 py-0.5 text-[10px]', badgeFor(e.type))}>{e.title}</div>
                     ))}
                     {evs.length === 0 && <div className="text-[10px] text-slate-600">—</div>}
                   </div>
@@ -198,12 +221,12 @@ export default function CalendarPage() {
         {view === 'day' && (
           <div className="p-4">
             <p className="mb-3 text-xs text-slate-400">
-              {new Date(selected + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+              {fromISO(selected).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
             <div className="space-y-2">
               {selectedEvents.map((e) => (
                 <div key={e.id} className="flex items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3 text-sm">
-                  <span className={cn('rounded border px-2 py-0.5 text-[10px] uppercase', TYPE_BADGE[e.type])}>{e.type}</span>
+                  <span className={cn('rounded border px-2 py-0.5 text-[10px] uppercase', badgeFor(e.type))}>{e.type}</span>
                   <span className="flex-1 text-slate-800 dark:text-slate-200">{e.title}</span>
                   <span className="text-xs text-slate-500">{e.startDate}</span>
                   {!e.id.startsWith('task-') && !e.id.startsWith('proj-') && (
@@ -222,7 +245,6 @@ export default function CalendarPage() {
         <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-blue-500" />Personal / Jadwal Tugas</span>
         <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-amber-500" />Tenggat Tugas</span>
         <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-purple-500" />Batas Proyek</span>
-        <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-emerald-500" />Habit</span>
         <span className="text-[11px] text-slate-500">Tenggat &amp; jadwal tugas serta batas proyek muncul otomatis.</span>
       </div>
 
@@ -253,7 +275,6 @@ export default function CalendarPage() {
                 <option value="personal">Personal</option>
                 <option value="task">Tenggat Tugas</option>
                 <option value="project">Batas Proyek</option>
-                <option value="habit">Habit</option>
               </select>
             </div>
             <div className="mt-6 flex justify-end gap-2">
