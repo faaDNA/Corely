@@ -2,9 +2,8 @@
 
 import Link from 'next/link';
 import { useFormState } from 'react-dom';
-import { googleLogin, register } from '../actions';
+import { register } from '../actions';
 import { Button, Card, CardContent, CardHeader, CardTitle, CardDescription } from '@repo/ui';
-import { GoogleIcon } from '@/components/google-icon';
 
 const initialState: { error?: string } = {};
 
@@ -18,22 +17,6 @@ export function RegisterForm() {
         <CardDescription>Mulai kelola produktivitas Anda. (Mode dummy — langsung masuk)</CardDescription>
       </CardHeader>
       <CardContent>
-        <form action={googleLogin} className="mb-4">
-          <button
-            type="submit"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
-          >
-            <GoogleIcon className="h-5 w-5 shrink-0" />
-            Daftar dengan Google
-          </button>
-        </form>
-
-        <div className="mb-4 flex items-center gap-3 text-[11px] text-slate-400">
-          <span className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
-          atau
-          <span className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
-        </div>
-
         <form action={formAction} className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="name" className="text-sm font-medium text-slate-700 dark:text-slate-200">Nama</label>
