@@ -46,11 +46,8 @@ export default function LandingPage() {
             <a href="#benefits" className="transition hover:text-slate-900 dark:hover:text-white">Keunggulan</a>
           </nav>
           <div className="flex items-center gap-3">
-            <Link href="/login" className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700">
+            <Link href="/login" className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-blue-600/30 transition hover:bg-blue-500">
               Masuk
-            </Link>
-            <Link href="/register" className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-blue-600/30 transition hover:bg-blue-500">
-              Daftar
             </Link>
           </div>
         </div>
@@ -220,12 +217,9 @@ export default function LandingPage() {
             <p className="mx-auto mt-4 max-w-2xl text-sm text-slate-600 dark:text-slate-300 sm:text-base">
               Satu tempat untuk tugas, proyek, catatan, dan jadwal Anda. Rapi, terpusat, dan siap digunakan setiap hari.
             </p>
-            <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+            <div className="mt-8 flex justify-center">
               <Link href="/login" className="rounded-xl bg-blue-600 px-8 py-3.5 font-semibold text-white shadow-xl shadow-blue-600/30 transition hover:bg-blue-500">
                 Masuk ke Dashboard
-              </Link>
-              <Link href="/register" className="rounded-xl border border-slate-200 bg-white px-8 py-3.5 font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-600">
-                Buat Akun
               </Link>
             </div>
           </div>
