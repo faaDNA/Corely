@@ -98,7 +98,7 @@ export default function SettingsPage() {
               </div>
               <div className="space-y-1.5">
                 <label htmlFor="s-nickname" className="text-xs font-medium text-slate-600 dark:text-slate-300">Nama Panggilan</label>
-                <input id="s-nickname" placeholder="Nama panggilan" value={profile.nickname} onChange={(e) => setProfile((p) => ({ ...p, nickname: e.target.value }))} className={inputCls} />
+                <input id="s-nickname" placeholder="Mau dipanggil siapa?" value={profile.nickname} onChange={(e) => setProfile((p) => ({ ...p, nickname: e.target.value }))} className={inputCls} />
               </div>
               <div className="space-y-1.5 sm:col-span-2">
                 <label htmlFor="s-email" className="text-xs font-medium text-slate-600 dark:text-slate-300">Email</label>
