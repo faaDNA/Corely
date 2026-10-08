@@ -31,9 +31,13 @@ export async function register(_prev: unknown, formData: FormData) {
   const nickname = String(formData.get('nickname') ?? '').trim();
   const email = String(formData.get('email') ?? '').trim();
   const password = String(formData.get('password') ?? '');
+  const confirmPassword = String(formData.get('confirmPassword') ?? '');
 
-  if (!name || !nickname || !email || !password) {
+  if (!name || !nickname || !email || !password || !confirmPassword) {
     return { error: 'Semua field wajib diisi.' };
+  }
+  if (password !== confirmPassword) {
+    return { error: 'Konfirmasi password tidak cocok.' };
   }
   if (!email.includes('@')) {
     return { error: 'Format email tidak valid.' };

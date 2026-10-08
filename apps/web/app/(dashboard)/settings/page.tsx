@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
-import { Sun, Moon, Monitor, User, Palette, SlidersHorizontal, LogOut, Check, Lock } from 'lucide-react';
+import { Sun, Moon, Monitor, User, Palette, SlidersHorizontal, LogOut, Check, Lock, Eye, EyeOff } from 'lucide-react';
 import { Button, Card, CardContent, CardHeader, CardTitle, CardDescription, cn } from '@repo/ui';
 import { logout } from '@/app/(auth)/actions';
 import { toast } from '@/components/toast';
@@ -15,6 +15,16 @@ export default function SettingsPage() {
   const [dateFormat, setDateFormat] = useState('id-ID');
   const [timeFormat, setTimeFormat] = useState('24h');
   const [pw, setPw] = useState({ current: '', next: '', confirm: '' });
+  const [showPw, setShowPw] = useState({ current: false, next: false, confirm: false });
+
+  function toggleShow(key: keyof typeof showPw) {
+    setShowPw((v) => ({ ...v, [key]: !v[key] }));
+  }
+
+  const pwFieldCls = 'relative';
+  const pwToggleCls = 'absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200';
+  const pwInputCls =
+    'w-full rounded-lg border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-950 px-3 py-2 pr-10 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500 focus:outline-none';
 
   useEffect(() => setMounted(true), []);
 
@@ -47,6 +57,7 @@ export default function SettingsPage() {
     }
     toast('Password berhasil diubah (dummy).');
     setPw({ current: '', next: '', confirm: '' });
+    setShowPw({ current: false, next: false, confirm: false });
   }
 
   function savePreferences() {
@@ -111,15 +122,30 @@ export default function SettingsPage() {
           <form onSubmit={savePassword} className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-1.5 sm:col-span-2">
               <label htmlFor="s-pw-current" className="text-xs font-medium text-slate-600 dark:text-slate-300">Password Saat Ini</label>
-              <input id="s-pw-current" type="password" placeholder="••••••••" autoComplete="current-password" value={pw.current} onChange={(e) => setPw((v) => ({ ...v, current: e.target.value }))} className={inputCls} />
+              <div className={pwFieldCls}>
+                <input id="s-pw-current" type={showPw.current ? 'text' : 'password'} placeholder="••••••••" autoComplete="current-password" value={pw.current} onChange={(e) => setPw((v) => ({ ...v, current: e.target.value }))} className={pwInputCls} />
+                <button type="button" onClick={() => toggleShow('current')} aria-label={showPw.current ? 'Sembunyikan' : 'Tampilkan'} className={pwToggleCls}>
+                  {showPw.current ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </div>
             <div className="space-y-1.5">
               <label htmlFor="s-pw-next" className="text-xs font-medium text-slate-600 dark:text-slate-300">Password Baru</label>
-              <input id="s-pw-next" type="password" placeholder="Minimal 6 karakter" autoComplete="new-password" value={pw.next} onChange={(e) => setPw((v) => ({ ...v, next: e.target.value }))} className={inputCls} />
+              <div className={pwFieldCls}>
+                <input id="s-pw-next" type={showPw.next ? 'text' : 'password'} placeholder="Minimal 6 karakter" autoComplete="new-password" value={pw.next} onChange={(e) => setPw((v) => ({ ...v, next: e.target.value }))} className={pwInputCls} />
+                <button type="button" onClick={() => toggleShow('next')} aria-label={showPw.next ? 'Sembunyikan' : 'Tampilkan'} className={pwToggleCls}>
+                  {showPw.next ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </div>
             <div className="space-y-1.5">
               <label htmlFor="s-pw-confirm" className="text-xs font-medium text-slate-600 dark:text-slate-300">Konfirmasi Password Baru</label>
-              <input id="s-pw-confirm" type="password" placeholder="Ulangi password baru" autoComplete="new-password" value={pw.confirm} onChange={(e) => setPw((v) => ({ ...v, confirm: e.target.value }))} className={inputCls} />
+              <div className={pwFieldCls}>
+                <input id="s-pw-confirm" type={showPw.confirm ? 'text' : 'password'} placeholder="Ulangi password baru" autoComplete="new-password" value={pw.confirm} onChange={(e) => setPw((v) => ({ ...v, confirm: e.target.value }))} className={pwInputCls} />
+                <button type="button" onClick={() => toggleShow('confirm')} aria-label={showPw.confirm ? 'Sembunyikan' : 'Tampilkan'} className={pwToggleCls}>
+                  {showPw.confirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </div>
             <div className="flex flex-wrap items-center gap-2 sm:col-span-2">
               <Button type="submit" size="sm"><Check className="mr-2 h-4 w-4" />Simpan Password</Button>

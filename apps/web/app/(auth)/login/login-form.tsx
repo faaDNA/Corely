@@ -1,7 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { useFormState } from 'react-dom';
+import { Eye, EyeOff } from 'lucide-react';
 import { googleLogin, login } from '../actions';
 import { Button, Card, CardContent, CardHeader, CardTitle, CardDescription } from '@repo/ui';
 import { GoogleIcon } from '@/components/google-icon';
@@ -10,6 +12,7 @@ const initialState: { error?: string } = {};
 
 export function LoginForm() {
   const [state, formAction] = useFormState(login, initialState);
+  const [showPw, setShowPw] = useState(false);
 
   return (
     <Card className="w-full max-w-md bg-white dark:bg-slate-900/80">
@@ -50,16 +53,26 @@ export function LoginForm() {
           </div>
           <div className="space-y-2">
             <label htmlFor="password" className="text-sm font-medium text-slate-700 dark:text-slate-200">Password</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              placeholder="••••••••"
-              autoComplete="current-password"
-              defaultValue="password123"
-              className="w-full rounded-lg border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
-            />
+            <div className="relative">
+              <input
+                id="password"
+                name="password"
+                type={showPw ? 'text' : 'password'}
+                required
+                placeholder="••••••••"
+                autoComplete="current-password"
+                defaultValue="password123"
+                className="w-full rounded-lg border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-950 px-3 py-2 pr-10 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPw((v) => !v)}
+                aria-label={showPw ? 'Sembunyikan password' : 'Tampilkan password'}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+              >
+                {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
           </div>
 
           {state?.error && (
