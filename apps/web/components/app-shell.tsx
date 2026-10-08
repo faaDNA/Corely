@@ -167,21 +167,31 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       </nav>
 
       <div className="border-t border-slate-200 p-3 dark:border-slate-800">
-        <form action={logout}>
-          <button
-            className="flex w-full items-center gap-3 rounded-lg p-2 text-left transition hover:bg-slate-100 dark:hover:bg-slate-800"
-            type="submit"
+        <div className="flex items-center gap-2">
+          <Link
+            href="/settings"
+            onClick={onNavigate}
+            className="flex flex-1 items-center gap-3 rounded-lg p-2 text-left transition hover:bg-slate-100 dark:hover:bg-slate-800"
           >
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
-              U
+              D
             </div>
             <div className="min-w-0 flex-1 leading-tight">
-              <p className="truncate text-sm font-medium text-slate-900 dark:text-white">User</p>
-              <p className="truncate text-[11px] text-slate-500">user@mail.com · Keluar</p>
+              <p className="truncate text-sm font-medium text-slate-900 dark:text-white">Daffa Naufal</p>
+              <p className="truncate text-[11px] text-slate-500">daffa@mail.com</p>
             </div>
-            <LogOut className="h-4 w-4 text-slate-500" />
-          </button>
-        </form>
+          </Link>
+          <form action={logout}>
+            <button
+              type="submit"
+              title="Keluar"
+              aria-label="Keluar"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/50 dark:hover:text-red-400"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
@@ -221,9 +231,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
           <div className="ml-auto flex items-center gap-2">
             <ThemeToggle />
-            <Link href="/settings" className="hidden h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white sm:flex">
-              U
-            </Link>
           </div>
         </header>
 
