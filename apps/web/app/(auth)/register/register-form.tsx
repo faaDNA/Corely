@@ -25,8 +25,20 @@ export function RegisterForm() {
               name="name"
               type="text"
               required
-              placeholder="Nama Anda"
+              placeholder="Nama lengkap"
               autoComplete="name"
+              className="w-full rounded-lg border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
+            />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="nickname" className="text-sm font-medium text-slate-700 dark:text-slate-200">Nama Panggilan</label>
+            <input
+              id="nickname"
+              name="nickname"
+              type="text"
+              required
+              placeholder="Nama panggilan"
+              autoComplete="nickname"
               className="w-full rounded-lg border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
             />
           </div>

@@ -28,10 +28,11 @@ export async function login(_prev: unknown, formData: FormData) {
 
 export async function register(_prev: unknown, formData: FormData) {
   const name = String(formData.get('name') ?? '').trim();
+  const nickname = String(formData.get('nickname') ?? '').trim();
   const email = String(formData.get('email') ?? '').trim();
   const password = String(formData.get('password') ?? '');
 
-  if (!name || !email || !password) {
+  if (!name || !nickname || !email || !password) {
     return { error: 'Semua field wajib diisi.' };
   }
   if (!email.includes('@')) {
