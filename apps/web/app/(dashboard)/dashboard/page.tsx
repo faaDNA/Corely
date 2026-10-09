@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, cn } from '@repo/ui';
 import { Greeting } from '@/components/greeting';
-import { mockTasks, mockProjects, mockNotes, mockHabits, mockEvents, mockStats } from '@/lib/mock-data';
+import { mockTasks, mockProjects, mockNotes, mockHabits, mockStats } from '@/lib/mock-data';
 import { deriveProjectStatus, projectProgress } from '@/lib/project-status';
 
 const PRIORITY_BADGE: Record<string, string> = {
@@ -192,7 +192,7 @@ export default function DashboardPage() {
       {/* Upcoming events */}
       <Card>
         <CardHeader className="flex-row items-center justify-between space-y-0">
-          <CardTitle className="text-base">Acara &amp; Jadwal Mendatang</CardTitle>
+          <CardTitle className="text-base">Jadwal Mendatang</CardTitle>
           <Link href="/calendar" className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">Kalender</Link>
         </CardHeader>
         <CardContent className="flex flex-wrap gap-2">
@@ -203,13 +203,9 @@ export default function DashboardPage() {
               <span className="text-blue-600/80 dark:text-blue-400/80">{t.dueDate}{t.dueTime ? ` · ${t.dueTime}` : ''}</span>
             </span>
           ))}
-          {mockEvents.map((e) => (
-            <span key={e.id} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-3 py-2 text-xs text-slate-700 dark:text-slate-300">
-              <CalendarClock className="h-4 w-4 text-slate-400" />
-              {e.title}
-              <span className="text-slate-500">{e.startDate}</span>
-            </span>
-          ))}
+          {upcomingSchedules.length === 0 && (
+            <p className="text-xs text-slate-500">Tidak ada jadwal terdekat.</p>
+          )}
         </CardContent>
       </Card>
     </div>

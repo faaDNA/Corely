@@ -1,4 +1,4 @@
-import type { Task, Project, Note, Bookmark, Habit, EventItem } from '@repo/types';
+import type { Task, Project, Note, Bookmark, Habit } from '@repo/types';
 
 export const mockUser = {
   name: 'Daffa Naufal',
@@ -46,12 +46,6 @@ export const mockHabits: Habit[] = [
   { id: 'h2', name: 'Baca 20 menit', frequency: 'daily', streak: 7, longestStreak: 15, completedToday: false },
   { id: 'h3', name: 'Minum 8 gelas air', frequency: 'daily', streak: 3, longestStreak: 30, completedToday: true },
   { id: 'h4', name: 'Meditasi', frequency: 'daily', streak: 0, longestStreak: 10, completedToday: false },
-];
-
-export const mockEvents: EventItem[] = [
-  { id: 'e1', title: 'Rapat tim', startDate: '2026-10-04', type: 'personal' },
-  { id: 'e2', title: 'Deadline tugas kuliah', startDate: '2026-10-08', type: 'task' },
-  { id: 'e3', title: 'Deploy v1.0', startDate: '2026-11-01', type: 'project' },
 ];
 
 export const mockStats = {

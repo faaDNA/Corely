@@ -1,27 +1,35 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Trash2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button, cn } from '@repo/ui';
 import type { EventItem, Task } from '@repo/types';
-import { mockEvents, mockTasks, mockProjects } from '@/lib/mock-data';
+import { mockTasks, mockProjects } from '@/lib/mock-data';
 
 type ViewMode = 'month' | 'week' | 'day';
 
 const TYPE_BADGE: Record<string, string> = {
-  personal: 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/30',
   task: 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30',
   schedule: 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/30',
   project: 'bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-500/30',
 };
 
-/** Badge aman — tipe lama (mis. habit) jatuh ke personal. */
+/** Badge aman — tipe tak dikenal jatuh ke task. */
 function badgeFor(type: string): string {
-  return TYPE_BADGE[type] ?? TYPE_BADGE.personal;
+  return TYPE_BADGE[type] ?? TYPE_BADGE.task;
 }
 
-/** Semua item kalender diturunkan otomatis — user tidak perlu input dua kali. Habit tidak tampil di kalender (ponytail: tampilkan jika habit punya jadwal spesifik). */
-function deriveItems(events: EventItem[], tasks: Task[]): EventItem[] {
+const TYPE_LABEL: Record<string, string> = {
+  task: 'Tenggat Tugas',
+  schedule: 'Jadwal Tugas',
+  project: 'Batas Proyek',
+};
+
+/**
+ * Kalender murni agregasi: 2 tipe tugas (Tenggat & Jadwal) + tenggat proyek.
+ * Tidak ada input manual — semua turunan dari Task & Project.
+ */
+function deriveItems(tasks: Task[], projects: typeof mockProjects): EventItem[] {
   const fromTasks: EventItem[] = tasks
     .filter((t) => t.dueDate && t.status !== 'COMPLETED')
     .map((t) => ({
@@ -30,10 +38,10 @@ function deriveItems(events: EventItem[], tasks: Task[]): EventItem[] {
       startDate: t.dueDate!,
       type: t.dateMode === 'schedule' ? 'schedule' : 'task',
     }));
-  const fromProjects: EventItem[] = mockProjects
+  const fromProjects: EventItem[] = projects
     .filter((p) => p.deadline && !p.archived)
     .map((p) => ({ id: `proj-${p.id}`, title: p.name, startDate: p.deadline!, type: 'project' as const }));
-  return [...events, ...fromTasks, ...fromProjects];
+  return [...fromTasks, ...fromProjects];
 }
 
 function toISO(d: Date) {
@@ -49,13 +57,10 @@ function fromISO(iso: string) {
 }
 
 export default function CalendarPage() {
-  const [events, setEvents] = useState<EventItem[]>(mockEvents);
-  const items = useMemo(() => deriveItems(events, mockTasks), [events]);
+  const items = useMemo(() => deriveItems(mockTasks, mockProjects), []);
   const [view, setView] = useState<ViewMode>('month');
   const [cursor, setCursor] = useState(new Date('2026-10-01T00:00:00'));
   const [selected, setSelected] = useState(toISO(new Date('2026-10-04T00:00:00')));
-  const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ title: '', date: selected, type: 'personal' });
 
   const monthLabel = cursor.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
   const weekStart = useMemo(() => {
@@ -99,17 +104,6 @@ export default function CalendarPage() {
     setCursor(d);
   }
 
-  function addEvent(e: React.FormEvent) {
-    e.preventDefault();
-    if (!form.title.trim()) return;
-    setEvents((prev) => [
-      ...prev,
-      { id: `e${Date.now()}`, title: form.title.trim(), startDate: form.date, type: form.type as EventItem['type'] },
-    ]);
-    setForm({ title: '', date: selected, type: 'personal' });
-    setOpen(false);
-  }
-
   const selectedEvents = eventsOn(selected);
 
   return (
@@ -117,9 +111,8 @@ export default function CalendarPage() {
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Kalender</h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Acara pribadi, tenggat tugas, dan batas proyek dalam satu tampilan.</p>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Tenggat &amp; jadwal tugas serta batas proyek, otomatis dalam satu tampilan.</p>
         </div>
-        <Button onClick={() => setOpen(true)}><Plus className="mr-2 h-4 w-4" />Acara Baru</Button>
       </header>
 
       <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60">
@@ -226,15 +219,12 @@ export default function CalendarPage() {
             <div className="space-y-2">
               {selectedEvents.map((e) => (
                 <div key={e.id} className="flex items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3 text-sm">
-                  <span className={cn('rounded border px-2 py-0.5 text-[10px] uppercase', badgeFor(e.type))}>{e.type}</span>
+                  <span className={cn('rounded border px-2 py-0.5 text-[10px] uppercase', badgeFor(e.type))}>{TYPE_LABEL[e.type]}</span>
                   <span className="flex-1 text-slate-800 dark:text-slate-200">{e.title}</span>
                   <span className="text-xs text-slate-500">{e.startDate}</span>
-                  {!e.id.startsWith('task-') && !e.id.startsWith('proj-') && (
-                    <button type="button" onClick={() => setEvents((prev) => prev.filter((x) => x.id !== e.id))} aria-label="Delete" className="text-slate-600 hover:text-red-400"><Trash2 className="h-4 w-4" /></button>
-                  )}
                 </div>
               ))}
-              {selectedEvents.length === 0 && <p className="rounded-lg border border-dashed border-slate-300 dark:border-slate-800 p-6 text-center text-xs text-slate-500">Tidak ada acara pada tanggal ini.</p>}
+              {selectedEvents.length === 0 && <p className="rounded-lg border border-dashed border-slate-300 dark:border-slate-800 p-6 text-center text-xs text-slate-500">Tidak ada agenda pada tanggal ini.</p>}
             </div>
           </div>
         )}
@@ -242,48 +232,11 @@ export default function CalendarPage() {
 
       {/* Legend */}
       <div className="flex flex-wrap gap-3 text-xs text-slate-400">
-        <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-blue-500" />Personal / Jadwal Tugas</span>
         <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-amber-500" />Tenggat Tugas</span>
+        <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-blue-500" />Jadwal Tugas</span>
         <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-purple-500" />Batas Proyek</span>
-        <span className="text-[11px] text-slate-500">Tenggat &amp; jadwal tugas serta batas proyek muncul otomatis.</span>
+        <span className="text-[11px] text-slate-500">Semua agenda muncul otomatis dari Tugas &amp; Proyek.</span>
       </div>
-
-      {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setOpen(false)} />
-          <form onSubmit={addEvent} className="relative w-full max-w-md rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 shadow-2xl">
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Acara Baru</h3>
-            <div className="mt-4 space-y-3">
-              <input
-                value={form.title}
-                onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-                placeholder="Judul acara"
-                required
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500"
-              />
-              <input
-                type="date"
-                value={form.date}
-                onChange={(e) => setForm((f) => ({ ...f, date: e.target.value }))}
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-white"
-              />
-              <select
-                value={form.type}
-                onChange={(e) => setForm((f) => ({ ...f, type: e.target.value }))}
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-white"
-              >
-                <option value="personal">Personal</option>
-                <option value="task">Tenggat Tugas</option>
-                <option value="project">Batas Proyek</option>
-              </select>
-            </div>
-            <div className="mt-6 flex justify-end gap-2">
-              <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Batal</Button>
-              <Button type="submit">Tambah</Button>
-            </div>
-          </form>
-        </div>
-      )}
     </div>
   );
 }

@@ -68,5 +68,5 @@ export interface EventItem {
   title: string;
   startDate: string;
   endDate?: string;
-  type: 'personal' | 'task' | 'schedule' | 'project' | 'habit';
+  type: 'task' | 'schedule' | 'project';
 }
