@@ -26,12 +26,3 @@ export function purgeExpired(tasks: Task[], now: Date = new Date()): Task[] {
 export function workingTasks(tasks: Task[], now: Date = new Date()): Task[] {
   return purgeExpired(tasks, now).filter((t) => !t.deletedAt);
 }
-
-/** Bulan saat item ini akan ter-purge, mis. "November 2026". */
-export function purgeAtLabel(deletedAt: string): string {
-  const d = new Date(deletedAt);
-  return new Date(d.getFullYear(), d.getMonth() + RETENTION_MONTHS, 1).toLocaleDateString('id-ID', {
-    month: 'long',
-    year: 'numeric',
-  });
-}
