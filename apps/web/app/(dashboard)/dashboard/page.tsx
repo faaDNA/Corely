@@ -11,6 +11,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, cn } from '@repo/ui';
 import { Greeting } from '@/components/greeting';
 import { mockTasks, mockProjects, mockNotes, mockHabits, mockStats } from '@/lib/mock-data';
+import { workingTasks } from '@/lib/task-retention';
 import { deriveProjectStatus, projectProgress } from '@/lib/project-status';
 
 const PRIORITY_BADGE: Record<string, string> = {
@@ -21,15 +22,16 @@ const PRIORITY_BADGE: Record<string, string> = {
 
 export default function DashboardPage() {
   const today = '2026-10-04';
-  const todayTasks = mockTasks.filter((t) => t.dueDate === today);
+  const activeTasks = workingTasks(mockTasks);
+  const todayTasks = activeTasks.filter((t) => t.dueDate === today);
   const activeProjects = mockProjects
-    .filter((p) => deriveProjectStatus(p, mockTasks) === 'IN_PROGRESS')
-    .map((p) => ({ ...p, progress: projectProgress(p, mockTasks) }));
-  const upcomingDeadlines = mockTasks
+    .filter((p) => deriveProjectStatus(p, activeTasks) === 'IN_PROGRESS')
+    .map((p) => ({ ...p, progress: projectProgress(p, activeTasks) }));
+  const upcomingDeadlines = activeTasks
     .filter((t) => t.dueDate && t.dueDate > today && t.status !== 'COMPLETED' && t.dateMode !== 'schedule')
     .sort((a, b) => (a.dueDate! < b.dueDate! ? -1 : 1))
     .slice(0, 4);
-  const upcomingSchedules = mockTasks
+  const upcomingSchedules = activeTasks
     .filter((t) => t.dueDate && t.status !== 'COMPLETED' && t.dateMode === 'schedule')
     .sort((a, b) => (a.dueDate! < b.dueDate! ? -1 : 1));
   const recentNotes = [...mockNotes].sort((a, b) => (a.updatedAt > b.updatedAt ? -1 : 1)).slice(0, 3);

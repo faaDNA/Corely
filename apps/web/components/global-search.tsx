@@ -63,7 +63,7 @@ export function GlobalSearch() {
       .forEach((b) => out.push({ id: `b-${b.id}`, label: b.title, sub: b.url, group: 'Bookmarks', href: '/bookmarks', icon: <Bookmark className="h-4 w-4" /> }));
 
     mockTasks
-      .filter((t) => t.title.toLowerCase().includes(qq))
+      .filter((t) => !t.deletedAt && t.title.toLowerCase().includes(qq))
       .forEach((t) => out.push({ id: `t-${t.id}`, label: t.title, sub: `${t.status} · ${t.priority}`, group: 'Tasks', href: '/tasks', icon: <CheckSquare className="h-4 w-4" /> }));
 
     return out;

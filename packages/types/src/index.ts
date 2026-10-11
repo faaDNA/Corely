@@ -16,6 +16,8 @@ export interface Task {
   projectId?: string;
   tags?: string[];
   completedAt?: string;
+  /** terisi = masuk Tong Sampah (soft delete). Hilang permanen setelah keluar window retensi bulanan. */
+  deletedAt?: string;
 }
 
 export type ProjectStatus = 'IN_PROGRESS' | 'COMPLETED' | 'ON_HOLD' | 'ARCHIVED';

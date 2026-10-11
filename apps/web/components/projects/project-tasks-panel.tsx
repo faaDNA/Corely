@@ -6,6 +6,7 @@ import { Button, cn } from '@repo/ui';
 import type { Task, TaskStatus, TaskPriority } from '@repo/types';
 import { TaskFormModal } from '@/components/tasks/task-form-modal';
 import type { TaskFormValues } from '@/components/tasks/task-schema';
+import { purgeAtLabel } from '@/lib/task-retention';
 import { toast } from '@/components/toast';
 
 const PRIORITY_BADGE: Record<string, string> = {
@@ -24,7 +25,7 @@ export function ProjectTasksPanel({ projectId, projectName, tasks, setTasks }: {
   const [modal, setModal] = useState<{ open: boolean; initial?: Task | null }>({ open: false });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
-  const related = useMemo(() => tasks.filter((t) => t.projectId === projectId), [tasks, projectId]);
+  const related = useMemo(() => tasks.filter((t) => t.projectId === projectId && !t.deletedAt), [tasks, projectId]);
   const done = related.filter((t) => t.status === 'COMPLETED').length;
 
   function toggle(id: string) {
@@ -69,9 +70,10 @@ export function ProjectTasksPanel({ projectId, projectName, tasks, setTasks }: {
 
   function confirmDelete() {
     if (!pendingDelete) return;
-    setTasks((prev) => prev.filter((t) => t.id !== pendingDelete));
+    const today = new Date().toISOString().slice(0, 10);
+    setTasks((prev) => prev.map((t) => (t.id === pendingDelete ? { ...t, deletedAt: today } : t)));
     setPendingDelete(null);
-    toast('Tugas dihapus.');
+    toast(`Dipindah ke Sampah — hilang permanen awal ${purgeAtLabel(today)}.`);
   }
 
   return (
@@ -125,11 +127,11 @@ export function ProjectTasksPanel({ projectId, projectName, tasks, setTasks }: {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60" onClick={() => setPendingDelete(null)} />
           <div className="relative w-full max-w-sm rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 shadow-2xl">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Hapus tugas ini?</h3>
-            <p className="mt-2 text-xs text-slate-400">Tindakan ini tidak bisa dibatalkan.</p>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Pindah ke Sampah?</h3>
+            <p className="mt-2 text-xs text-slate-400">Bisa dipulihkan dari halaman Tugas › Sampah sebelum hilang permanen.</p>
             <div className="mt-4 flex justify-end gap-2">
               <Button variant="ghost" size="sm" onClick={() => setPendingDelete(null)}>Batal</Button>
-              <Button variant="danger" size="sm" onClick={confirmDelete}>Hapus</Button>
+              <Button variant="danger" size="sm" onClick={confirmDelete}>Pindah ke Sampah</Button>
             </div>
           </div>
         </div>

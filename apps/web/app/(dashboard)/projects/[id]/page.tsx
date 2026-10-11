@@ -16,7 +16,7 @@ export default function ProjectDetailPage() {
   const [tasks, setTasks] = useState<Task[]>(mockTasks);
 
   const project = useMemo(() => mockProjects.find((p) => p.id === id), [id]);
-  const related = useMemo(() => tasks.filter((t) => t.projectId === id), [tasks, id]);
+  const related = useMemo(() => tasks.filter((t) => t.projectId === id && !t.deletedAt), [tasks, id]);
 
   if (!project) {
     return (

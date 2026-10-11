@@ -41,7 +41,7 @@ export default function ProjectsPage() {
   };
 
   function relatedCount(id: string) {
-    return mockTasks.filter((t) => t.projectId === id).length;
+    return mockTasks.filter((t) => t.projectId === id && !t.deletedAt).length;
   }
 
   function handleFormSubmit(values: ProjectFormValues) {

@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button, cn } from '@repo/ui';
 import type { EventItem, Task } from '@repo/types';
 import { mockTasks, mockProjects } from '@/lib/mock-data';
+import { workingTasks } from '@/lib/task-retention';
 
 type ViewMode = 'month' | 'week' | 'day';
 
@@ -57,7 +58,7 @@ function fromISO(iso: string) {
 }
 
 export default function CalendarPage() {
-  const items = useMemo(() => deriveItems(mockTasks, mockProjects), []);
+  const items = useMemo(() => deriveItems(workingTasks(mockTasks), mockProjects), []);
   const [view, setView] = useState<ViewMode>('month');
   const [cursor, setCursor] = useState(new Date('2026-10-01T00:00:00'));
   const [selected, setSelected] = useState(toISO(new Date('2026-10-04T00:00:00')));

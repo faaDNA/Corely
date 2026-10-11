@@ -18,6 +18,7 @@ import {
 } from 'recharts';
 import { cn } from '@repo/ui';
 import { mockTasks, mockProjects, mockHabits } from '@/lib/mock-data';
+import { purgeExpired } from '@/lib/task-retention';
 import { deriveProjectStatus, projectProgress } from '@/lib/project-status';
 
 type Period = 'daily' | 'weekly' | 'monthly';
@@ -95,19 +96,21 @@ function ChartTooltip({ active, payload, label }: any) {
 export default function AnalyticsPage() {
   const [period, setPeriod] = useState<Period>('daily');
 
-  const completed = mockTasks.filter((t) => t.status === 'COMPLETED').length;
-  const pending = mockTasks.filter((t) => t.status !== 'COMPLETED').length;
-  const completionRate = mockTasks.length ? Math.round((completed / mockTasks.length) * 100) : 0;
+  // Window retensi: buang sampah yang sudah lewat 5 bulan, sisanya masuk statistik
+  const tracked = purgeExpired(mockTasks);
+  // DONE ter-trash tetap dihitung (nilai historis); TODO ter-trash tidak (sudah user buang)
+  const completed = tracked.filter((t) => t.status === 'COMPLETED').length;
+  const pending = tracked.filter((t) => t.status !== 'COMPLETED' && !t.deletedAt).length;
+  const completionRate = completed + pending ? Math.round((completed / (completed + pending)) * 100) : 0;
 
-  const statusData = ['TODO', 'COMPLETED'].map((s) => ({
-    name: s === 'TODO' ? 'Todo' : 'Completed',
-    value: mockTasks.filter((t) => t.status === s).length,
-    key: s,
-  }));
+  const statusData = [
+    { name: 'Todo', value: pending, key: 'TODO' },
+    { name: 'Completed', value: completed, key: 'COMPLETED' },
+  ];
 
-  const projectData = mockProjects.filter((p) => deriveProjectStatus(p, mockTasks) === 'IN_PROGRESS').map((p) => ({
+  const projectData = mockProjects.filter((p) => deriveProjectStatus(p, tracked) === 'IN_PROGRESS').map((p) => ({
     name: p.name.length > 16 ? p.name.slice(0, 16) + '…' : p.name,
-    progress: projectProgress(p, mockTasks),
+    progress: projectProgress(p, tracked),
   }));
 
   const habitData = mockHabits.map((h) => ({
@@ -142,7 +145,7 @@ export default function AnalyticsPage() {
         <StatCard label="Tugas Selesai" value={String(completed)} sub={`${completionRate}% completion rate`} color="#10b981" />
         <StatCard label="Tugas Tertunda" value={String(pending)} sub="Belum diselesaikan" color="#3b82f6" />
         <StatCard label="Streak Terpanjang" value={`${Math.max(...mockHabits.map((h) => h.longestStreak))} Hari`} sub="Dari semua kebiasaan" color="#f59e0b" />
-        <StatCard label="Progres Proyek" value={`${Math.round(mockProjects.filter((p) => deriveProjectStatus(p, mockTasks) === 'IN_PROGRESS').reduce((a, p) => a + projectProgress(p, mockTasks), 0) / Math.max(1, mockProjects.filter((p) => deriveProjectStatus(p, mockTasks) === 'IN_PROGRESS').length))}%`} sub="Rata-rata proyek aktif" color="#a78bfa" />
+        <StatCard label="Progres Proyek" value={`${Math.round(mockProjects.filter((p) => deriveProjectStatus(p, tracked) === 'IN_PROGRESS').reduce((a, p) => a + projectProgress(p, tracked), 0) / Math.max(1, mockProjects.filter((p) => deriveProjectStatus(p, tracked) === 'IN_PROGRESS').length))}%`} sub="Rata-rata proyek aktif" color="#a78bfa" />
       </div>
 
       {/* Completion over time */}
