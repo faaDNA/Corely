@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { mockUser } from '@/lib/mock-data';
+import type { Profile } from '@repo/types';
 
-export function Greeting() {
+export function Greeting({ profile }: { profile: Profile }) {
   const [now, setNow] = useState<Date | null>(null);
   useEffect(() => {
     setNow(new Date());
@@ -19,10 +19,12 @@ export function Greeting() {
     ? now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
     : '';
 
+  const who = profile.nickname || profile.name || 'Pengguna';
+
   return (
     <div>
       <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-        {partOfDay}, {mockUser.name}! 👋
+        {partOfDay}, {who}! 👋
       </h1>
       <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{dateStr}</p>
     </div>

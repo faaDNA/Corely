@@ -8,7 +8,7 @@ import { googleLogin, login } from '../actions';
 import { Button, Card, CardContent, CardHeader, CardTitle, CardDescription } from '@repo/ui';
 import { GoogleIcon } from '@/components/google-icon';
 
-const initialState: { error?: string } = {};
+const initialState: { error?: string; message?: string } = {};
 
 export function LoginForm() {
   const [state, formAction] = useFormState(login, initialState);
@@ -18,7 +18,7 @@ export function LoginForm() {
     <Card className="w-full max-w-md bg-white dark:bg-slate-900/80">
       <CardHeader>
         <CardTitle className="text-xl">Selamat datang kembali</CardTitle>
-        <CardDescription>Masuk untuk membuka workspace Anda. (Mode dummy — email & password apa saja valid)</CardDescription>
+        <CardDescription>Masuk untuk membuka workspace Anda.</CardDescription>
       </CardHeader>
       <CardContent>
         <form action={googleLogin} className="mb-4">
@@ -47,7 +47,6 @@ export function LoginForm() {
               required
               placeholder="nama@email.com"
               autoComplete="email"
-              defaultValue="daffa@mail.com"
               className="w-full rounded-lg border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
             />
           </div>
@@ -61,7 +60,6 @@ export function LoginForm() {
                 required
                 placeholder="••••••••"
                 autoComplete="current-password"
-                defaultValue="password123"
                 className="w-full rounded-lg border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-950 px-3 py-2 pr-10 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
               />
               <button
@@ -80,6 +78,17 @@ export function LoginForm() {
               {state.error}
             </p>
           )}
+          {state?.message && (
+            <p className="rounded-lg border border-emerald-900/50 bg-emerald-950/30 px-3 py-2 text-xs text-emerald-300">
+              {state.message}
+            </p>
+          )}
+
+          <div className="flex justify-end">
+            <Link href="/forgot-password" className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+              Lupa password?
+            </Link>
+          </div>
 
           <Button className="w-full" type="submit">Masuk</Button>
 

@@ -26,6 +26,7 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { cn } from '@repo/ui';
+import type { Profile } from '@repo/types';
 import { GlobalSearch } from './global-search';
 import { ToastHost } from './toast';
 import { logout } from '@/app/(auth)/actions';
@@ -100,7 +101,13 @@ export function ThemeToggle() {
   );
 }
 
-function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
+function SidebarContent({
+  onNavigate,
+  profile,
+}: {
+  onNavigate?: () => void;
+  profile?: Profile | null;
+}) {
   const pathname = usePathname();
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
@@ -112,6 +119,10 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
     if (profileOpen) document.addEventListener('mousedown', onDoc);
     return () => document.removeEventListener('mousedown', onDoc);
   }, [profileOpen]);
+
+  const displayName = profile?.name || 'Pengguna';
+  const displayEmail = profile?.email || '—';
+  const initial = (profile?.nickname || profile?.name || 'U').charAt(0).toUpperCase();
 
   return (
     <div className="flex h-full flex-col">
@@ -170,11 +181,11 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           aria-expanded={profileOpen}
         >
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
-            D
+            {initial}
           </div>
           <div className="min-w-0 flex-1 leading-tight">
-            <p className="truncate text-sm font-medium text-slate-900 dark:text-white">Daffa Naufal</p>
-            <p className="truncate text-[11px] text-slate-500">daffa@mail.com</p>
+            <p className="truncate text-sm font-medium text-slate-900 dark:text-white">{displayName}</p>
+            <p className="truncate text-[11px] text-slate-500">{displayEmail}</p>
           </div>
           <span className="text-slate-400">{profileOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}</span>
         </button>
@@ -207,14 +218,14 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({ children, profile }: { children: React.ReactNode; profile?: Profile | null }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <div className="flex min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       {/* Desktop sidebar */}
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 border-r border-slate-200 bg-white/80 dark:border-slate-800 dark:bg-slate-900/60 md:block">
-        <SidebarContent />
+        <SidebarContent profile={profile} />
       </aside>
 
       {/* Mobile drawer */}
@@ -222,7 +233,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="fixed inset-0 z-40 md:hidden">
           <div className="absolute inset-0 bg-black/60" onClick={() => setMobileOpen(false)} />
           <aside className="absolute left-0 top-0 h-full w-72 border-r border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
-            <SidebarContent onNavigate={() => setMobileOpen(false)} />
+            <SidebarContent profile={profile} onNavigate={() => setMobileOpen(false)} />
           </aside>
         </div>
       )}

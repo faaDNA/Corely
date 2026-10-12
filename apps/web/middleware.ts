@@ -4,53 +4,47 @@ import { createServerClient } from '@supabase/ssr';
 
 const PROTECTED = ['/dashboard', '/tasks', '/projects', '/notes', '/bookmarks', '/habits', '/calendar', '/analytics', '/settings'];
 
-/** Refresh sesi Supabase via cookie — guard dummy `pd_session` lama dibuang. Tanpa env, fallback guard lama agar dev mock tetap jalan. */
+/** Refresh sesi Supabase via cookie + guard route. */
 export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
+  const { pathname } = req.nextUrl;
+  let res = NextResponse.next({ request: { headers: req.headers } });
+
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  const { pathname } = req.nextUrl;
-
-  if (!url || !anonKey) {
-    // Env belum diset → mode dummy lama (supaya UI mock tetap bisa dibuka).
-    const session = req.cookies.get('pd_session')?.value;
-    if (PROTECTED.some((p) => pathname === p || pathname.startsWith(p + '/')) && !session) {
-      const redir = req.nextUrl.clone();
-      redir.pathname = '/login';
-      return NextResponse.redirect(redir);
-    }
-    if ((pathname === '/login' || pathname === '/register') && session) {
-      const redir = req.nextUrl.clone();
-      redir.pathname = '/dashboard';
-      return NextResponse.redirect(redir);
-    }
-    return res;
-  }
+  // Tanpa env (mis. build lokal) — lewati guard, jangan crash.
+  if (!url || !anonKey) return res;
 
   const supabase = createServerClient(url, anonKey, {
     cookies: {
       getAll: () => req.cookies.getAll(),
       setAll: (cookiesToSet) => {
+        cookiesToSet.forEach(({ name, value }) => req.cookies.set(name, value));
+        res = NextResponse.next({ request: { headers: req.headers } });
         cookiesToSet.forEach(({ name, value, options }) => res.cookies.set(name, value, options));
       },
     },
   });
 
+  // getUser() wajib memicu refresh token + set cookie.
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (PROTECTED.some((p) => pathname === p || pathname.startsWith(p + '/')) && !user) {
-    const redir = req.nextUrl.clone();
-    redir.pathname = '/login';
-    return NextResponse.redirect(redir);
-  }
+  const guarded = PROTECTED.some((p) => pathname === p || pathname.startsWith(p + '/'));
+  const authPage = pathname === '/login' || pathname === '/register';
 
-  if ((pathname === '/login' || pathname === '/register') && user) {
-    const redir = req.nextUrl.clone();
-    redir.pathname = '/dashboard';
-    return NextResponse.redirect(redir);
+  if ((guarded && !user) || (authPage && user)) {
+    const target = req.nextUrl.clone();
+    target.pathname = guarded && !user ? '/login' : '/dashboard';
+    target.search = '';
+    const redirectRes = NextResponse.redirect(target);
+    res.cookies.getAll().forEach((c) => redirectRes.cookies.set(c));
+    return redirectRes;
   }
 
   return res;
 }
+
+export const config = {
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)'],
+};

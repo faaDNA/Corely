@@ -1,3 +1,10 @@
+/** Profil user — 1:1 dengan auth.users (tabel public.profiles). */
+export interface Profile {
+  name: string;
+  nickname: string;
+  email: string;
+}
+
 export type TaskStatus = 'TODO' | 'COMPLETED';
 export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH';
 /** deadline = tenggat (tanpa jam) · schedule = jadwal hari-H (tanggal + jam) */

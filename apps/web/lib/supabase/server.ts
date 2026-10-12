@@ -3,11 +3,12 @@ import { cookies } from 'next/headers';
 
 /** Server client (Server Components, Server Actions, Route Handlers). */
 export function createClient() {
+  // cookies() duluan → bikin route jadi dynamic, bukan error env saat `next build`.
+  const cookieStore = cookies();
+
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !anonKey) throw new Error('Supabase env belum diset — isi apps/web/.env.local (lihat .env.example).');
-
-  const cookieStore = cookies();
 
   return createServerClient(url, anonKey, {
     cookies: {

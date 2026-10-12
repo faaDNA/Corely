@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, cn } from '@repo/ui';
 import { Greeting } from '@/components/greeting';
+import { getProfile } from '@/lib/profile';
 import { mockTasks, mockProjects, mockNotes, mockHabits, mockStats } from '@/lib/mock-data';
 import { workingTasks } from '@/lib/task-retention';
 import { deriveProjectStatus, projectProgress } from '@/lib/project-status';
@@ -20,7 +21,9 @@ const PRIORITY_BADGE: Record<string, string> = {
   LOW: 'bg-slate-500/10 text-slate-500 dark:text-slate-400 border-slate-500/20',
 };
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const profile = await getProfile();
+
   const today = '2026-10-04';
   const activeTasks = workingTasks(mockTasks);
   const todayTasks = activeTasks.filter((t) => t.dueDate === today);
@@ -46,7 +49,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <Greeting />
+        <Greeting profile={profile ?? { name: 'Pengguna', nickname: '', email: '' }} />
         <div className="flex gap-2">
           <Link href="/tasks" className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"><CheckCircle2 className="mr-2 h-4 w-4" />Tugas</Link>
           <Link href="/projects" className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"><FolderKanban className="mr-2 h-4 w-4" />Proyek</Link>
