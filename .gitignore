@@ -24,3 +24,10 @@ yarn-error.log*
 .vercel
 *.tsbuildinfo
 next-env.d.ts
+
+# internal plan (jangan di-commit)
+plan-backend.md
+
+# supabase local
+supabase/.temp/
+supabase/.branches/
