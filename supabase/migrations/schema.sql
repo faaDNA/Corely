@@ -195,21 +195,21 @@ create policy "own habit logs" on public.habit_logs for all using (auth.uid() = 
 -- Purge sampah task setiap tanggal 1, 00:30 — floor = awal bulan now - 4 bulan
 -- (5 bulan termasuk bulan ini, ikut window Analitik — sama dengan retentionFloor() di apps/web/lib/task-retention.ts).
 -- pg_cron wajib di-enable dulu di Dashboard Supabase; kalau belum, blok ini dilewati tanpa menggagalkan file.
-do $$ begin
+do $cron$ begin
   create extension if not exists pg_cron;
-  select cron.unschedule('purge-deleted-tasks-5m');
-exception when insufficient_privilege then
-  raise notice 'pg_cron tidak tersedia — purge manual.';
-end $$;
+  perform cron.unschedule('purge-deleted-tasks-5m');
+exception when others then
+  raise notice 'pg_cron unschedule lewati: %', sqlerrm;
+end $cron$;
 
-do $$ begin
-  select cron.schedule(
+do $cron$ begin
+  perform cron.schedule(
     'purge-deleted-tasks-5m',
     '30 0 1 * *',
-    $$ delete from public.tasks
+    $job$ delete from public.tasks
        where deleted_at is not null
-         and deleted_at < date_trunc('month', now() - interval '4 months'); $$
+         and deleted_at < date_trunc('month', now() - interval '4 months'); $job$
   );
-exception when undefined_object or insufficient_privilege then
-  raise notice 'cron tidak dijadwalkan — aktifkan pg_cron.';
-end $$;
+exception when others then
+  raise notice 'cron schedule lewati — aktifkan pg_cron di Dashboard: %', sqlerrm;
+end $cron$;
