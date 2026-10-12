@@ -11,7 +11,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, cn } from '@repo/ui';
 import { Greeting } from '@/components/greeting';
 import { getProfile } from '@/lib/profile';
-import { mockTasks, mockProjects, mockNotes, mockHabits, mockStats } from '@/lib/mock-data';
+import { createClient } from '@/lib/supabase/server';
+import { getHabits, getNotes, getProjects, getTasks } from '@/lib/mappers';
 import { workingTasks } from '@/lib/task-retention';
 import { deriveProjectStatus, projectProgress } from '@/lib/project-status';
 
@@ -23,11 +24,20 @@ const PRIORITY_BADGE: Record<string, string> = {
 
 export default async function DashboardPage() {
   const profile = await getProfile();
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  let tasks: Awaited<ReturnType<typeof getTasks>> = [];
+  let projects: Awaited<ReturnType<typeof getProjects>> = [];
+  let notes: Awaited<ReturnType<typeof getNotes>> = [];
+  let habits: Awaited<ReturnType<typeof getHabits>> = [];
+  if (user) [tasks, projects, notes, habits] = await Promise.all([getTasks(user.id), getProjects(user.id), getNotes(user.id), getHabits(user.id)]);
 
   const today = '2026-10-04';
-  const activeTasks = workingTasks(mockTasks);
+  const activeTasks = workingTasks(tasks);
   const todayTasks = activeTasks.filter((t) => t.dueDate === today);
-  const activeProjects = mockProjects
+  const activeProjects = projects
     .filter((p) => deriveProjectStatus(p, activeTasks) === 'IN_PROGRESS')
     .map((p) => ({ ...p, progress: projectProgress(p, activeTasks) }));
   const upcomingDeadlines = activeTasks
@@ -37,13 +47,12 @@ export default async function DashboardPage() {
   const upcomingSchedules = activeTasks
     .filter((t) => t.dueDate && t.status !== 'COMPLETED' && t.dateMode === 'schedule')
     .sort((a, b) => (a.dueDate! < b.dueDate! ? -1 : 1));
-  const recentNotes = [...mockNotes].sort((a, b) => (a.updatedAt > b.updatedAt ? -1 : 1)).slice(0, 3);
 
   const stats = [
-    { label: 'Tugas Pending', value: mockStats.pendingTasks, sub: `${mockStats.completedToday} selesai hari ini`, icon: Circle, color: 'text-blue-600 dark:text-blue-400' },
-    { label: 'Proyek Aktif', value: mockStats.activeProjects, sub: `${mockStats.upcomingDeadlines} mendekati tenggat`, icon: FolderKanban, color: 'text-emerald-600 dark:text-emerald-400' },
-    { label: 'Streak Kebiasaan', value: `${mockStats.habitStreak} Hari`, sub: 'Rekor: 24 hari', icon: Flame, color: 'text-amber-600 dark:text-amber-400' },
-    { label: 'Catatan', value: mockNotes.length, sub: `${mockNotes.filter((n) => n.pinned).length} disematkan`, icon: NotebookPen, color: 'text-purple-600 dark:text-purple-400' },
+    { label: 'Tugas Pending', value: tasks.filter((t) => t.status === 'TODO' && !t.deletedAt).length, sub: `${tasks.filter((t) => t.completedAt === today).length} selesai hari ini`, icon: Circle, color: 'text-blue-600 dark:text-blue-400' },
+    { label: 'Proyek Aktif', value: activeProjects.length, sub: `${tasks.filter((t) => t.dueDate && (t.dueDate > today) && t.status !== 'COMPLETED' && t.dateMode !== 'schedule' && !t.deletedAt).length} mendekati tenggat`, icon: FolderKanban, color: 'text-emerald-600 dark:text-emerald-400' },
+    { label: 'Streak Kebiasaan', value: `${habits.length ? Math.max(...habits.map((h) => h.streak)) : 0} Hari`, sub: 'Rekor: ' + (habits.length ? Math.max(...habits.map((h) => h.longestStreak)) : 0) + ' hari', icon: Flame, color: 'text-amber-600 dark:text-amber-400' },
+    { label: 'Catatan', value: notes.length, sub: `${notes.filter((n) => n.pinned).length} disematkan`, icon: NotebookPen, color: 'text-purple-600 dark:text-purple-400' },
   ];
 
   return (
@@ -156,7 +165,7 @@ export default async function DashboardPage() {
               <Link href="/notes" className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">Semua</Link>
             </CardHeader>
             <CardContent className="space-y-2">
-              {recentNotes.map((n) => (
+              {notes.sort((a, b) => (a.updatedAt > b.updatedAt ? -1 : 1)).slice(0, 3).map((n) => (
                 <div key={n.id} className="flex items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-2.5 text-xs">
                   <NotebookPen className="h-4 w-4 shrink-0 text-purple-600 dark:text-purple-400" />
                   <span className="flex-1 truncate text-slate-800 dark:text-slate-200">{n.title}</span>
@@ -174,7 +183,7 @@ export default async function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
-                {mockHabits.map((h) => (
+                {habits.map((h) => (
                   <span
                     key={h.id}
                     className={cn(

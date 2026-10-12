@@ -5,14 +5,14 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { X } from 'lucide-react';
 import { Button } from '@repo/ui';
-import type { Task } from '@repo/types';
-import { mockProjects } from '@/lib/mock-data';
+import type { Project, Task } from '@repo/types';
 import { taskSchema, type TaskFormValues, PRIORITY_LABELS } from './task-schema';
 
 interface Props {
   open: boolean;
   initial?: Task | null;
   defaultProjectId?: string;
+  projects: Project[];
   onSubmit: (values: TaskFormValues) => void;
   onClose: () => void;
 }
@@ -20,7 +20,7 @@ interface Props {
 const inputCls =
   'w-full rounded-lg border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500 focus:outline-none';
 
-export function TaskFormModal({ open, initial, defaultProjectId, onSubmit, onClose }: Props) {
+export function TaskFormModal({ open, initial, defaultProjectId, projects, onSubmit, onClose }: Props) {
   const {
     register,
     handleSubmit,
@@ -131,7 +131,7 @@ export function TaskFormModal({ open, initial, defaultProjectId, onSubmit, onClo
                 <label htmlFor="t-project" className="text-xs font-medium text-slate-600 dark:text-slate-300">Proyek</label>
                 <select id="t-project" {...register('projectId')} className={inputCls}>
                   <option value="">— Tanpa proyek —</option>
-                  {mockProjects.map((p) => (
+                  {projects.map((p) => (
                     <option key={p.id} value={p.id}>{p.name}</option>
                   ))}
                 </select>
@@ -141,10 +141,10 @@ export function TaskFormModal({ open, initial, defaultProjectId, onSubmit, onClo
 
           {dateMode === 'schedule' && (
             <div className="space-y-1.5">
-              <label htmlFor="t-project" className="text-xs font-medium text-slate-600 dark:text-slate-300">Proyek</label>
-              <select id="t-project" {...register('projectId')} className={inputCls}>
+              <label htmlFor="t-project-s" className="text-xs font-medium text-slate-600 dark:text-slate-300">Proyek</label>
+              <select id="t-project-s" {...register('projectId')} className={inputCls}>
                 <option value="">— Tanpa proyek —</option>
-                {mockProjects.map((p) => (
+                {projects.map((p) => (
                   <option key={p.id} value={p.id}>{p.name}</option>
                 ))}
               </select>

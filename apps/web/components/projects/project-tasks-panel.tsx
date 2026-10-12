@@ -3,9 +3,10 @@
 import { useMemo, useState, type Dispatch, type SetStateAction } from 'react';
 import { Plus, Pencil, Trash2, CheckCircle2, Circle } from 'lucide-react';
 import { Button, cn } from '@repo/ui';
-import type { Task, TaskStatus, TaskPriority } from '@repo/types';
+import type { Project, Task, TaskStatus, TaskPriority } from '@repo/types';
 import { TaskFormModal } from '@/components/tasks/task-form-modal';
 import type { TaskFormValues } from '@/components/tasks/task-schema';
+import { deleteTask, saveTask, toggleTask } from '@/app/(dashboard)/tasks/actions';
 import { toast } from '@/components/toast';
 
 const PRIORITY_BADGE: Record<string, string> = {
@@ -15,11 +16,13 @@ const PRIORITY_BADGE: Record<string, string> = {
 };
 
 /** Tugas milik satu proyek. State diangkat dari halaman detail agar progress header ikut update (ponytail: global store saat backend ada). */
-export function ProjectTasksPanel({ projectId, projectName, tasks, setTasks }: {
+export function ProjectTasksPanel({ projectId, projectName, projects, tasks, setTasks, onChanged }: {
   projectId: string;
   projectName: string;
+  projects: Project[];
   tasks: Task[];
   setTasks: Dispatch<SetStateAction<Task[]>>;
+  onChanged?: () => void;
 }) {
   const [modal, setModal] = useState<{ open: boolean; initial?: Task | null }>({ open: false });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
@@ -27,25 +30,31 @@ export function ProjectTasksPanel({ projectId, projectName, tasks, setTasks }: {
   const related = useMemo(() => tasks.filter((t) => t.projectId === projectId && !t.deletedAt), [tasks, projectId]);
   const done = related.filter((t) => t.status === 'COMPLETED').length;
 
-  function toggle(id: string) {
+  async function toggle(id: string) {
+    const task = tasks.find((t) => t.id === id);
+    if (!task) return;
+    const next: TaskStatus = task.status === 'COMPLETED' ? 'TODO' : 'COMPLETED';
     setTasks((prev) =>
       prev.map((t) =>
         t.id === id
-          ? {
-              ...t,
-              status: (t.status === 'COMPLETED' ? 'TODO' : 'COMPLETED') as TaskStatus,
-              completedAt: t.status === 'COMPLETED' ? undefined : new Date().toISOString().slice(0, 10),
-            }
+          ? { ...t, status: next, completedAt: next === 'TODO' ? undefined : new Date().toISOString().slice(0, 10) }
           : t
       )
     );
+    const res = await toggleTask(task);
+    if (!res.ok) {
+      setTasks((prev) => prev.map((t) => (t.id === id ? task : t)));
+      toast(res.error ?? 'Gagal memperbarui tugas.');
+      return;
+    }
+    onChanged?.();
   }
 
-  function submit(values: TaskFormValues) {
+  async function submit(values: TaskFormValues) {
     // status tidak dari form — tugas baru selalu TODO, edit pertahankan status lama
     const status: TaskStatus = modal.initial?.status ?? 'TODO';
     const payload: Task = {
-      id: modal.initial?.id ?? `t${Date.now()}`,
+      id: modal.initial?.id ?? `new-${Date.now()}`,
       title: values.title,
       description: values.description || undefined,
       status,
@@ -57,22 +66,36 @@ export function ProjectTasksPanel({ projectId, projectName, tasks, setTasks }: {
       tags: values.tags ? values.tags.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
       completedAt: status === 'COMPLETED' ? modal.initial?.completedAt ?? new Date().toISOString().slice(0, 10) : undefined,
     };
+    setModal({ open: false });
     if (modal.initial) {
       setTasks((prev) => prev.map((t) => (t.id === modal.initial!.id ? payload : t)));
-      toast('Tugas diperbarui.');
     } else {
       setTasks((prev) => [...prev, payload]);
-      toast(`Tugas ditambahkan ke ${projectName}.`);
     }
-    setModal({ open: false });
+    const res = await saveTask(payload);
+    if (!res.ok) {
+      toast(res.error ?? 'Gagal menyimpan tugas.');
+      onChanged?.(); // refresh menarik ulang data benar dari server
+      return;
+    }
+    toast(modal.initial ? 'Tugas diperbarui.' : `Tugas ditambahkan ke ${projectName}.`);
+    onChanged?.();
   }
 
-  function confirmDelete() {
+  async function confirmDelete() {
     if (!pendingDelete) return;
-    const today = new Date().toISOString().slice(0, 10);
-    setTasks((prev) => prev.map((t) => (t.id === pendingDelete ? { ...t, deletedAt: today } : t)));
+    const id = pendingDelete;
+    const backup = tasks;
+    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, deletedAt: new Date().toISOString().slice(0, 10) } : t)));
     setPendingDelete(null);
+    const res = await deleteTask(id);
+    if (!res.ok) {
+      setTasks(backup);
+      toast(res.error ?? 'Gagal menghapus tugas.');
+      return;
+    }
     toast('Tugas dihapus.');
+    onChanged?.();
   }
 
   return (
@@ -118,6 +141,7 @@ export function ProjectTasksPanel({ projectId, projectName, tasks, setTasks }: {
         open={modal.open}
         initial={modal.initial ?? null}
         defaultProjectId={projectId}
+        projects={projects}
         onSubmit={submit}
         onClose={() => setModal({ open: false })}
       />

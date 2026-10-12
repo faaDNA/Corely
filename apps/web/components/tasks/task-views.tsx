@@ -2,40 +2,8 @@
 
 import { CheckCircle2, Circle, Pencil, Trash2 } from 'lucide-react';
 import { cn } from '@repo/ui';
-import type { Task } from '@repo/types';
-import { mockProjects } from '@/lib/mock-data';
-
-const PRIORITY_BADGE: Record<string, string> = {
-  HIGH: 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20',
-  MEDIUM: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20',
-  LOW: 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20',
-};
-
-function projectName(id?: string) {
-  return mockProjects.find((p) => p.id === id)?.name;
-}
-
-export function TaskBadges({ task }: { task: Task }) {
-  const isSchedule = task.dateMode === 'schedule';
-  return (
-    <div className="flex flex-wrap items-center gap-1.5">
-      <span className={cn('rounded border px-1.5 py-0.5 text-[10px] font-medium', PRIORITY_BADGE[task.priority])}>
-        {task.priority}
-      </span>
-      {task.dueDate && (
-        <span className={cn('rounded px-1.5 py-0.5 text-[10px]', isSchedule ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400' : 'bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400')}>
-          {isSchedule ? '🗓' : '📅'} {task.dueDate}{isSchedule && task.dueTime ? ` · ${task.dueTime}` : ''}
-        </span>
-      )}
-      {projectName(task.projectId) && (
-        <span className="rounded bg-blue-500/10 px-1.5 py-0.5 text-[10px] text-blue-600 dark:text-blue-400">📁 {projectName(task.projectId)}</span>
-      )}
-      {task.tags?.map((tag) => (
-        <span key={tag} className="rounded bg-purple-500/10 px-1.5 py-0.5 text-[10px] text-purple-600 dark:text-purple-400">#{tag}</span>
-      ))}
-    </div>
-  );
-}
+import type { Project, Task } from '@repo/types';
+import { TaskBadges } from './task-badges';
 
 function ToggleButton({ task, onToggle }: { task: Task; onToggle: () => void }) {
   return (
@@ -49,11 +17,13 @@ function ToggleButton({ task, onToggle }: { task: Task; onToggle: () => void }) 
 
 function TaskRow({
   task,
+  projects,
   onToggle,
   onEdit,
   onDelete,
 }: {
   task: Task;
+  projects: Project[];
   onToggle: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -66,7 +36,7 @@ function TaskRow({
           {task.title}
         </p>
         {task.description && <p className="text-xs text-slate-500">{task.description}</p>}
-        <TaskBadges task={task} />
+        <TaskBadges task={task} projects={projects} />
       </div>
       <div className="flex shrink-0 gap-1 opacity-0 transition group-hover:opacity-100">
         <button type="button" onClick={onEdit} aria-label="Edit" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-200">
@@ -82,12 +52,14 @@ function TaskRow({
 
 export function TaskListView({
   tasks,
+  projects,
   onToggle,
   onEdit,
   onDelete,
 }: {
   tasks: Task[];
-  onToggle: (id: string) => void;
+  projects: Project[];
+  onToggle: (task: Task) => void;
   onEdit: (task: Task) => void;
   onDelete: (id: string) => void;
 }) {
@@ -102,7 +74,7 @@ export function TaskListView({
   return (
     <div className="space-y-3">
       {tasks.map((t) => (
-        <TaskRow key={t.id} task={t} onToggle={() => onToggle(t.id)} onEdit={() => onEdit(t)} onDelete={() => onDelete(t.id)} />
+        <TaskRow key={t.id} task={t} projects={projects} onToggle={() => onToggle(t)} onEdit={() => onEdit(t)} onDelete={() => onDelete(t.id)} />
       ))}
     </div>
   );
