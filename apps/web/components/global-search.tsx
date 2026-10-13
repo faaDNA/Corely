@@ -4,8 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, CheckSquare, FolderKanban, NotebookPen, Bookmark, CornerDownLeft } from 'lucide-react';
 import { cn } from '@repo/ui';
-import { mockTasks, mockProjects, mockNotes, mockBookmarks } from '@/lib/mock-data';
-import { deriveProjectStatus, projectProgress } from '@/lib/project-status';
+import type { SearchItem } from '@/components/app-shell';
 
 interface Result {
   id: string;
@@ -16,7 +15,14 @@ interface Result {
   icon: React.ReactNode;
 }
 
-export function GlobalSearch() {
+const ICONS: Record<string, React.ReactNode> = {
+  project: <FolderKanban className="h-4 w-4" />,
+  note: <NotebookPen className="h-4 w-4" />,
+  bookmark: <Bookmark className="h-4 w-4" />,
+  task: <CheckSquare className="h-4 w-4" />,
+};
+
+export function GlobalSearch({ items }: { items: SearchItem[] }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState('');
   const [cursor, setCursor] = useState(0);
@@ -46,28 +52,12 @@ export function GlobalSearch() {
   }, []);
 
   const results = useMemo<Result[]>(() => {
-    if (!q.trim()) return [];
-    const qq = q.toLowerCase();
-    const out: Result[] = [];
-
-    mockProjects
-      .filter((p) => p.name.toLowerCase().includes(qq))
-      .forEach((p) => out.push({ id: `p-${p.id}`, label: p.name, sub: `${projectProgress(p, mockTasks)}% · ${deriveProjectStatus(p, mockTasks).replace('_', ' ')}`, group: 'Projects', href: `/projects/${p.id}`, icon: <FolderKanban className="h-4 w-4" /> }));
-
-    mockNotes
-      .filter((n) => n.title.toLowerCase().includes(qq) || n.content.toLowerCase().includes(qq))
-      .forEach((n) => out.push({ id: `n-${n.id}`, label: n.title, sub: n.category, group: 'Notes', href: '/notes', icon: <NotebookPen className="h-4 w-4" /> }));
-
-    mockBookmarks
-      .filter((b) => b.title.toLowerCase().includes(qq) || b.url.toLowerCase().includes(qq))
-      .forEach((b) => out.push({ id: `b-${b.id}`, label: b.title, sub: b.url, group: 'Bookmarks', href: '/bookmarks', icon: <Bookmark className="h-4 w-4" /> }));
-
-    mockTasks
-      .filter((t) => !t.deletedAt && t.title.toLowerCase().includes(qq))
-      .forEach((t) => out.push({ id: `t-${t.id}`, label: t.title, sub: `${t.status} · ${t.priority}`, group: 'Tasks', href: '/tasks', icon: <CheckSquare className="h-4 w-4" /> }));
-
-    return out;
-  }, [q]);
+    const qq = q.trim().toLowerCase();
+    if (!qq) return [];
+    return items
+      .filter((i) => i.label.toLowerCase().includes(qq) || i.sub.toLowerCase().includes(qq))
+      .map((i) => ({ id: i.id, label: i.label, sub: i.sub, group: i.group, href: i.href, icon: ICONS[i.icon] }));
+  }, [q, items]);
 
   const grouped = useMemo(() => {
     const map = new Map<string, Result[]>();

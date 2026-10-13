@@ -218,7 +218,24 @@ function SidebarContent({
   );
 }
 
-export function AppShell({ children, profile }: { children: React.ReactNode; profile?: Profile | null }) {
+export interface SearchItem {
+  id: string;
+  label: string;
+  sub: string;
+  group: string;
+  href: string;
+  icon: 'project' | 'note' | 'bookmark' | 'task';
+}
+
+export function AppShell({
+  children,
+  profile,
+  searchItems,
+}: {
+  children: React.ReactNode;
+  profile?: Profile | null;
+  searchItems?: SearchItem[];
+}) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
@@ -258,7 +275,7 @@ export function AppShell({ children, profile }: { children: React.ReactNode; pro
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6">{children}</main>
       </div>
 
-      <GlobalSearch />
+      <GlobalSearch items={searchItems ?? []} />
       <ToastHost />
     </div>
   );

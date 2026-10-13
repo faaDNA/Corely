@@ -34,7 +34,8 @@ export default async function DashboardPage() {
   let habits: Awaited<ReturnType<typeof getHabits>> = [];
   if (user) [tasks, projects, notes, habits] = await Promise.all([getTasks(user.id), getProjects(user.id), getNotes(user.id), getHabits(user.id)]);
 
-  const today = '2026-10-04';
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   const activeTasks = workingTasks(tasks);
   const todayTasks = activeTasks.filter((t) => t.dueDate === today);
   const activeProjects = projects

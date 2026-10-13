@@ -23,6 +23,8 @@ export interface Task {
   projectId?: string;
   tags?: string[];
   completedAt?: string;
+  /** tanggal buat (YYYY-MM-DD) — untuk deret analitik. */
+  createdAt?: string;
   /** terisi = masuk Tong Sampah (soft delete). Hilang permanen setelah keluar window retensi bulanan. */
   deletedAt?: string;
 }

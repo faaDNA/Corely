@@ -15,6 +15,7 @@ export function taskFromRow(row: {
   project_id: string | null;
   tags: string[] | null;
   completed_at: string | null;
+  created_at: string | null;
   deleted_at: string | null;
 }): Task {
   return {
@@ -30,8 +31,14 @@ export function taskFromRow(row: {
     projectId: row.project_id ?? undefined,
     tags: row.tags ?? undefined,
     completedAt: row.completed_at ?? undefined,
+    // timestamptz → tanggal lokal (hindari geser UTC di deret harian)
+    createdAt: row.created_at ? localDate(new Date(row.created_at)) : undefined,
     deletedAt: row.deleted_at ?? undefined,
   };
+}
+
+function localDate(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
 export function projectFromRow(row: {
@@ -120,7 +127,7 @@ export async function getTasks(userId: string): Promise<Task[]> {
   const supabase = createClient();
   const { data } = await supabase
     .from('tasks')
-    .select('id, title, description, status, priority, due_date, due_time, date_mode, project_id, tags, completed_at, deleted_at')
+    .select('id, title, description, status, priority, due_date, due_time, date_mode, project_id, tags, completed_at, created_at, deleted_at')
     .eq('user_id', userId)
     .order('due_date', { ascending: true, nullsFirst: false });
   return (data ?? []).map(taskFromRow);
