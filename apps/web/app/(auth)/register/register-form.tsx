@@ -57,6 +57,7 @@ export function RegisterForm() {
               autoComplete="email"
               className="w-full rounded-lg border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
             />
+            <p className="text-[11px] text-slate-500">Gunakan email aktif — dibutuhkan kalau lupa password.</p>
           </div>
           <div className="space-y-2">
             <label htmlFor="password" className="text-sm font-medium text-slate-700 dark:text-slate-200">Password</label>

@@ -68,13 +68,13 @@ export async function register(_prev: unknown, formData: FormData): Promise<Auth
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    // ponytail: Supabase Dashboard > Auth > Email confirmation WAJIB on saat dev agar sesi dibuat langsung.
+    // Supabase Dashboard > Authentication > Sign ups > Confirm email = OFF agar sesi langsung dibuat.
     options: { data: { name, nickname } },
   });
   if (error) return { error: idError(error.message) };
 
-  // Konfirmasi email aktif → belum ada sesi, ke halaman login dengan info.
-  if (!data.session) return { message: 'Pendaftaran berhasil. Cek email untuk konfirmasi akun.' };
+  // Fallback kalau Confirm email masih ON di dashboard — normalnya selalu ada sesi.
+  if (!data.session) return { message: 'Akun dibuat. Silakan masuk.' };
 
   redirect('/dashboard');
 }
