@@ -70,6 +70,8 @@ export interface Habit {
   streak: number;
   longestStreak: number;
   completedToday?: boolean;
+  /** 14 tanggal terakhir yang tercatat (YYYY-MM-DD) — untuk heatmap. */
+  recentDays?: string[];
 }
 
 export interface EventItem {

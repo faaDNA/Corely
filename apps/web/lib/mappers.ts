@@ -1,4 +1,4 @@
-import type { Project, Task, Note, Habit } from '@repo/types';
+import type { Project, Task, Note, Habit, Bookmark } from '@repo/types';
 import { createClient } from '@/lib/supabase/server';
 
 // DB snake_case → app camelCase
@@ -90,6 +90,30 @@ export function toProjectRow(userId: string, p: Project) {
   };
 }
 
+export function toNoteRow(userId: string, n: Note) {
+  return {
+    user_id: userId,
+    title: n.title,
+    content: n.content,
+    category: n.category,
+    tags: n.tags ?? null,
+    pinned: !!n.pinned,
+    archived: !!n.archived,
+  };
+}
+
+export function toBookmarkRow(userId: string, b: Bookmark) {
+  return {
+    user_id: userId,
+    title: b.title,
+    url: b.url,
+    description: b.description ?? null,
+    category: b.category,
+    tags: b.tags ?? null,
+    favorite: !!b.favorite,
+  };
+}
+
 // Queries
 
 export async function getTasks(userId: string): Promise<Task[]> {
@@ -154,8 +178,27 @@ export async function getHabits(userId: string): Promise<Habit[]> {
       streak,
       longestStreak: longest,
       completedToday: logs.includes(isoDay(today)),
+      recentDays: logs.slice(0, 14),
     };
   });
+}
+
+export async function getBookmarks(userId: string): Promise<Bookmark[]> {
+  const supabase = createClient();
+  const { data } = await supabase
+    .from('bookmarks')
+    .select('id, title, url, description, category, tags, favorite, created_at')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+  return (data ?? []).map((r) => ({
+    id: r.id as string,
+    title: r.title as string,
+    url: r.url as string,
+    description: (r.description as string | null) ?? undefined,
+    category: r.category as string,
+    tags: (r.tags as string[] | null) ?? undefined,
+    favorite: (r.favorite as boolean) || undefined,
+  }));
 }
 
 function isoDay(d: Date): string {
