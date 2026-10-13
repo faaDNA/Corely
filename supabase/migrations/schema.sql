@@ -120,6 +120,16 @@ create table if not exists public.habit_logs (
   unique (habit_id, logged_date)
 );
 
+-- push_subscriptions (Web Push — 1 baris per perangkat)
+create table if not exists public.push_subscriptions (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  endpoint text not null unique,
+  p256dh text not null,
+  auth text not null,
+  created_at timestamptz not null default now()
+);
+
 -- updated_at triggers
 do $$
 declare t text;
@@ -140,6 +150,8 @@ create index if not exists notes_user_idx on public.notes (user_id);
 create index if not exists bookmarks_user_idx on public.bookmarks (user_id);
 create index if not exists habits_user_idx on public.habits (user_id);
 create index if not exists habit_logs_habit_idx on public.habit_logs (habit_id);
+
+create index if not exists push_subs_user_idx on public.push_subscriptions (user_id);
 
 -- auto-profile on signup
 create or replace function public.handle_new_user()
@@ -162,6 +174,8 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
 
+alter table public.push_subscriptions enable row level security;
+
 -- RLS: satu pola untuk semua tabel
 alter table public.profiles enable row level security;
 alter table public.projects enable row level security;
@@ -170,6 +184,9 @@ alter table public.notes enable row level security;
 alter table public.bookmarks enable row level security;
 alter table public.habits enable row level security;
 alter table public.habit_logs enable row level security;
+
+drop policy if exists "own push subs" on public.push_subscriptions;
+create policy "own push subs" on public.push_subscriptions for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
 drop policy if exists "own profiles" on public.profiles;
 create policy "own profiles" on public.profiles for all using (auth.uid() = id) with check (auth.uid() = id);

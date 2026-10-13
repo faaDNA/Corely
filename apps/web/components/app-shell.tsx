@@ -28,6 +28,7 @@ import {
 import { cn } from '@repo/ui';
 import type { Profile } from '@repo/types';
 import { GlobalSearch } from './global-search';
+import { NotificationsBell } from './notifications-bell';
 import { ToastHost } from './toast';
 import { logout } from '@/app/(auth)/actions';
 
@@ -268,6 +269,7 @@ export function AppShell({
           </button>
 
           <div className="ml-auto flex items-center gap-2">
+            <NotificationsBell />
             <ThemeToggle />
           </div>
         </header>
