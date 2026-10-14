@@ -5,8 +5,9 @@ import Link from 'next/link';
 import { useFormState } from 'react-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { googleLogin, login } from '../actions';
-import { Button, Card, CardContent, CardHeader, CardTitle, CardDescription } from '@repo/ui';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@repo/ui';
 import { GoogleIcon } from '@/components/google-icon';
+import { SubmitButton } from '@/components/submit-button';
 
 const initialState: { error?: string; message?: string } = {};
 
@@ -22,13 +23,14 @@ export function LoginForm() {
       </CardHeader>
       <CardContent>
         <form action={googleLogin} className="mb-4">
-          <button
+          <SubmitButton
             type="submit"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+            className="w-full gap-2 border-slate-200 bg-white py-2.5 text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+            variant="outline"
           >
             <GoogleIcon className="h-5 w-5 shrink-0" />
             Lanjutkan dengan Google
-          </button>
+          </SubmitButton>
         </form>
 
         <div className="mb-4 flex items-center gap-3 text-[11px] text-slate-400">
@@ -90,7 +92,7 @@ export function LoginForm() {
             </Link>
           </div>
 
-          <Button className="w-full" type="submit">Masuk</Button>
+          <SubmitButton className="w-full" type="submit">Masuk</SubmitButton>
 
           <p className="text-center text-xs text-slate-400">
             Belum punya akun?{' '}

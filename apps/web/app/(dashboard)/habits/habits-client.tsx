@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Flame, Check, Trophy, Trash2 } from 'lucide-react';
+import { Plus, Flame, Check, Trophy, Trash2, Loader2 } from 'lucide-react';
 import { Button, cn } from '@repo/ui';
 import type { Habit } from '@repo/types';
 import { addHabit, deleteHabit, toggleHabitToday } from './actions';
@@ -17,6 +17,7 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
   const [habits, setHabits] = useState(initialHabits);
   const [name, setName] = useState('');
   const [open, setOpen] = useState(false);
+  const [adding, setAdding] = useState(false);
 
   async function handleToggle(h: Habit) {
     const next = !h.completedToday;
@@ -39,16 +40,21 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim()) return;
-    const res = await addHabit(name.trim());
-    if (!res.ok) {
-      toast(res.error ?? 'Gagal menambah kebiasaan.');
-      return;
+    if (!name.trim() || adding) return;
+    setAdding(true);
+    try {
+      const res = await addHabit(name.trim());
+      if (!res.ok) {
+        toast(res.error ?? 'Gagal menambah kebiasaan.');
+        return;
+      }
+      toast('Kebiasaan ditambahkan.');
+      setName('');
+      setOpen(false);
+      router.refresh();
+    } finally {
+      setAdding(false);
     }
-    toast('Kebiasaan ditambahkan.');
-    setName('');
-    setOpen(false);
-    router.refresh();
   }
 
   async function handleDelete(id: string) {
@@ -154,7 +160,10 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
             />
             <div className="mt-6 flex justify-end gap-2">
               <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Batal</Button>
-              <Button type="submit">Tambah</Button>
+              <Button type="submit" disabled={adding}>
+              {adding && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Tambah
+            </Button>
             </div>
           </form>
         </div>

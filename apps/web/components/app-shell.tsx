@@ -29,6 +29,7 @@ import { cn } from '@repo/ui';
 import type { Profile } from '@repo/types';
 import { GlobalSearch } from './global-search';
 import { NotificationsBell } from './notifications-bell';
+import { SubmitButton } from './submit-button';
 import { ToastHost } from './toast';
 import { logout } from '@/app/(auth)/actions';
 
@@ -203,14 +204,15 @@ function SidebarContent({
               Pengaturan
             </Link>
             <form action={logout} className="mt-1">
-              <button
+              <SubmitButton
                 type="submit"
                 role="menuitem"
-                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/40"
+                variant="ghost"
+                className="w-full justify-start rounded-lg px-3 py-2 text-red-600 hover:bg-red-50 hover:text-red-600 dark:text-red-400 dark:hover:bg-red-950/40 dark:hover:text-red-400"
               >
                 <LogOut className="h-4 w-4" />
                 Keluar
-              </button>
+              </SubmitButton>
             </form>
           </div>
         )}

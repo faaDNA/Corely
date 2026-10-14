@@ -3,12 +3,13 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
-import { Sun, Moon, Monitor, User, Palette, SlidersHorizontal, LogOut, Check, Lock, Eye, EyeOff } from 'lucide-react';
+import { Sun, Moon, Monitor, User, Palette, SlidersHorizontal, LogOut, Check, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Button, Card, CardContent, CardHeader, CardTitle, CardDescription, cn } from '@repo/ui';
 import type { Profile } from '@repo/types';
 import { logout } from '@/app/(auth)/actions';
 import { changePassword, updateProfile } from './actions';
 import { toast } from '@/components/toast';
+import { SubmitButton } from '@/components/submit-button';
 
 export function SettingsClient({ initialProfile }: { initialProfile: Profile }) {
   const { theme, setTheme } = useTheme();
@@ -18,6 +19,7 @@ export function SettingsClient({ initialProfile }: { initialProfile: Profile }) 
   const [timeFormat, setTimeFormat] = useState('24h');
   const [pw, setPw] = useState({ current: '', next: '', confirm: '' });
   const [showPw, setShowPw] = useState({ current: false, next: false, confirm: false });
+  const [saving, setSaving] = useState({ profile: false, password: false });
 
   function toggleShow(key: keyof typeof showPw) {
     setShowPw((v) => ({ ...v, [key]: !v[key] }));
@@ -32,8 +34,13 @@ export function SettingsClient({ initialProfile }: { initialProfile: Profile }) 
 
   async function saveProfile(e: React.FormEvent) {
     e.preventDefault();
-    const res = await updateProfile(profile);
-    toast(res.error ?? res.message ?? 'Profil disimpan.');
+    setSaving((s) => ({ ...s, profile: true }));
+    try {
+      const res = await updateProfile(profile);
+      toast(res.error ?? res.message ?? 'Profil disimpan.');
+    } finally {
+      setSaving((s) => ({ ...s, profile: false }));
+    }
   }
 
   async function savePassword(e: React.FormEvent) {
@@ -42,11 +49,16 @@ export function SettingsClient({ initialProfile }: { initialProfile: Profile }) 
       toast('Konfirmasi password tidak cocok.');
       return;
     }
-    const res = await changePassword(pw.current, pw.next);
-    toast(res.error ?? res.message ?? 'Password berhasil diubah.');
-    if (!res.error) {
-      setPw({ current: '', next: '', confirm: '' });
-      setShowPw({ current: false, next: false, confirm: false });
+    setSaving((s) => ({ ...s, password: true }));
+    try {
+      const res = await changePassword(pw.current, pw.next);
+      toast(res.error ?? res.message ?? 'Password berhasil diubah.');
+      if (!res.error) {
+        setPw({ current: '', next: '', confirm: '' });
+        setShowPw({ current: false, next: false, confirm: false });
+      }
+    } finally {
+      setSaving((s) => ({ ...s, password: false }));
     }
   }
 
@@ -95,7 +107,10 @@ export function SettingsClient({ initialProfile }: { initialProfile: Profile }) 
                 <input id="s-email" type="email" value={profile.email} onChange={(e) => setProfile((p) => ({ ...p, email: e.target.value }))} className={inputCls} />
               </div>
               <div className="sm:col-span-2">
-                <Button type="submit" size="sm"><Check className="mr-2 h-4 w-4" />Simpan Profil</Button>
+                <Button type="submit" size="sm" disabled={saving.profile}>
+                  {saving.profile ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Check className="mr-2 h-4 w-4" />}
+                  Simpan Profil
+                </Button>
               </div>
             </div>
           </form>
@@ -138,7 +153,10 @@ export function SettingsClient({ initialProfile }: { initialProfile: Profile }) 
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-2 sm:col-span-2">
-              <Button type="submit" size="sm"><Check className="mr-2 h-4 w-4" />Simpan Password</Button>
+              <Button type="submit" size="sm" disabled={saving.password}>
+                {saving.password ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Check className="mr-2 h-4 w-4" />}
+                Simpan Password
+              </Button>
               <Link href="/forgot-password" className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
                 Lupa Password?
               </Link>
@@ -210,7 +228,7 @@ export function SettingsClient({ initialProfile }: { initialProfile: Profile }) 
         </CardHeader>
         <CardContent>
           <form action={logout}>
-            <Button type="submit" variant="danger" size="sm"><LogOut className="mr-2 h-4 w-4" />Keluar</Button>
+            <SubmitButton type="submit" variant="danger" size="sm"><LogOut className="mr-2 h-4 w-4" />Keluar</SubmitButton>
           </form>
         </CardContent>
       </Card>

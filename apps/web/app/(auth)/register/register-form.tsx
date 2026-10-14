@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { useFormState } from 'react-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { register } from '../actions';
-import { Button, Card, CardContent, CardHeader, CardTitle, CardDescription } from '@repo/ui';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@repo/ui';
+import { SubmitButton } from '@/components/submit-button';
 
 const initialState: { error?: string; message?: string } = {};
 
@@ -117,7 +118,7 @@ export function RegisterForm() {
             </p>
           )}
 
-          <Button className="w-full" type="submit">Daftar</Button>
+          <SubmitButton className="w-full" type="submit">Daftar</SubmitButton>
 
           <p className="text-center text-xs text-slate-400">
             Sudah punya akun?{' '}

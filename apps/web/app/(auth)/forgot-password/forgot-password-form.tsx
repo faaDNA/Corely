@@ -2,7 +2,8 @@
 
 import { useFormState } from 'react-dom';
 import { forgotPassword } from '../actions';
-import { Button, Card, CardContent, CardHeader, CardTitle, CardDescription } from '@repo/ui';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@repo/ui';
+import { SubmitButton } from '@/components/submit-button';
 
 const initialState: { error?: string; message?: string } = {};
 
@@ -37,7 +38,7 @@ export function ForgotPasswordForm() {
             <p className="rounded-lg border border-emerald-900/50 bg-emerald-950/30 px-3 py-2 text-xs text-emerald-300">{state.message}</p>
           )}
 
-          <Button className="w-full" type="submit">Kirim Tautan Reset</Button>
+          <SubmitButton className="w-full" type="submit">Kirim Tautan Reset</SubmitButton>
         </form>
       </CardContent>
     </Card>
