@@ -21,13 +21,22 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
 
   async function handleToggle(h: Habit) {
     const next = !h.completedToday;
-    // Optimistic: flip flag & streak lokal (streak riil dihitung ulang dari DB via refresh)
+    const today = isoDay(new Date());
+    // Optimistic: flip flag, streak lokal, dan sel heatmap hari ini.
     setHabits((prev) =>
-      prev.map((x) =>
-        x.id === h.id
-          ? { ...x, completedToday: next, streak: next ? x.streak + 1 : Math.max(0, x.streak - 1) }
-          : x
-      )
+      prev.map((x) => {
+        if (x.id !== h.id) return x;
+        const days = x.recentDays ?? [];
+        const recentDays = next
+          ? [...new Set([...days, today])]
+          : days.filter((d) => d !== today);
+        return {
+          ...x,
+          completedToday: next,
+          streak: next ? x.streak + 1 : Math.max(0, x.streak - 1),
+          recentDays,
+        };
+      })
     );
     const res = await toggleHabitToday(h.id, next);
     if (!res.ok) {
