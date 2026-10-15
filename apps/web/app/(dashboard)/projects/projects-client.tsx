@@ -146,10 +146,10 @@ export function ProjectsClient({ initialProjects, tasks }: { initialProjects: Pr
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map(({ p, status: st, progress: pr }) => (
-            <div key={p.id} className="group flex flex-col rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4">
+            <div key={p.id} className="group relative flex flex-col rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4 transition hover:border-slate-300 dark:hover:border-slate-700">
               <div className="flex items-start justify-between gap-2">
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
-                  <Link href={`/projects/${p.id}`} className="hover:text-blue-400">{p.name}</Link>
+                  <Link href={`/projects/${p.id}`} className="before:absolute before:inset-0 before:content-[''] hover:text-blue-400">{p.name}</Link>
                 </h3>
                 <span className={cn('shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-medium', PROJECT_STATUS_BADGE[st])}>
                   {PROJECT_STATUS_LABELS[st as keyof typeof PROJECT_STATUS_LABELS]}
@@ -179,14 +179,14 @@ export function ProjectsClient({ initialProjects, tasks }: { initialProjects: Pr
               </div>
 
               {(p.repoUrl || p.deployUrl) && (
-                <div className="mt-3 flex items-center gap-3 text-xs">
+                <div className="relative mt-3 flex items-center gap-3 text-xs">
                   {p.repoUrl && <a href={p.repoUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300"><Github className="h-3.5 w-3.5" />Repo</a>}
                   {p.deployUrl && <a href={p.deployUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300"><ExternalLink className="h-3.5 w-3.5" />Live</a>}
                   <Link href={`/projects/${p.id}`} className="ml-auto text-blue-400 hover:text-blue-300">Detail →</Link>
                 </div>
               )}
 
-              <div className="mt-3 flex justify-end gap-1 border-t border-slate-200 pt-3 opacity-0 transition group-hover:opacity-100 dark:border-slate-800">
+              <div className="relative mt-3 flex justify-end gap-1 border-t border-slate-200 pt-3 opacity-0 transition group-hover:opacity-100 dark:border-slate-800">
                 <button type="button" onClick={() => setModal({ open: true, initial: p })} aria-label="Edit" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"><Pencil className="h-4 w-4" /></button>
                 <button type="button" onClick={() => setPendingDelete(p.id)} aria-label="Delete" className="rounded-lg p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"><Trash2 className="h-4 w-4" /></button>
               </div>
