@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { getProfile } from '@/lib/profile';
+import { LandingProfileMenu } from '@/components/landing-profile-menu';
 import {
   LayoutDashboard,
   ListChecks,
@@ -50,7 +52,11 @@ const BENEFITS = [
   { icon: ShieldCheck, title: 'Privat & Aman', desc: 'Data pribadi Anda tetap terisolasi dan aman.' },
 ];
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const profile = await getProfile();
+  const loggedIn = !!profile;
+  const greet = profile?.nickname || profile?.name;
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       {/* Header */}
@@ -69,9 +75,13 @@ export default function LandingPage() {
             <a href="#benefits" className="transition hover:text-slate-900 dark:hover:text-white">Keunggulan</a>
           </nav>
           <div className="flex items-center gap-3">
-            <Link href="/login" className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-blue-600/30 transition hover:bg-blue-500">
-              Masuk
-            </Link>
+            {loggedIn ? (
+              <LandingProfileMenu name={greet ?? ''} email={profile?.email ?? ''} />
+            ) : (
+              <Link href="/login" className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-blue-600/30 transition hover:bg-blue-500">
+                Masuk
+              </Link>
+            )}
           </div>
         </div>
       </header>
@@ -94,8 +104,8 @@ export default function LandingPage() {
             Kelola tugas, proyek, catatan, bookmark, kebiasaan harian, dan jadwal — semua dalam satu aplikasi pribadi yang rapi dan terpusat.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link href="/login" className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-8 py-3.5 font-semibold text-white shadow-xl shadow-blue-600/25 transition hover:bg-blue-500 sm:w-auto">
-              <Rocket className="h-5 w-5" /> Mulai Sekarang
+            <Link href={loggedIn ? '/dashboard' : '/login'} className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-8 py-3.5 font-semibold text-white shadow-xl shadow-blue-600/25 transition hover:bg-blue-500 sm:w-auto">
+              <Rocket className="h-5 w-5" /> {loggedIn ? 'Buka Dashboard' : 'Mulai Sekarang'}
             </Link>
             <a href="#features" className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-8 py-3.5 font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700 sm:w-auto">
               Jelajahi Fitur
@@ -241,8 +251,8 @@ export default function LandingPage() {
               Satu tempat untuk tugas, proyek, catatan, dan jadwal Anda. Rapi, terpusat, dan siap digunakan setiap hari.
             </p>
             <div className="mt-8 flex justify-center">
-              <Link href="/login" className="rounded-xl bg-blue-600 px-8 py-3.5 font-semibold text-white shadow-xl shadow-blue-600/30 transition hover:bg-blue-500">
-                Masuk ke Dashboard
+              <Link href={loggedIn ? '/dashboard' : '/login'} className="rounded-xl bg-blue-600 px-8 py-3.5 font-semibold text-white shadow-xl shadow-blue-600/30 transition hover:bg-blue-500">
+                {loggedIn ? 'Lanjut ke Dashboard' : 'Masuk ke Dashboard'}
               </Link>
             </div>
           </div>
