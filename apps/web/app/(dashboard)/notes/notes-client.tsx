@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Search, Pin, Archive, FileText } from 'lucide-react';
 import { Button, cn } from '@repo/ui';
@@ -20,6 +20,12 @@ export function NotesClient({ initialNotes }: { initialNotes: Note[] }) {
   const [showArchived, setShowArchived] = useState(false);
   const [modal, setModal] = useState<{ open: boolean; initial?: Note | null }>({ open: false });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+
+  // Sinkron ulang saat server kirim data baru (router.refresh) — ganti ID sementara dengan UUID asli.
+  useEffect(() => {
+    setNotes(initialNotes);
+    setSelectedId((prev) => (initialNotes.some((n) => n.id === prev) ? prev : initialNotes[0]?.id ?? ''));
+  }, [initialNotes]);
 
   const visible = useMemo(() => {
     let out = notes.filter((n) => Boolean(n.archived) === showArchived);

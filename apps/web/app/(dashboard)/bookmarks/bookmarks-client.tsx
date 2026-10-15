@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Search, Star, Pencil, Trash2, ExternalLink } from 'lucide-react';
 import { Button, cn } from '@repo/ui';
@@ -26,6 +26,9 @@ export function BookmarksClient({ initialBookmarks }: { initialBookmarks: Bookma
   const [favOnly, setFavOnly] = useState(false);
   const [modal, setModal] = useState<{ open: boolean; initial?: Bookmark | null }>({ open: false });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+
+  // Sinkron ulang saat server kirim data baru (router.refresh) — ganti ID sementara dengan UUID asli.
+  useEffect(() => setBookmarks(initialBookmarks), [initialBookmarks]);
 
   const filtered = useMemo(() => {
     let out = [...bookmarks];

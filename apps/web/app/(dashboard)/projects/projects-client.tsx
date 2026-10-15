@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Plus, Search, Pencil, Trash2, Github, ExternalLink } from 'lucide-react';
@@ -19,6 +19,9 @@ export function ProjectsClient({ initialProjects, tasks }: { initialProjects: Pr
   const [status, setStatus] = useState('all');
   const [modal, setModal] = useState<{ open: boolean; initial?: Project | null }>({ open: false });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+
+  // Sinkron ulang saat server kirim data baru (router.refresh) — ganti ID sementara dengan UUID asli.
+  useEffect(() => setProjects(initialProjects), [initialProjects]);
 
   const withStatus = useMemo(
     () => projects.map((p) => ({ p, status: deriveProjectStatus(p, tasks), progress: projectProgress(p, tasks) })),

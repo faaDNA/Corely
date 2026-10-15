@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Flame, Check, Trophy, Trash2, Loader2 } from 'lucide-react';
 import { Button, cn } from '@repo/ui';
@@ -18,6 +18,9 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
   const [name, setName] = useState('');
   const [open, setOpen] = useState(false);
   const [adding, setAdding] = useState(false);
+
+  // Sinkron ulang saat server kirim data baru (router.refresh) — item baru muncul tanpa navigasi.
+  useEffect(() => setHabits(initialHabits), [initialHabits]);
 
   async function handleToggle(h: Habit) {
     const next = !h.completedToday;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Github, ExternalLink, Calendar, Cpu } from 'lucide-react';
@@ -21,6 +21,9 @@ export default function ProjectDetailClient({
 }) {
   const router = useRouter();
   const [tasks, setTasks] = useState(initialTasks);
+
+  // Sinkron ulang saat server kirim data baru (router.refresh) — ganti ID sementara dengan UUID asli.
+  useEffect(() => setTasks(initialTasks), [initialTasks]);
 
   const pct = projectProgress(project, tasks);
   const status = deriveProjectStatus(project, tasks);
