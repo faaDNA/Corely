@@ -42,7 +42,7 @@ const SECTIONS: { h: string; body: string[] }[] = [
   },
   {
     h: '6. Kontak',
-    body: ['Pertanyaan soal kebijakan ini: kirim email ke admin@corely.app.'],
+    body: ['Pertanyaan soal kebijakan ini: kirim email ke daffa.n.a184@gmail.com.'],
   },
 ];
 
