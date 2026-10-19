@@ -6,19 +6,7 @@ import { Pin, PinOff, Archive, Pencil, Trash2, Check, X } from 'lucide-react';
 import { cn } from '@repo/ui';
 import type { Note } from '@repo/types';
 import { toast } from '@/components/toast';
-
-/**
- * Preserve hard breaks (\n ->   \n) dan ekstra baris kosong (\n{3,} -> &nbsp; paragraphs).
- * Tanpa ini, Markdown strip baris kosong tambahan dan ubah \n tunggal jadi spasi biasa.
- */
-function withHardBreaks(text: string): string {
-  return text
-    .replace(/\r\n/g, '\n')
-    .replace(/\n{3,}/g, (match) => '\n\n' + '&nbsp;\n\n'.repeat(match.length - 2))
-    .split('\n\n')
-    .map((part) => part.replace(/\n/g, '  \n'))
-    .join('\n\n');
-}
+import { TIGHT, withHardBreaks } from '@/lib/markdown';
 
 /**
  * Grow/shrink textarea ikuti isi, jaga posisi scroll window.
@@ -50,7 +38,7 @@ interface Props {
 }
 
 const proseCls =
-  'text-sm leading-relaxed text-slate-700 dark:text-slate-300 [&_code]:rounded [&_code]:bg-slate-100 dark:[&_code]:bg-slate-800 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-xs [&_code]:text-blue-600 dark:[&_code]:text-blue-400 [&_h1]:mb-3 [&_h1]:text-xl [&_h1]:font-bold [&_h1]:text-slate-900 dark:[&_h1]:text-white [&_h2]:mb-2 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-slate-900 dark:[&_h2]:text-white [&_ul]:my-2 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:my-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:mb-4 [&_pre]:mb-3 [&_pre]:rounded-lg [&_pre]:bg-slate-100 dark:[&_pre]:bg-slate-950 [&_pre]:p-3 [&_pre]:font-mono [&_pre]:text-xs [&_pre]:text-slate-800 dark:[&_pre]:text-slate-100 [&_blockquote]:border-l-2 [&_blockquote]:border-blue-500 [&_blockquote]:pl-3 [&_blockquote]:italic [&_blockquote]:text-slate-500 dark:[&_blockquote]:text-slate-400';
+  'text-sm leading-relaxed text-slate-700 dark:text-slate-300 [&_code]:rounded [&_code]:bg-slate-100 dark:[&_code]:bg-slate-800 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-xs [&_code]:text-blue-600 dark:[&_code]:text-blue-400 [&_h1]:mb-3 [&_h1]:text-xl [&_h1]:font-bold [&_h1]:text-slate-900 dark:[&_h1]:text-white [&_h2]:mb-2 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-slate-900 dark:[&_h2]:text-white [&_ul]:list-disc [&_ul]:list-inside [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:list-inside [&_ol]:mb-4 [&_p]:mb-4 [&_pre]:mb-3 [&_pre]:rounded-lg [&_pre]:bg-slate-100 dark:[&_pre]:bg-slate-950 [&_pre]:p-3 [&_pre]:font-mono [&_pre]:text-xs [&_pre]:text-slate-800 dark:[&_pre]:text-slate-100 [&_blockquote]:border-l-2 [&_blockquote]:border-blue-500 [&_blockquote]:pl-3 [&_blockquote]:italic [&_blockquote]:text-slate-500 dark:[&_blockquote]:text-slate-400';
 
 /** Panel kanan notes: judul/meta via modal, isi edit inline tanpa scroll internal. */
 export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onToggleArchive, onSaveContent }: Props) {
@@ -160,7 +148,20 @@ export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onTog
             </button>
             <div onClick={startEdit} title="Klik untuk edit isi" className="cursor-text">
               <div className={proseCls}>
-                <ReactMarkdown>{rendered || '*Kosong — klik untuk menulis...*'}</ReactMarkdown>
+                <ReactMarkdown
+                  components={{
+                    p: ({ children }) => {
+                      const kids = Array.isArray(children) ? children : [children];
+                      const head = kids[0];
+                      if (typeof head === 'string' && head.startsWith(TIGHT)) {
+                        return <p className="!mb-0">{[head.slice(1), ...kids.slice(1)]}</p>;
+                      }
+                      return <p>{children}</p>;
+                    },
+                  }}
+                >
+                  {rendered || '*Kosong — klik untuk menulis...*'}
+                </ReactMarkdown>
               </div>
             </div>
           </div>
