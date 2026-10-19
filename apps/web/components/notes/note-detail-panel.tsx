@@ -62,6 +62,12 @@ export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onTog
     setEditing(true);
   }
 
+  // klik pada teks yang sedang di-block/drag-select jangan masuk mode edit
+  function startEditFromText() {
+    if (window.getSelection()?.toString()) return;
+    startEdit();
+  }
+
   function save() {
     if (draft.length > 5000) {
       toast('Isi maksimal 5000 karakter.');
@@ -146,7 +152,7 @@ export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onTog
             >
               <Pencil className="h-3.5 w-3.5" />
             </button>
-            <div onClick={startEdit} title="Klik untuk edit isi" className="cursor-text">
+            <div onClick={startEditFromText} title="Klik untuk edit isi" className="cursor-text">
               <div className={proseCls}>
                 <ReactMarkdown
                   components={{
