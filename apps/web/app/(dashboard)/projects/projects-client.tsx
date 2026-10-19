@@ -50,11 +50,12 @@ export function ProjectsClient({ initialProjects, tasks }: { initialProjects: Pr
     return tasks.filter((t) => t.projectId === id && !t.deletedAt).length;
   }
 
-  // Status manual cuma lewat tombol di card. Optimistic — flag sengaja dihapus (bukan false)
-  // supaya tidak tertimpa server (kirim false saat sudah aktif = ubah 2x saat klik dobel).
+  // Status manual cuma lewat tombol di card. On Hold & Arsip saling eksklusif — nyalakan satu,
+  // matikan yang lain. Optimistic — flag mati dikirim undefined (bukan false) supaya tidak tertimpa server.
   async function toggleFlag(p: Project, flag: 'onHold' | 'archived') {
     const on = !p[flag];
-    const payload: Project = { ...p, [flag]: on ? true : undefined };
+    const payload: Project = { ...p, onHold: undefined, archived: undefined };
+    if (on) payload[flag] = true;
     setProjects((prev) => prev.map((x) => (x.id === p.id ? payload : x)));
     const res = await saveProject(payload);
     if (!res.ok) {
