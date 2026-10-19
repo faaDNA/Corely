@@ -12,6 +12,26 @@ function withHardBreaks(text: string): string {
   return text.split('\n\n').map((part) => part.replace(/\n/g, '  \n')).join('\n\n');
 }
 
+/**
+ * Grow/shrink textarea ikuti isi, jaga posisi scroll window.
+ * `height='auto'` bikin dokumen menyusut sementara → browser clamp scrollY ke atas
+ * sebelum sempat restore height → viewport "blink" lompat ke atas saat kursor sudah jauh ke bawah.
+ * Simpan scrollY dulu, scrollTo balik setelah height final, semua dalam satu task sebelum paint.
+ */
+function autosize(el: HTMLTextAreaElement | null) {
+  if (!el) return;
+  // `html { scroll-behavior: smooth }` bikin scrollTo animatif → restore kelihatan "balik ke bawah".
+  // Paksa instan sesaat; semua sinkron dalam satu task, tanpa paint di antaranya.
+  const root = document.documentElement;
+  const prev = root.style.scrollBehavior;
+  root.style.scrollBehavior = 'auto';
+  const y = window.scrollY;
+  el.style.height = 'auto';
+  el.style.height = `${el.scrollHeight}px`;
+  window.scrollTo(0, y);
+  root.style.scrollBehavior = prev;
+}
+
 interface Props {
   note: Note;
   onMetaEdit: (note: Note) => void;
@@ -38,12 +58,8 @@ export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onTog
 
   // auto-grow textarea mengikuti isi (tanpa scroll internal)
   useEffect(() => {
-    const el = areaRef.current;
-    if (el && editing) {
-      el.style.height = 'auto';
-      el.style.height = `${el.scrollHeight}px`;
-    }
-  }, [editing, draft]);
+    if (editing) autosize(areaRef.current);
+  }, [editing]);
 
   function startEdit() {
     setDraft(note.content);
@@ -96,11 +112,9 @@ export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onTog
             <textarea
               ref={areaRef}
               value={draft}
-              onChange={(e) => setDraft(e.target.value)}
-              onInput={(e) => {
-                const el = e.currentTarget;
-                el.style.height = 'auto';
-                el.style.height = `${el.scrollHeight}px`;
+              onChange={(e) => {
+                setDraft(e.target.value);
+                autosize(e.currentTarget);
               }}
               rows={10}
               placeholder="Tulis isi catatan (Markdown)..."
