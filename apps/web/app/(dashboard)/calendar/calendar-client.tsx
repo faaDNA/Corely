@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button, cn } from '@repo/ui';
 import type { EventItem, Project, Task } from '@repo/types';
+import { fromISO, monthCellsFor, shiftMonth, toISO, weekStartOf } from '@/lib/calendar-range';
 
 type ViewMode = 'month' | 'week' | 'day';
 
@@ -39,40 +40,17 @@ function deriveItems(tasks: Task[], projects: Project[]): EventItem[] {
   return [...fromTasks, ...fromProjects];
 }
 
-function toISO(d: Date) {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
-function fromISO(iso: string) {
-  const [y, m, d] = iso.split('-').map(Number);
-  return new Date(y, m - 1, d);
-}
-
 export function CalendarClient({ tasks, projects }: { tasks: Task[]; projects: Project[] }) {
   const items = useMemo(() => deriveItems(tasks, projects), [tasks, projects]);
   const [view, setView] = useState<ViewMode>('month');
-  const init = new Date();
-  // selaraskan jam lokal aman
-  const [cursor, setCursor] = useState(() => new Date(init.getFullYear(), init.getMonth(), 1));
-  const [selected, setSelected] = useState(() => toISO(init));
+  // cursor = satu tanggal di dalam periode yang tampil (bulan/minggu/hari), bukan selalu tanggal 1
+  const [cursor, setCursor] = useState(() => new Date());
+  const [selected, setSelected] = useState(() => toISO(new Date()));
 
   const monthLabel = cursor.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
-  const weekStart = useMemo(() => {
-    const d = new Date(cursor);
-    d.setDate(d.getDate() - d.getDay());
-    return d;
-  }, [cursor]);
+  const weekStart = useMemo(() => weekStartOf(cursor), [cursor]);
 
-  const monthCells = useMemo(() => {
-    const first = new Date(cursor);
-    const start = new Date(first);
-    start.setDate(1 - first.getDay());
-    return Array.from({ length: 42 }, (_, i) => {
-      const d = new Date(start);
-      d.setDate(start.getDate() + i);
-      return d;
-    });
-  }, [cursor]);
+  const monthCells = useMemo(() => monthCellsFor(cursor), [cursor]);
 
   const weekDays = useMemo(
     () => Array.from({ length: 7 }, (_, i) => { const d = new Date(weekStart); d.setDate(weekStart.getDate() + i); return d; }),
@@ -87,15 +65,13 @@ export function CalendarClient({ tasks, projects }: { tasks: Task[]; projects: P
     if (view === 'day') {
       const d = fromISO(selected);
       d.setDate(d.getDate() + delta);
-      const iso = toISO(d);
-      setSelected(iso);
-      setCursor(new Date(d.getFullYear(), d.getMonth(), 1));
+      setSelected(toISO(d));
+      setCursor(d);
       return;
     }
     const d = new Date(cursor);
-    if (view === 'month') d.setMonth(d.getMonth() + delta);
-    else if (view === 'week') d.setDate(d.getDate() + delta * 7);
-    setCursor(d);
+    if (view === 'month') setCursor(shiftMonth(cursor, delta));
+    else { d.setDate(d.getDate() + delta * 7); setCursor(d); }
   }
 
   const selectedEvents = eventsOn(selected);
@@ -119,7 +95,7 @@ export function CalendarClient({ tasks, projects }: { tasks: Task[]; projects: P
                 : monthLabel}
             </span>
             <button type="button" onClick={() => move(1)} aria-label="Next" className="rounded-lg border border-slate-200 dark:border-slate-700 p-1.5 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"><ChevronRight className="h-4 w-4" /></button>
-            <Button variant="outline" size="sm" onClick={() => { const now = new Date(); setCursor(new Date(now.getFullYear(), now.getMonth(), 1)); setSelected(toISO(now)); }}>Hari Ini</Button>
+            <Button variant="outline" size="sm" onClick={() => { const now = new Date(); setCursor(now); setSelected(toISO(now)); }}>Hari Ini</Button>
           </div>
           <div className="flex rounded-lg border border-slate-200 dark:border-slate-700">
             {(['month', 'week', 'day'] as const).map((v) => (
