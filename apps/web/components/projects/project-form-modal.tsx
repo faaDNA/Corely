@@ -22,7 +22,6 @@ function defaults(p?: Project | null): ProjectFormValues {
   return {
     name: p?.name ?? '',
     description: p?.description ?? '',
-    manualStatus: p?.archived ? 'archived' : p?.onHold ? 'on_hold' : 'none',
     deadline: p?.deadline ?? '',
     technologies: p?.technologies?.join(', ') ?? '',
     repoUrl: p?.repoUrl ?? '',
@@ -74,18 +73,6 @@ export function ProjectFormModal({ open, initial, onSubmit, onClose }: Props) {
             <textarea id="p-desc" {...register('description')} rows={2} className={inputCls} placeholder="Deskripsi singkat..." />
             {errors.description && <p className="text-xs text-red-400">{errors.description.message}</p>}
           </div>
-
-          <div className="space-y-1.5">
-            <label htmlFor="p-manualStatus" className="text-xs font-medium text-slate-600 dark:text-slate-300">Status manual</label>
-            <select id="p-manualStatus" {...register('manualStatus')} className={inputCls}>
-              <option value="none">— Normal (otomatis In Progress / Completed) —</option>
-              <option value="on_hold">On Hold (jeda)</option>
-              <option value="archived">Archived (arsip)</option>
-            </select>
-          </div>
-          <p className="text-[11px] leading-relaxed text-slate-500">
-            Default None. On Hold/Archived menimpa status otomatis. Progres selalu dari tugas.
-          </p>
 
           <div className="space-y-1.5">
             <label htmlFor="p-deadline" className="text-xs font-medium text-slate-600 dark:text-slate-300">Tenggat</label>

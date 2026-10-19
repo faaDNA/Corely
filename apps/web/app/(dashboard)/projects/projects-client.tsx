@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Plus, Search, Pencil, Trash2, Github, ExternalLink } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, Github, ExternalLink, CirclePause, CirclePlay, Archive, ArchiveRestore } from 'lucide-react';
 import { Button, cn } from '@repo/ui';
 import type { Project, Task } from '@repo/types';
 import { ProjectFormModal } from '@/components/projects/project-form-modal';
@@ -50,13 +50,29 @@ export function ProjectsClient({ initialProjects, tasks }: { initialProjects: Pr
     return tasks.filter((t) => t.projectId === id && !t.deletedAt).length;
   }
 
+  // Status manual cuma lewat tombol di card. Optimistic — flag sengaja dihapus (bukan false)
+  // supaya tidak tertimpa server (kirim false saat sudah aktif = ubah 2x saat klik dobel).
+  async function toggleFlag(p: Project, flag: 'onHold' | 'archived') {
+    const on = !p[flag];
+    const payload: Project = { ...p, [flag]: on ? true : undefined };
+    setProjects((prev) => prev.map((x) => (x.id === p.id ? payload : x)));
+    const res = await saveProject(payload);
+    if (!res.ok) {
+      toast(res.error ?? 'Gagal mengubah status proyek.');
+      setProjects(initialProjects);
+      return;
+    }
+    toast(flag === 'onHold' ? (on ? 'Proyek dijeda.' : 'Proyek dilanjutkan.') : on ? 'Proyek diarsipkan.' : 'Proyek dikeluarkan dari arsip.');
+    router.refresh();
+  }
+
   async function handleFormSubmit(values: ProjectFormValues) {
     const payload: Project = {
       id: modal.initial?.id ?? `new-${Date.now()}`,
       name: values.name,
       description: values.description || undefined,
-      onHold: values.manualStatus === 'on_hold' || undefined,
-      archived: values.manualStatus === 'archived' || undefined,
+      onHold: modal.initial?.onHold,
+      archived: modal.initial?.archived,
       deadline: values.deadline || undefined,
       technologies: values.technologies ? values.technologies.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
       repoUrl: values.repoUrl || undefined,
@@ -186,7 +202,13 @@ export function ProjectsClient({ initialProjects, tasks }: { initialProjects: Pr
                 </div>
               )}
 
-              <div className="relative mt-3 flex justify-end gap-1 border-t border-slate-200 pt-3 opacity-0 transition group-hover:opacity-100 dark:border-slate-800">
+              <div className="relative mt-3 flex justify-end gap-1 border-t border-slate-200 pt-3 transition sm:opacity-0 sm:group-hover:opacity-100 dark:border-slate-800">
+                <button type="button" onClick={() => toggleFlag(p, 'onHold')} aria-label={p.onHold ? 'Lanjutkan proyek' : 'Jeda proyek (On Hold)'} title={p.onHold ? 'Lanjutkan proyek' : 'Jeda proyek'} className={cn('rounded-lg p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800', p.onHold ? 'text-amber-500 dark:text-amber-400' : 'text-slate-500')}>
+                  {p.onHold ? <CirclePlay className="h-4 w-4" /> : <CirclePause className="h-4 w-4" />}
+                </button>
+                <button type="button" onClick={() => toggleFlag(p, 'archived')} aria-label={p.archived ? 'Keluarkan dari arsip' : 'Arsipkan proyek'} title={p.archived ? 'Keluarkan dari arsip' : 'Arsipkan proyek'} className={cn('rounded-lg p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800', p.archived ? 'text-slate-800 dark:text-slate-200' : 'text-slate-500')}>
+                  {p.archived ? <ArchiveRestore className="h-4 w-4" /> : <Archive className="h-4 w-4" />}
+                </button>
                 <button type="button" onClick={() => setModal({ open: true, initial: p })} aria-label="Edit" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"><Pencil className="h-4 w-4" /></button>
                 <button type="button" onClick={() => setPendingDelete(p.id)} aria-label="Delete" className="rounded-lg p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"><Trash2 className="h-4 w-4" /></button>
               </div>
