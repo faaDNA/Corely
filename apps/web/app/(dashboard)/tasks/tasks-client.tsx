@@ -57,13 +57,17 @@ export function TasksClient({ initialTasks, projects }: { initialTasks: Task[]; 
     if (project === 'none') out = out.filter((t) => !t.projectId);
     else if (project !== 'all') out = out.filter((t) => t.projectId === project);
     out = [...out];
-    if (sort === 'due') out.sort((a, b) => {
-      // tugas tanpa tanggal dikumpulkan di bawah
-      if (!a.dueDate) return b.dueDate ? 1 : 0;
-      if (!b.dueDate) return -1;
-      return a.dueDate < b.dueDate ? -1 : 1;
+    out.sort((a, b) => {
+      // selesai selalu paling bawah, di dalam grup pakai urutan yang dipilih
+      const done = Number(a.status === 'COMPLETED') - Number(b.status === 'COMPLETED');
+      if (done) return done;
+      if (sort === 'due') {
+        if (!a.dueDate) return b.dueDate ? 1 : 0; // tanpa tanggal dikumpulkan di bawah
+        if (!b.dueDate) return -1;
+        return a.dueDate < b.dueDate ? -1 : 1;
+      }
+      return a.id < b.id ? 1 : -1;
     });
-    else out.sort((a, b) => (a.id < b.id ? 1 : -1));
     return out;
   }, [filtered, status, priority, project, sort]);
 

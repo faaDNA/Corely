@@ -27,7 +27,10 @@ export function ProjectTasksPanel({ projectId, projectName, projects, tasks, set
   const [modal, setModal] = useState<{ open: boolean; initial?: Task | null }>({ open: false });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
-  const related = useMemo(() => tasks.filter((t) => t.projectId === projectId && !t.deletedAt), [tasks, projectId]);
+  const related = useMemo(
+    () => tasks.filter((t) => t.projectId === projectId && !t.deletedAt).sort((a, b) => Number(a.status === 'COMPLETED') - Number(b.status === 'COMPLETED')),
+    [tasks, projectId]
+  );
   const done = related.filter((t) => t.status === 'COMPLETED').length;
 
   async function toggle(id: string) {
