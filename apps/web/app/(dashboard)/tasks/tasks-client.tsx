@@ -57,7 +57,12 @@ export function TasksClient({ initialTasks, projects }: { initialTasks: Task[]; 
     if (project === 'none') out = out.filter((t) => !t.projectId);
     else if (project !== 'all') out = out.filter((t) => t.projectId === project);
     out = [...out];
-    if (sort === 'due') out.sort((a, b) => ((a.dueDate ?? '') < (b.dueDate ?? '') ? -1 : 1));
+    if (sort === 'due') out.sort((a, b) => {
+      // tugas tanpa tanggal dikumpulkan di bawah
+      if (!a.dueDate) return b.dueDate ? 1 : 0;
+      if (!b.dueDate) return -1;
+      return a.dueDate < b.dueDate ? -1 : 1;
+    });
     else out.sort((a, b) => (a.id < b.id ? 1 : -1));
     return out;
   }, [filtered, status, priority, project, sort]);
@@ -90,9 +95,9 @@ export function TasksClient({ initialTasks, projects }: { initialTasks: Task[]; 
       description: values.description || undefined,
       status: st,
       priority: values.priority as TaskPriority,
-      dueDate: values.dueDate || undefined,
+      dueDate: values.dateMode === 'none' ? undefined : values.dueDate || undefined,
       dueTime: values.dateMode === 'schedule' ? values.dueTime || undefined : undefined,
-      dateMode: values.dateMode,
+      dateMode: values.dateMode === 'none' ? undefined : values.dateMode,
       projectId: values.projectId || undefined,
       tags: values.tags ? values.tags.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
       completedAt: st === 'COMPLETED' ? modal.initial?.completedAt ?? todayISO() : undefined,
