@@ -1,5 +1,5 @@
 function Bar({ className }: { className?: string }) {
-  return <div className={`animate-pulse rounded-md bg-slate-800 ${className ?? ''}`} />;
+  return <div className={`animate-pulse rounded-md bg-slate-200 dark:bg-slate-800 ${className ?? ''}`} />;
 }
 
 export default function DashboardLoading() {
@@ -20,7 +20,7 @@ export default function DashboardLoading() {
       {/* Stat cards */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+          <div key={i} className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/60">
             <Bar className="h-3 w-24" />
             <Bar className="mt-3 h-7 w-16" />
             <Bar className="mt-3 h-3 w-28" />
@@ -30,7 +30,7 @@ export default function DashboardLoading() {
 
       {/* Content blocks */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+        <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/60">
           <Bar className="mb-4 h-4 w-32" />
           <div className="space-y-3">
             {Array.from({ length: 3 }).map((_, i) => (
@@ -41,7 +41,7 @@ export default function DashboardLoading() {
             ))}
           </div>
         </div>
-        <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+        <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/60">
           <Bar className="mb-4 h-4 w-32" />
           <div className="space-y-4">
             <div className="space-y-1.5">
@@ -61,7 +61,7 @@ export default function DashboardLoading() {
       </div>
 
       {/* Footer block */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+      <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/60">
         <Bar className="mb-4 h-4 w-40" />
         <div className="flex flex-wrap gap-2">
           {Array.from({ length: 3 }).map((_, i) => (

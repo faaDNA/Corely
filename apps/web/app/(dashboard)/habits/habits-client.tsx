@@ -18,6 +18,7 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
   const [name, setName] = useState('');
   const [open, setOpen] = useState(false);
   const [adding, setAdding] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
   // Sinkron ulang saat server kirim data baru (router.refresh) — item baru muncul tanpa navigasi.
   useEffect(() => setHabits(initialHabits), [initialHabits]);
@@ -69,9 +70,12 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
     }
   }
 
-  async function handleDelete(id: string) {
+  async function confirmDelete() {
+    if (!pendingDelete) return;
+    const id = pendingDelete;
     const backup = habits;
     setHabits((prev) => prev.filter((h) => h.id !== id));
+    setPendingDelete(null);
     const res = await deleteHabit(id);
     if (!res.ok) {
       toast(res.error ?? 'Gagal menghapus kebiasaan.');
@@ -145,7 +149,7 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
               })}
             </div>
 
-            <button type="button" onClick={() => handleDelete(h.id)} aria-label="Delete" className="rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:text-slate-600 dark:hover:bg-red-950 dark:hover:text-red-400">
+            <button type="button" onClick={() => setPendingDelete(h.id)} aria-label="Delete" className="rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:text-slate-600 dark:hover:bg-red-950 dark:hover:text-red-400">
               <Trash2 className="h-4 w-4" />
             </button>
           </div>
@@ -178,6 +182,20 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
             </Button>
             </div>
           </form>
+        </div>
+      )}
+
+      {pendingDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60" onClick={() => setPendingDelete(null)} />
+          <div className="relative w-full max-w-sm rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 shadow-2xl">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Hapus kebiasaan ini?</h3>
+            <p className="mt-2 text-xs text-slate-400">Streak dan riwayat penandaan ikut terhapus. Tindakan ini tidak bisa dibatalkan.</p>
+            <div className="mt-4 flex justify-end gap-2">
+              <Button variant="ghost" size="sm" onClick={() => setPendingDelete(null)}>Batal</Button>
+              <Button variant="danger" size="sm" onClick={confirmDelete}>Hapus</Button>
+            </div>
+          </div>
         </div>
       )}
     </div>
