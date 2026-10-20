@@ -34,12 +34,14 @@ export function ProjectsClient({ initialProjects, tasks }: { initialProjects: Pr
       const qq = q.toLowerCase();
       out = out.filter(({ p }) => p.name.toLowerCase().includes(qq) || p.description?.toLowerCase().includes(qq));
     }
-    if (status !== 'all') out = out.filter((x) => x.status === status);
-    return out;
+    // Arsip disembunyikan dari All (kaya notes). On Hold tetap tampil tapi di bawah.
+    if (status === 'all') out = out.filter((x) => x.status !== 'ARCHIVED');
+    else out = out.filter((x) => x.status === status);
+    return [...out].sort((a, b) => Number(a.status === 'ON_HOLD') - Number(b.status === 'ON_HOLD'));
   }, [withStatus, q, status]);
 
   const confirmCount: Record<string, number> = {
-    all: projects.length,
+    all: withStatus.filter((x) => x.status !== 'ARCHIVED').length,
     IN_PROGRESS: withStatus.filter((x) => x.status === 'IN_PROGRESS').length,
     COMPLETED: withStatus.filter((x) => x.status === 'COMPLETED').length,
     ON_HOLD: withStatus.filter((x) => x.status === 'ON_HOLD').length,
@@ -163,7 +165,13 @@ export function ProjectsClient({ initialProjects, tasks }: { initialProjects: Pr
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map(({ p, status: st, progress: pr }) => (
-            <div key={p.id} className="group relative flex flex-col rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4 transition hover:border-slate-300 dark:hover:border-slate-700">
+            <div key={p.id} className={cn(
+              'group relative flex flex-col rounded-xl border bg-white dark:bg-slate-900/60 p-4 transition',
+              // On Hold ditandai border amber + redup — tetap tampil di All, bukan disembunyikan
+              p.onHold
+                ? 'border-amber-500/40 hover:border-amber-500/60 opacity-75 dark:border-amber-500/30'
+                : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700',
+            )}>
               <div className="flex items-start justify-between gap-2">
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
                   <Link href={`/projects/${p.id}`} className="before:absolute before:inset-0 before:content-[''] hover:text-blue-400">{p.name}</Link>
@@ -178,10 +186,10 @@ export function ProjectsClient({ initialProjects, tasks }: { initialProjects: Pr
               <div className="mt-3">
                 <div className="mb-1 flex justify-between text-[11px]">
                   <span className="text-slate-400">Progress</span>
-                  <span className="font-mono text-blue-600 dark:text-blue-400">{pr}%</span>
+                  <span className={cn('font-mono', p.onHold ? 'text-amber-600 dark:text-amber-400' : 'text-blue-600 dark:text-blue-400')}>{pr}%</span>
                 </div>
                 <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
-                  <div className="h-full rounded-full bg-blue-500 transition-all" style={{ width: `${pr}%` }} />
+                  <div className={cn('h-full rounded-full transition-all', p.onHold ? 'bg-amber-500' : 'bg-blue-500')} style={{ width: `${pr}%` }} />
                 </div>
                 <div className="mt-1.5 flex flex-wrap gap-1.5">
                   {p.technologies?.map((t) => (
