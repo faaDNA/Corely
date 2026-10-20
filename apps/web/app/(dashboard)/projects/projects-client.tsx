@@ -159,7 +159,7 @@ export function ProjectsClient({ initialProjects, tasks }: { initialProjects: Pr
 
       {/* Grid */}
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-slate-300 dark:border-slate-800 bg-slate-900/40 p-12 text-center text-sm text-slate-500">
+        <div className="rounded-xl border border-dashed border-slate-300 bg-white dark:border-slate-800 dark:bg-slate-900/40 p-12 text-center text-sm text-slate-500">
           Tidak ada proyek yang cocok.
         </div>
       ) : (
