@@ -27,10 +27,7 @@ export function ProjectTasksPanel({ projectId, projectName, projects, tasks, set
   const [modal, setModal] = useState<{ open: boolean; initial?: Task | null }>({ open: false });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
-  const related = useMemo(
-    () => tasks.filter((t) => t.projectId === projectId && !t.deletedAt).sort((a, b) => Number(a.status === 'COMPLETED') - Number(b.status === 'COMPLETED')),
-    [tasks, projectId]
-  );
+  const related = useMemo(() => tasks.filter((t) => t.projectId === projectId && !t.deletedAt), [tasks, projectId]);
   const done = related.filter((t) => t.status === 'COMPLETED').length;
 
   async function toggle(id: string) {
@@ -62,9 +59,9 @@ export function ProjectTasksPanel({ projectId, projectName, projects, tasks, set
       description: values.description || undefined,
       status,
       priority: values.priority as TaskPriority,
-      dueDate: values.dateMode === 'none' ? undefined : values.dueDate || undefined,
+      dueDate: values.dueDate || undefined,
       dueTime: values.dateMode === 'schedule' ? values.dueTime || undefined : undefined,
-      dateMode: values.dateMode === 'none' ? undefined : values.dateMode,
+      dateMode: values.dateMode,
       projectId,
       tags: values.tags ? values.tags.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
       completedAt: status === 'COMPLETED' ? modal.initial?.completedAt ?? new Date().toISOString().slice(0, 10) : undefined,

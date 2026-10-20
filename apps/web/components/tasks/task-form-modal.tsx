@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { X } from 'lucide-react';
-import { Button, cn } from '@repo/ui';
+import { Button } from '@repo/ui';
 import type { Project, Task } from '@repo/types';
 import { taskSchema, type TaskFormValues, PRIORITY_LABELS } from './task-schema';
 
@@ -20,11 +20,6 @@ interface Props {
 const inputCls =
   'w-full rounded-lg border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500 focus:outline-none';
 
-/** `none` hanya untuk form — tugas lama tanpa tanggal jadi 'none' supaya tidak disangka 'deadline'. */
-function initDateMode(t?: Task | null): 'none' | 'deadline' | 'schedule' {
-  return t?.dueDate ? t.dateMode ?? 'deadline' : 'none';
-}
-
 export function TaskFormModal({ open, initial, defaultProjectId, projects, onSubmit, onClose }: Props) {
   const {
     register,
@@ -39,7 +34,7 @@ export function TaskFormModal({ open, initial, defaultProjectId, projects, onSub
       description: initial?.description ?? '',
       status: initial?.status ?? 'TODO',
       priority: initial?.priority ?? 'MEDIUM',
-      dateMode: initDateMode(initial),
+      dateMode: initial?.dateMode ?? 'deadline',
       dueDate: initial?.dueDate ?? '',
       dueTime: initial?.dueTime ?? '',
       projectId: initial?.projectId ?? defaultProjectId ?? '',
@@ -56,7 +51,7 @@ export function TaskFormModal({ open, initial, defaultProjectId, projects, onSub
         description: initial?.description ?? '',
         status: initial?.status ?? 'TODO',
         priority: initial?.priority ?? 'MEDIUM',
-        dateMode: initDateMode(initial),
+        dateMode: initial?.dateMode ?? 'deadline',
         dueDate: initial?.dueDate ?? '',
         dueTime: initial?.dueTime ?? '',
         projectId: initial?.projectId ?? defaultProjectId ?? '',
@@ -109,47 +104,52 @@ export function TaskFormModal({ open, initial, defaultProjectId, projects, onSub
 
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-slate-600 dark:text-slate-300">Tipe Waktu</label>
-            <div className="flex flex-wrap gap-4 pt-1 text-xs text-slate-600 dark:text-slate-300">
-              <label className="flex items-center gap-1.5">
-                <input type="radio" value="none" {...register('dateMode')} className="text-blue-600" />
-                Tanpa tanggal
-              </label>
+            <div className="flex gap-4 pt-1 text-xs text-slate-600 dark:text-slate-300">
               <label className="flex items-center gap-1.5">
                 <input type="radio" value="deadline" {...register('dateMode')} className="text-blue-600" />
                 Tenggat (batas waktu)
               </label>
               <label className="flex items-center gap-1.5">
                 <input type="radio" value="schedule" {...register('dateMode')} className="text-blue-600" />
-                Jadwal (hari-H + jam)
+                Jadwal (hari-H)
               </label>
             </div>
           </div>
 
-          {dateMode !== 'none' && (
-            <div className={cn('grid gap-4', dateMode === 'schedule' ? 'grid-cols-2' : 'grid-cols-1')}>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label htmlFor="t-due" className="text-xs font-medium text-slate-600 dark:text-slate-300">Tanggal</label>
+              <input id="t-due" type="date" {...register('dueDate')} className={inputCls} />
+            </div>
+            {dateMode === 'schedule' ? (
               <div className="space-y-1.5">
-                <label htmlFor="t-due" className="text-xs font-medium text-slate-600 dark:text-slate-300">Tanggal *</label>
-                <input id="t-due" type="date" {...register('dueDate')} className={inputCls} />
-                {errors.dueDate && <p className="text-xs text-red-400">{errors.dueDate.message}</p>}
+                <label htmlFor="t-time" className="text-xs font-medium text-slate-600 dark:text-slate-300">Jam (WIB)</label>
+                <input id="t-time" type="time" {...register('dueTime')} className={inputCls} />
               </div>
-              {dateMode === 'schedule' && (
-                <div className="space-y-1.5">
-                  <label htmlFor="t-time" className="text-xs font-medium text-slate-600 dark:text-slate-300">Jam (WIB)</label>
-                  <input id="t-time" type="time" {...register('dueTime')} className={inputCls} />
-                </div>
-              )}
+            ) : (
+              <div className="space-y-1.5">
+                <label htmlFor="t-project" className="text-xs font-medium text-slate-600 dark:text-slate-300">Proyek</label>
+                <select id="t-project" {...register('projectId')} className={inputCls}>
+                  <option value="">— Tanpa proyek —</option>
+                  {projects.map((p) => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+
+          {dateMode === 'schedule' && (
+            <div className="space-y-1.5">
+              <label htmlFor="t-project-s" className="text-xs font-medium text-slate-600 dark:text-slate-300">Proyek</label>
+              <select id="t-project-s" {...register('projectId')} className={inputCls}>
+                <option value="">— Tanpa proyek —</option>
+                {projects.map((p) => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
             </div>
           )}
-
-          <div className="space-y-1.5">
-            <label htmlFor="t-project" className="text-xs font-medium text-slate-600 dark:text-slate-300">Proyek</label>
-            <select id="t-project" {...register('projectId')} className={inputCls}>
-              <option value="">— Tanpa proyek —</option>
-              {projects.map((p) => (
-                <option key={p.id} value={p.id}>{p.name}</option>
-              ))}
-            </select>
-          </div>
 
           <div className="space-y-1.5">
             <label htmlFor="t-tags" className="text-xs font-medium text-slate-600 dark:text-slate-300">Tag (pisahkan koma)</label>
