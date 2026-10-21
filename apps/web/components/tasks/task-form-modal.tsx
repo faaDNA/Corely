@@ -144,7 +144,7 @@ export function TaskFormModal({ open, initial, defaultProjectId, projects, onSub
           <div className="space-y-1.5">
             <label htmlFor="t-project" className="text-xs font-medium text-slate-600 dark:text-slate-300">Proyek</label>
             <select id="t-project" {...register('projectId')} className={inputCls}>
-              <option value="">— Tanpa proyek —</option>
+              <option value="">Tanpa proyek</option>
               {projects.map((p) => (
                 <option key={p.id} value={p.id}>{p.name}</option>
               ))}
