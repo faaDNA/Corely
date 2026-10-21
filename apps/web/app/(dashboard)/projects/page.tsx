@@ -3,7 +3,7 @@ import { getProjects, getTasks } from '@/lib/mappers';
 import { createClient } from '@/lib/supabase/server';
 import { ProjectsClient } from './projects-client';
 
-export default async function ProjectsPage() {
+export default async function ProjectsPage({ searchParams }: { searchParams: { q?: string } }) {
   const supabase = createClient();
   const {
     data: { user },
@@ -11,5 +11,5 @@ export default async function ProjectsPage() {
   if (!user) redirect('/login');
 
   const [projects, tasks] = await Promise.all([getProjects(user.id), getTasks(user.id)]);
-  return <ProjectsClient initialProjects={projects} tasks={tasks} />;
+  return <ProjectsClient initialProjects={projects} tasks={tasks} initialQ={searchParams.q ?? ''} />;
 }

@@ -38,14 +38,14 @@ async function getSearchItems(): Promise<SearchItem[]> {
     });
   }
   for (const n of notes) {
-    items.push({ id: `n-${n.id}`, label: n.title, sub: n.category, group: 'Notes', href: '/notes', icon: 'note' });
+    items.push({ id: `n-${n.id}`, label: n.title, sub: n.category, group: 'Notes', href: `/notes?q=${encodeURIComponent(n.title)}`, icon: 'note' });
   }
   for (const b of bookmarks) {
-    items.push({ id: `b-${b.id}`, label: b.title, sub: b.url, group: 'Bookmarks', href: '/bookmarks', icon: 'bookmark' });
+    items.push({ id: `b-${b.id}`, label: b.title, sub: b.url, group: 'Bookmarks', href: `/bookmarks?q=${encodeURIComponent(b.title)}`, icon: 'bookmark' });
   }
   for (const t of tasks) {
     if (t.deletedAt) continue;
-    items.push({ id: `t-${t.id}`, label: t.title, sub: `${t.status} · ${t.priority}`, group: 'Tasks', href: '/tasks', icon: 'task' });
+    items.push({ id: `t-${t.id}`, label: t.title, sub: `${t.status} · ${t.priority}`, group: 'Tasks', href: `/tasks?q=${encodeURIComponent(t.title)}`, icon: 'task' });
   }
   return items;
 }

@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Plus, Search } from 'lucide-react';
-import { Button, cn } from '@repo/ui';
-import type { Task, TaskStatus, TaskPriority, Project } from '@repo/types';
-import type { TaskFormValues } from '@/components/tasks/task-schema';
-import { TaskFormModal } from '@/components/tasks/task-form-modal';
-import { TaskListView } from '@/components/tasks/task-views';
-import { toast } from '@/components/toast';
-import { deleteTask, saveTask, toggleTask } from './actions';
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Plus, Search } from "lucide-react";
+import { Button, cn } from "@repo/ui";
+import type { Task, TaskStatus, TaskPriority, Project } from "@repo/types";
+import type { TaskFormValues } from "@/components/tasks/task-schema";
+import { TaskFormModal } from "@/components/tasks/task-form-modal";
+import { TaskListView } from "@/components/tasks/task-views";
+import { toast } from "@/components/toast";
+import { deleteTask, saveTask, toggleTask } from "./actions";
 
 const NEW_ID = () => `new-${Date.now()}`;
 
@@ -17,16 +17,28 @@ function todayISO(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-export function TasksClient({ initialTasks, projects }: { initialTasks: Task[]; projects: Project[] }) {
+export function TasksClient({
+  initialTasks,
+  projects,
+  initialQ = "",
+}: {
+  initialTasks: Task[];
+  projects: Project[];
+  initialQ?: string;
+}) {
   const router = useRouter();
   const [tasks, setTasks] = useState(initialTasks);
-  const [q, setQ] = useState('');
-  const [status, setStatus] = useState('all');
-  const [priority, setPriority] = useState('all');
-  /** default: hanya tugas tanpa proyek. 'all' = semua termasuk tugas proyek. */
-  const [project, setProject] = useState('none');
-  const [sort, setSort] = useState<'due' | 'new'>('due');
-  const [modal, setModal] = useState<{ open: boolean; initial?: Task | null }>({ open: false });
+  const [q, setQ] = useState(initialQ);
+  const [status, setStatus] = useState("all");
+  const [priority, setPriority] = useState("all");
+  /** default: hanya tugas tanpa proyek. 'all' = semua termasuk tugas proyek. Dari global search: 'all' supaya hasil ber-proyek tetap tampil. */
+  const [project, setProject] = useState<"all" | "none" | string>(
+    initialQ ? "all" : "none",
+  );
+  const [sort, setSort] = useState<"due" | "new">("due");
+  const [modal, setModal] = useState<{ open: boolean; initial?: Task | null }>({
+    open: false,
+  });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
   // Sinkron ulang saat server kirim data baru (router.refresh).
@@ -39,29 +51,35 @@ export function TasksClient({ initialTasks, projects }: { initialTasks: Task[]; 
     const out = [...activeTasks];
     if (q) {
       const qq = q.toLowerCase();
-      return out.filter((t) => t.title.toLowerCase().includes(qq) || t.description?.toLowerCase().includes(qq));
+      return out.filter(
+        (t) =>
+          t.title.toLowerCase().includes(qq) ||
+          t.description?.toLowerCase().includes(qq),
+      );
     }
     return out;
   }, [activeTasks, q]);
 
   const scoped = useMemo(() => {
-    if (project === 'none') return activeTasks.filter((t) => !t.projectId);
-    if (project === 'all') return activeTasks;
+    if (project === "none") return activeTasks.filter((t) => !t.projectId);
+    if (project === "all") return activeTasks;
     return activeTasks.filter((t) => t.projectId === project);
   }, [activeTasks, project]);
 
   const shown = useMemo(() => {
     let out = filtered;
-    if (status !== 'all') out = out.filter((t) => t.status === status);
-    if (priority !== 'all') out = out.filter((t) => t.priority === priority);
-    if (project === 'none') out = out.filter((t) => !t.projectId);
-    else if (project !== 'all') out = out.filter((t) => t.projectId === project);
+    if (status !== "all") out = out.filter((t) => t.status === status);
+    if (priority !== "all") out = out.filter((t) => t.priority === priority);
+    if (project === "none") out = out.filter((t) => !t.projectId);
+    else if (project !== "all")
+      out = out.filter((t) => t.projectId === project);
     out = [...out];
     out.sort((a, b) => {
       // selesai selalu paling bawah, di dalam grup pakai urutan yang dipilih
-      const done = Number(a.status === 'COMPLETED') - Number(b.status === 'COMPLETED');
+      const done =
+        Number(a.status === "COMPLETED") - Number(b.status === "COMPLETED");
       if (done) return done;
-      if (sort === 'due') {
+      if (sort === "due") {
         if (!a.dueDate) return b.dueDate ? 1 : 0; // tanpa tanggal dikumpulkan di bawah
         if (!b.dueDate) return -1;
         return a.dueDate < b.dueDate ? -1 : 1;
@@ -73,18 +91,26 @@ export function TasksClient({ initialTasks, projects }: { initialTasks: Task[]; 
 
   const confirmCount: Record<string, number> = {
     all: scoped.length,
-    TODO: scoped.filter((t) => t.status === 'TODO').length,
-    COMPLETED: scoped.filter((t) => t.status === 'COMPLETED').length,
+    TODO: scoped.filter((t) => t.status === "TODO").length,
+    COMPLETED: scoped.filter((t) => t.status === "COMPLETED").length,
   };
 
   async function handleToggle(task: Task) {
-    const next: TaskStatus = task.status === 'COMPLETED' ? 'TODO' : 'COMPLETED';
+    const next: TaskStatus = task.status === "COMPLETED" ? "TODO" : "COMPLETED";
     setTasks((prev) =>
-      prev.map((t) => (t.id === task.id ? { ...t, status: next, completedAt: next === 'TODO' ? undefined : todayISO() } : t))
+      prev.map((t) =>
+        t.id === task.id
+          ? {
+              ...t,
+              status: next,
+              completedAt: next === "TODO" ? undefined : todayISO(),
+            }
+          : t,
+      ),
     );
     const res = await toggleTask(task);
     if (!res.ok) {
-      toast(res.error ?? 'Gagal memperbarui tugas.');
+      toast(res.error ?? "Gagal memperbarui tugas.");
       setTasks(initialTasks);
       return;
     }
@@ -92,33 +118,47 @@ export function TasksClient({ initialTasks, projects }: { initialTasks: Task[]; 
   }
 
   async function handleFormSubmit(values: TaskFormValues) {
-    const st: TaskStatus = modal.initial?.status ?? 'TODO';
+    const st: TaskStatus = modal.initial?.status ?? "TODO";
     const payload: Task = {
       id: modal.initial?.id ?? NEW_ID(),
       title: values.title,
       description: values.description || undefined,
       status: st,
       priority: values.priority as TaskPriority,
-      dueDate: values.dateMode === 'none' ? undefined : values.dueDate || undefined,
-      dueTime: values.dateMode === 'schedule' ? values.dueTime || undefined : undefined,
-      dateMode: values.dateMode === 'none' ? undefined : values.dateMode,
+      dueDate:
+        values.dateMode === "none" ? undefined : values.dueDate || undefined,
+      dueTime:
+        values.dateMode === "schedule"
+          ? values.dueTime || undefined
+          : undefined,
+      dateMode: values.dateMode === "none" ? undefined : values.dateMode,
       projectId: values.projectId || undefined,
-      tags: values.tags ? values.tags.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
-      completedAt: st === 'COMPLETED' ? modal.initial?.completedAt ?? todayISO() : undefined,
+      tags: values.tags
+        ? values.tags
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean)
+        : undefined,
+      completedAt:
+        st === "COMPLETED"
+          ? (modal.initial?.completedAt ?? todayISO())
+          : undefined,
     };
 
     setModal({ open: false });
     setTasks((prev) =>
-      modal.initial ? prev.map((t) => (t.id === modal.initial!.id ? payload : t)) : [...prev, payload]
+      modal.initial
+        ? prev.map((t) => (t.id === modal.initial!.id ? payload : t))
+        : [...prev, payload],
     );
 
     const res = await saveTask(payload);
     if (!res.ok) {
-      toast(res.error ?? 'Gagal menyimpan tugas.');
+      toast(res.error ?? "Gagal menyimpan tugas.");
       setTasks(initialTasks);
       return;
     }
-    toast(modal.initial ? 'Tugas diperbarui.' : 'Tugas ditambahkan.');
+    toast(modal.initial ? "Tugas diperbarui." : "Tugas ditambahkan.");
     router.refresh();
   }
 
@@ -126,14 +166,16 @@ export function TasksClient({ initialTasks, projects }: { initialTasks: Task[]; 
     if (!pendingDelete) return;
     const id = pendingDelete;
     setPendingDelete(null);
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, deletedAt: todayISO() } : t)));
+    setTasks((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, deletedAt: todayISO() } : t)),
+    );
     const res = await deleteTask(id);
     if (!res.ok) {
-      toast(res.error ?? 'Gagal menghapus tugas.');
+      toast(res.error ?? "Gagal menghapus tugas.");
       setTasks(initialTasks);
       return;
     }
-    toast('Tugas dihapus.');
+    toast("Tugas dihapus.");
     router.refresh();
   }
 
@@ -141,11 +183,17 @@ export function TasksClient({ initialTasks, projects }: { initialTasks: Task[]; 
     <div className="space-y-4">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Tugas</h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Kelola tugas harian — klik checkbox untuk menyelesaikan.</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+            Tugas
+          </h1>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            Kelola tugas harian, checklist lalu hapus tugas untuk menandai
+            selesai.
+          </p>
         </div>
         <Button onClick={() => setModal({ open: true, initial: null })}>
-          <Plus className="mr-2 h-4 w-4" />Tugas Baru
+          <Plus className="mr-2 h-4 w-4" />
+          Tugas Baru
         </Button>
       </header>
 
@@ -165,9 +213,9 @@ export function TasksClient({ initialTasks, projects }: { initialTasks: Task[]; 
           <div className="flex flex-wrap gap-2">
             {(
               [
-                ['all', 'All'],
-                ['TODO', 'Todo'],
-                ['COMPLETED', 'Completed'],
+                ["all", "All"],
+                ["TODO", "Todo"],
+                ["COMPLETED", "Completed"],
               ] as const
             ).map(([v, l]) => (
               <button
@@ -175,8 +223,10 @@ export function TasksClient({ initialTasks, projects }: { initialTasks: Task[]; 
                 type="button"
                 onClick={() => setStatus(v)}
                 className={cn(
-                  'rounded-lg border px-2.5 py-1 text-xs font-medium transition',
-                  status === v ? 'border-blue-600 bg-blue-600/10 text-blue-600 dark:text-blue-400' : 'border-slate-300 text-slate-500 hover:border-slate-400 dark:border-slate-700 dark:text-slate-400 dark:hover:border-slate-600'
+                  "rounded-lg border px-2.5 py-1 text-xs font-medium transition",
+                  status === v
+                    ? "border-blue-600 bg-blue-600/10 text-blue-600 dark:text-blue-400"
+                    : "border-slate-300 text-slate-500 hover:border-slate-400 dark:border-slate-700 dark:text-slate-400 dark:hover:border-slate-600",
                 )}
               >
                 {l} ({confirmCount[v]})
@@ -205,7 +255,9 @@ export function TasksClient({ initialTasks, projects }: { initialTasks: Task[]; 
             <option value="none">Tanpa proyek</option>
             <option value="all">Semua tasks</option>
             {projects.map((p) => (
-              <option key={p.id} value={p.id}>{p.name}</option>
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
             ))}
           </select>
 
@@ -220,7 +272,13 @@ export function TasksClient({ initialTasks, projects }: { initialTasks: Task[]; 
         </div>
       </div>
 
-      <TaskListView tasks={shown} projects={projects} onToggle={handleToggle} onEdit={(t) => setModal({ open: true, initial: t })} onDelete={setPendingDelete} />
+      <TaskListView
+        tasks={shown}
+        projects={projects}
+        onToggle={handleToggle}
+        onEdit={(t) => setModal({ open: true, initial: t })}
+        onDelete={setPendingDelete}
+      />
 
       <TaskFormModal
         open={modal.open}
@@ -232,15 +290,29 @@ export function TasksClient({ initialTasks, projects }: { initialTasks: Task[]; 
 
       {pendingDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setPendingDelete(null)} />
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setPendingDelete(null)}
+          />
           <div className="relative w-full max-w-sm rounded-xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Hapus tugas ini?</h3>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+              Hapus tugas ini?
+            </h3>
             <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-              Tugas disembunyikan dari daftar. Yang sudah selesai tetap dihitung di statistik selama 5 bulan, lalu dihapus permanen.
+              Tugas disembunyikan dari daftar. Yang sudah selesai tetap dihitung
+              di statistik selama 5 bulan, lalu dihapus permanen.
             </p>
             <div className="mt-4 flex justify-end gap-2">
-              <Button variant="ghost" size="sm" onClick={() => setPendingDelete(null)}>Batal</Button>
-              <Button variant="danger" size="sm" onClick={confirmDelete}>Hapus</Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setPendingDelete(null)}
+              >
+                Batal
+              </Button>
+              <Button variant="danger" size="sm" onClick={confirmDelete}>
+                Hapus
+              </Button>
             </div>
           </div>
         </div>
