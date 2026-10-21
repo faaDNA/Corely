@@ -18,10 +18,10 @@ function domain(url: string) {
   }
 }
 
-export function BookmarksClient({ initialBookmarks }: { initialBookmarks: Bookmark[] }) {
+export function BookmarksClient({ initialBookmarks, initialQ = '' }: { initialBookmarks: Bookmark[]; initialQ?: string }) {
   const router = useRouter();
   const [bookmarks, setBookmarks] = useState(initialBookmarks);
-  const [q, setQ] = useState('');
+  const [q, setQ] = useState(initialQ);
   const [category, setCategory] = useState('all');
   const [favOnly, setFavOnly] = useState(false);
   const [modal, setModal] = useState<{ open: boolean; initial?: Bookmark | null }>({ open: false });

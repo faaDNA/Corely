@@ -17,14 +17,14 @@ function todayISO(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-export function TasksClient({ initialTasks, projects }: { initialTasks: Task[]; projects: Project[] }) {
+export function TasksClient({ initialTasks, projects, initialQ = '' }: { initialTasks: Task[]; projects: Project[]; initialQ?: string }) {
   const router = useRouter();
   const [tasks, setTasks] = useState(initialTasks);
-  const [q, setQ] = useState('');
+  const [q, setQ] = useState(initialQ);
   const [status, setStatus] = useState('all');
   const [priority, setPriority] = useState('all');
-  /** default: hanya tugas tanpa proyek. 'all' = semua termasuk tugas proyek. */
-  const [project, setProject] = useState('none');
+  /** default: hanya tugas tanpa proyek. 'all' = semua termasuk tugas proyek. Dari global search: 'all' supaya hasil ber-proyek tetap tampil. */
+  const [project, setProject] = useState<'all' | 'none' | string>(initialQ ? 'all' : 'none');
   const [sort, setSort] = useState<'due' | 'new'>('due');
   const [modal, setModal] = useState<{ open: boolean; initial?: Task | null }>({ open: false });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);

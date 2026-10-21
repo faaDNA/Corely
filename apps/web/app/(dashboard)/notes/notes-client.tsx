@@ -11,15 +11,27 @@ import { NOTE_CATEGORIES, type NoteFormValues } from '@/components/notes/note-sc
 import { deleteNote, saveNote, toggleNote } from './actions';
 import { toast } from '@/components/toast';
 
-export function NotesClient({ initialNotes }: { initialNotes: Note[] }) {
+export function NotesClient({ initialNotes, initialQ = '' }: { initialNotes: Note[]; initialQ?: string }) {
   const router = useRouter();
   const [notes, setNotes] = useState(initialNotes);
-  const [selectedId, setSelectedId] = useState(initialNotes[0]?.id ?? '');
-  const [q, setQ] = useState('');
+  const matchedNote = initialQ ? initialNotes.find((n) => n.title.toLowerCase().includes(initialQ.toLowerCase())) : null;
+  const [selectedId, setSelectedId] = useState(matchedNote?.id ?? initialNotes[0]?.id ?? '');
+  const [q, setQ] = useState(initialQ);
   const [category, setCategory] = useState('all');
-  const [showArchived, setShowArchived] = useState(false);
+  const [showArchived, setShowArchived] = useState(Boolean(matchedNote?.archived));
   const [modal, setModal] = useState<{ open: boolean; initial?: Note | null }>({ open: false });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (initialQ) {
+      setQ(initialQ);
+      const m = initialNotes.find((n) => n.title.toLowerCase().includes(initialQ.toLowerCase()));
+      if (m) {
+        setSelectedId(m.id);
+        if (m.archived) setShowArchived(true);
+      }
+    }
+  }, [initialQ, initialNotes]);
 
   // Sinkron ulang saat server kirim data baru (router.refresh) — ganti ID sementara dengan UUID asli.
   useEffect(() => {

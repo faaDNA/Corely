@@ -12,10 +12,10 @@ import { deriveProjectStatus, projectProgress } from '@/lib/project-status';
 import { saveProject, deleteProject } from './actions';
 import { toast } from '@/components/toast';
 
-export function ProjectsClient({ initialProjects, tasks }: { initialProjects: Project[]; tasks: Task[] }) {
+export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { initialProjects: Project[]; tasks: Task[]; initialQ?: string }) {
   const router = useRouter();
   const [projects, setProjects] = useState(initialProjects);
-  const [q, setQ] = useState('');
+  const [q, setQ] = useState(initialQ);
   const [status, setStatus] = useState('all');
   const [modal, setModal] = useState<{ open: boolean; initial?: Project | null }>({ open: false });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
