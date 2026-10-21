@@ -116,7 +116,7 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Proyek</h1>
-          <p className="mt-1 text-sm text-slate-400">Aktivitas jangka panjang dengan progres, teknologi, dan tugas terkait.</p>
+          <p className="mt-1 text-sm text-slate-400 dark:text-slate-400">Kelola proyek serta pantau progres dan tugasnya di satu tempat.</p>
         </div>
         <Button onClick={() => setModal({ open: true, initial: null })}><Plus className="mr-2 h-4 w-4" />Proyek Baru</Button>
       </header>

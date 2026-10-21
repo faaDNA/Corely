@@ -57,7 +57,7 @@ export function NoteFormModal({ open, initial, onSubmit, onClose }: Props) {
             {errors.title && <p className="text-xs text-red-400">{errors.title.message}</p>}
           </div>
           <p className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-3 py-2 text-[11px] leading-relaxed text-slate-500">
-            Isi catatan dapat ditulis/diedit langsung di panel editor sebelah kanan setelah disimpan.
+            Isi catatan dapat langsung Anda tulis setelah catatan dibuat.
           </p>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
@@ -68,7 +68,7 @@ export function NoteFormModal({ open, initial, onSubmit, onClose }: Props) {
               {errors.category && <p className="text-xs text-red-400">{errors.category.message}</p>}
             </div>
             <div className="space-y-1.5">
-              <label htmlFor="n-tags" className="text-xs font-medium text-slate-600 dark:text-slate-300">Tag (pisahkan koma)</label>
+              <label htmlFor="n-tags" className="text-xs font-medium text-slate-600 dark:text-slate-300">Tag (pisahkan koma, opsional)</label>
               <input id="n-tags" {...register('tags')} className={inputCls} placeholder="app, karir" />
             </div>
           </div>

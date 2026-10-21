@@ -1,31 +1,52 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Plus, Search, Pin, Archive, FileText } from 'lucide-react';
-import { Button, cn } from '@repo/ui';
-import type { Note } from '@repo/types';
-import { NoteFormModal } from '@/components/notes/note-form-modal';
-import { NoteDetailPanel } from '@/components/notes/note-detail-panel';
-import { NOTE_CATEGORIES, type NoteFormValues } from '@/components/notes/note-schema';
-import { deleteNote, saveNote, toggleNote } from './actions';
-import { toast } from '@/components/toast';
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Plus, Search, Pin, Archive, FileText } from "lucide-react";
+import { Button, cn } from "@repo/ui";
+import type { Note } from "@repo/types";
+import { NoteFormModal } from "@/components/notes/note-form-modal";
+import { NoteDetailPanel } from "@/components/notes/note-detail-panel";
+import {
+  NOTE_CATEGORIES,
+  type NoteFormValues,
+} from "@/components/notes/note-schema";
+import { deleteNote, saveNote, toggleNote } from "./actions";
+import { toast } from "@/components/toast";
 
-export function NotesClient({ initialNotes, initialQ = '' }: { initialNotes: Note[]; initialQ?: string }) {
+export function NotesClient({
+  initialNotes,
+  initialQ = "",
+}: {
+  initialNotes: Note[];
+  initialQ?: string;
+}) {
   const router = useRouter();
   const [notes, setNotes] = useState(initialNotes);
-  const matchedNote = initialQ ? initialNotes.find((n) => n.title.toLowerCase().includes(initialQ.toLowerCase())) : null;
-  const [selectedId, setSelectedId] = useState(matchedNote?.id ?? initialNotes[0]?.id ?? '');
+  const matchedNote = initialQ
+    ? initialNotes.find((n) =>
+        n.title.toLowerCase().includes(initialQ.toLowerCase()),
+      )
+    : null;
+  const [selectedId, setSelectedId] = useState(
+    matchedNote?.id ?? initialNotes[0]?.id ?? "",
+  );
   const [q, setQ] = useState(initialQ);
-  const [category, setCategory] = useState('all');
-  const [showArchived, setShowArchived] = useState(Boolean(matchedNote?.archived));
-  const [modal, setModal] = useState<{ open: boolean; initial?: Note | null }>({ open: false });
+  const [category, setCategory] = useState("all");
+  const [showArchived, setShowArchived] = useState(
+    Boolean(matchedNote?.archived),
+  );
+  const [modal, setModal] = useState<{ open: boolean; initial?: Note | null }>({
+    open: false,
+  });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
   useEffect(() => {
     if (initialQ) {
       setQ(initialQ);
-      const m = initialNotes.find((n) => n.title.toLowerCase().includes(initialQ.toLowerCase()));
+      const m = initialNotes.find((n) =>
+        n.title.toLowerCase().includes(initialQ.toLowerCase()),
+      );
       if (m) {
         setSelectedId(m.id);
         if (m.archived) setShowArchived(true);
@@ -36,19 +57,28 @@ export function NotesClient({ initialNotes, initialQ = '' }: { initialNotes: Not
   // Sinkron ulang saat server kirim data baru (router.refresh) — ganti ID sementara dengan UUID asli.
   useEffect(() => {
     setNotes(initialNotes);
-    setSelectedId((prev) => (initialNotes.some((n) => n.id === prev) ? prev : initialNotes[0]?.id ?? ''));
+    setSelectedId((prev) =>
+      initialNotes.some((n) => n.id === prev)
+        ? prev
+        : (initialNotes[0]?.id ?? ""),
+    );
   }, [initialNotes]);
 
   const visible = useMemo(() => {
     let out = notes.filter((n) => Boolean(n.archived) === showArchived);
-    if (category !== 'all') out = out.filter((n) => n.category === category);
+    if (category !== "all") out = out.filter((n) => n.category === category);
     if (q) {
       const qq = q.toLowerCase();
       out = out.filter(
-        (n) => n.title.toLowerCase().includes(qq) || n.content.toLowerCase().includes(qq) || n.tags?.some((t) => t.includes(qq))
+        (n) =>
+          n.title.toLowerCase().includes(qq) ||
+          n.content.toLowerCase().includes(qq) ||
+          n.tags?.some((t) => t.includes(qq)),
       );
     }
-    return out.sort((a, b) => Number(b.pinned ?? false) - Number(a.pinned ?? false));
+    return out.sort(
+      (a, b) => Number(b.pinned ?? false) - Number(a.pinned ?? false),
+    );
   }, [notes, q, category, showArchived]);
 
   const selected = visible.find((n) => n.id === selectedId) ?? visible[0];
@@ -57,15 +87,23 @@ export function NotesClient({ initialNotes, initialQ = '' }: { initialNotes: Not
     const payload: Note = {
       id: modal.initial?.id ?? `n-${Date.now()}`,
       title: values.title,
-      content: modal.initial?.content ?? values.content ?? '',
+      content: modal.initial?.content ?? values.content ?? "",
       category: values.category,
-      tags: values.tags ? values.tags.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
+      tags: values.tags
+        ? values.tags
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean)
+        : undefined,
       pinned: modal.initial?.pinned,
       archived: modal.initial?.archived,
       updatedAt: new Date().toISOString().slice(0, 10),
     };
     setModal({ open: false });
-    if (modal.initial) setNotes((prev) => prev.map((n) => (n.id === modal.initial!.id ? payload : n)));
+    if (modal.initial)
+      setNotes((prev) =>
+        prev.map((n) => (n.id === modal.initial!.id ? payload : n)),
+      );
     else {
       setNotes((prev) => [payload, ...prev]);
       setSelectedId(payload.id);
@@ -73,28 +111,38 @@ export function NotesClient({ initialNotes, initialQ = '' }: { initialNotes: Not
 
     const res = await saveNote(payload);
     if (!res.ok) {
-      toast(res.error ?? 'Gagal menyimpan catatan.');
+      toast(res.error ?? "Gagal menyimpan catatan.");
       return;
     }
-    toast(modal.initial ? 'Catatan diperbarui.' : 'Catatan ditambahkan.');
+    toast(modal.initial ? "Catatan diperbarui." : "Catatan ditambahkan.");
     router.refresh();
   }
 
   async function handleInlineSave(id: string, content: string) {
-    setNotes((prev) => prev.map((n) => (n.id === id ? { ...n, content, updatedAt: new Date().toISOString().slice(0, 10) } : n)));
+    setNotes((prev) =>
+      prev.map((n) =>
+        n.id === id
+          ? { ...n, content, updatedAt: new Date().toISOString().slice(0, 10) }
+          : n,
+      ),
+    );
     const note = notes.find((n) => n.id === id);
     if (!note) return;
     await saveNote({ ...note, content });
     router.refresh();
   }
 
-  async function handleToggle(flag: 'pinned' | 'archived', id: string) {
+  async function handleToggle(flag: "pinned" | "archived", id: string) {
     const note = notes.find((n) => n.id === id);
     if (!note) return;
-    setNotes((prev) => prev.map((n) => (n.id === id ? { ...n, [flag]: !n[flag as keyof Note] } : n)));
+    setNotes((prev) =>
+      prev.map((n) =>
+        n.id === id ? { ...n, [flag]: !n[flag as keyof Note] } : n,
+      ),
+    );
     const res = await toggleNote(note, flag);
     if (!res.ok) {
-      toast(res.error ?? 'Gagal memperbarui catatan.');
+      toast(res.error ?? "Gagal memperbarui catatan.");
       setNotes(notes);
       return;
     }
@@ -109,11 +157,11 @@ export function NotesClient({ initialNotes, initialQ = '' }: { initialNotes: Not
     setNotes((prev) => prev.filter((n) => n.id !== id));
     const res = await deleteNote(id);
     if (!res.ok) {
-      toast(res.error ?? 'Gagal menghapus catatan.');
+      toast(res.error ?? "Gagal menghapus catatan.");
       setNotes(backup);
       return;
     }
-    toast('Catatan dihapus.');
+    toast("Catatan dihapus.");
     router.refresh();
   }
 
@@ -121,10 +169,17 @@ export function NotesClient({ initialNotes, initialQ = '' }: { initialNotes: Not
     <div className="space-y-4">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Catatan</h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Knowledge base Markdown dengan kategori, tag, dan pinning.</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+            Catatan
+          </h1>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            Semua catatan pentingmu, lengkap dengan kategori dan tag.
+          </p>
         </div>
-        <Button onClick={() => setModal({ open: true, initial: null })}><Plus className="mr-2 h-4 w-4" />Catatan Baru</Button>
+        <Button onClick={() => setModal({ open: true, initial: null })}>
+          <Plus className="mr-2 h-4 w-4" />
+          Catatan Baru
+        </Button>
       </header>
 
       {/* Toolbar */}
@@ -144,17 +199,24 @@ export function NotesClient({ initialNotes, initialQ = '' }: { initialNotes: Not
           className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-700 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
         >
           <option value="all">Semua Kategori</option>
-          {NOTE_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+          {NOTE_CATEGORIES.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
         </select>
         <button
           type="button"
           onClick={() => setShowArchived((v) => !v)}
           className={cn(
-            'inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition',
-            showArchived ? 'border-amber-600 bg-amber-600/10 text-amber-600 dark:text-amber-400' : 'border-slate-300 text-slate-500 hover:border-slate-400 dark:border-slate-700 dark:text-slate-400 dark:hover:border-slate-600'
+            "inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition",
+            showArchived
+              ? "border-amber-600 bg-amber-600/10 text-amber-600 dark:text-amber-400"
+              : "border-slate-300 text-slate-500 hover:border-slate-400 dark:border-slate-700 dark:text-slate-400 dark:hover:border-slate-600",
           )}
         >
-          <Archive className="h-3.5 w-3.5" />{showArchived ? 'Arsip' : 'Aktif'}
+          <Archive className="h-3.5 w-3.5" />
+          {showArchived ? "Arsip" : "Aktif"}
         </button>
       </div>
 
@@ -174,23 +236,38 @@ export function NotesClient({ initialNotes, initialQ = '' }: { initialNotes: Not
                 type="button"
                 onClick={() => setSelectedId(n.id)}
                 className={cn(
-                  'w-full rounded-xl border p-3 text-left transition',
+                  "w-full rounded-xl border p-3 text-left transition",
                   selected?.id === n.id
-                    ? 'border-blue-600 bg-blue-600/10'
-                    : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-slate-700'
+                    ? "border-blue-600 bg-blue-600/10"
+                    : "border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-slate-700",
                 )}
               >
                 <div className="flex items-center gap-2">
-                  {n.pinned && <Pin className="h-3.5 w-3.5 shrink-0 text-amber-500 dark:text-amber-400" />}
-                  <p className="flex-1 truncate text-sm font-medium text-slate-900 dark:text-white">{n.title}</p>
+                  {n.pinned && (
+                    <Pin className="h-3.5 w-3.5 shrink-0 text-amber-500 dark:text-amber-400" />
+                  )}
+                  <p className="flex-1 truncate text-sm font-medium text-slate-900 dark:text-white">
+                    {n.title}
+                  </p>
                 </div>
-                <p className="mt-1 line-clamp-2 text-xs text-slate-500">{n.content}</p>
+                <p className="mt-1 line-clamp-2 text-xs text-slate-500">
+                  {n.content}
+                </p>
                 <div className="mt-2 flex flex-wrap gap-1">
-                  <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-600 dark:bg-slate-800 dark:text-slate-400">{n.category}</span>
+                  <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                    {n.category}
+                  </span>
                   {n.tags?.map((t) => (
-                    <span key={t} className="rounded bg-purple-500/10 px-1.5 py-0.5 text-[10px] text-purple-600 dark:text-purple-400">#{t}</span>
+                    <span
+                      key={t}
+                      className="rounded bg-purple-500/10 px-1.5 py-0.5 text-[10px] text-purple-600 dark:text-purple-400"
+                    >
+                      #{t}
+                    </span>
                   ))}
-                  <span className="ml-auto text-[10px] text-slate-600">{n.updatedAt}</span>
+                  <span className="ml-auto text-[10px] text-slate-600">
+                    {n.updatedAt}
+                  </span>
                 </div>
               </button>
             ))}
@@ -204,31 +281,55 @@ export function NotesClient({ initialNotes, initialQ = '' }: { initialNotes: Not
               note={selected}
               onMetaEdit={(n) => setModal({ open: true, initial: n })}
               onDelete={(id) => setPendingDelete(id)}
-              onTogglePin={() => handleToggle('pinned', selected.id)}
-              onToggleArchive={() => handleToggle('archived', selected.id)}
+              onTogglePin={() => handleToggle("pinned", selected.id)}
+              onToggleArchive={() => handleToggle("archived", selected.id)}
               onSaveContent={handleInlineSave}
             />
           ) : (
             <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white p-12 text-center dark:border-slate-800 dark:bg-slate-900/40">
               <FileText className="h-8 w-8 text-slate-600" />
-              <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">Pilih catatan di samping</p>
-              <p className="mt-1 text-xs text-slate-500">atau buat catatan baru untuk mulai menulis.</p>
+              <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
+                Pilih catatan di samping
+              </p>
+              <p className="mt-1 text-xs text-slate-500">
+                atau buat catatan baru untuk mulai menulis.
+              </p>
             </div>
           )}
         </div>
       </div>
 
-      <NoteFormModal open={modal.open} initial={modal.initial ?? null} onSubmit={handleFormSubmit} onClose={() => setModal({ open: false })} />
+      <NoteFormModal
+        open={modal.open}
+        initial={modal.initial ?? null}
+        onSubmit={handleFormSubmit}
+        onClose={() => setModal({ open: false })}
+      />
 
       {pendingDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setPendingDelete(null)} />
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setPendingDelete(null)}
+          />
           <div className="relative w-full max-w-sm rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 shadow-2xl">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Hapus catatan ini?</h3>
-            <p className="mt-2 text-xs text-slate-400">Tindakan ini tidak bisa dibatalkan.</p>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+              Hapus catatan ini?
+            </h3>
+            <p className="mt-2 text-xs text-slate-400">
+              Tindakan ini tidak bisa dibatalkan.
+            </p>
             <div className="mt-4 flex justify-end gap-2">
-              <Button variant="ghost" size="sm" onClick={() => setPendingDelete(null)}>Batal</Button>
-              <Button variant="danger" size="sm" onClick={confirmDelete}>Hapus</Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setPendingDelete(null)}
+              >
+                Batal
+              </Button>
+              <Button variant="danger" size="sm" onClick={confirmDelete}>
+                Hapus
+              </Button>
             </div>
           </div>
         </div>

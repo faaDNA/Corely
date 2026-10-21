@@ -80,7 +80,7 @@ export function ProjectFormModal({ open, initial, onSubmit, onClose }: Props) {
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="p-tech" className="text-xs font-medium text-slate-600 dark:text-slate-300">Teknologi (pisahkan koma)</label>
+            <label htmlFor="p-tech" className="text-xs font-medium text-slate-600 dark:text-slate-300">Teknologi (pisahkan koma, opsional)</label>
             <input id="p-tech" {...register('technologies')} className={inputCls} placeholder="Next.js, TypeScript" />
           </div>
 

@@ -152,7 +152,7 @@ export function TaskFormModal({ open, initial, defaultProjectId, projects, onSub
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="t-tags" className="text-xs font-medium text-slate-600 dark:text-slate-300">Tag (pisahkan koma)</label>
+            <label htmlFor="t-tags" className="text-xs font-medium text-slate-600 dark:text-slate-300">Tag (pisahkan koma, opsional)</label>
             <input id="t-tags" {...register('tags')} className={inputCls} placeholder="urgent, kuliah" />
           </div>
         </div>
