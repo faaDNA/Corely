@@ -230,3 +230,13 @@ do $cron$ begin
 exception when others then
   raise notice 'cron schedule lewati — aktifkan pg_cron di Dashboard: %', sqlerrm;
 end $cron$;
+
+-- Penanda pengingat push sudah terkirim (dedupe per tugas/jenis/tanggal).
+-- Service-role only: RLS aktif tanpa policy → user biasa tidak bisa baca/tulis.
+create table if not exists public.reminder_sent (
+  task_id uuid not null references public.tasks(id) on delete cascade,
+  kind text not null check (kind in ('H', 'H1')),
+  due_date date not null,
+  primary key (task_id, kind, due_date)
+);
+alter table public.reminder_sent enable row level security;
