@@ -30,7 +30,7 @@ function deriveItems(tasks: Task[], projects: Project[]): EventItem[] {
     .filter((t) => t.dueDate && t.status !== 'COMPLETED')
     .map((t) => ({
       id: `task-${t.id}`,
-      title: t.dateMode === 'schedule' ? `${t.title}${t.dueTime ? ` · ${t.dueTime}` : ''}` : t.title,
+      title: t.dueTime ? `${t.title} · ${t.dueTime}` : t.title,
       startDate: t.dueDate!,
       type: t.dateMode === 'schedule' ? 'schedule' : 'task',
     }));

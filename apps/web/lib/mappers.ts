@@ -1,5 +1,6 @@
 import type { Project, Task, Note, Habit, Bookmark } from '@repo/types';
 import { createClient } from '@/lib/supabase/server';
+import { wibNow } from '@/lib/day';
 
 // DB snake_case → app camelCase
 
@@ -171,7 +172,8 @@ export async function getHabits(userId: string): Promise<Habit[]> {
     .eq('user_id', userId)
     .order('created_at', { ascending: true });
 
-  const today = new Date();
+  // 'hari ini' menurut wibNow() — baca dengan getter UTC, lihat lib/day.ts
+  const today = wibNow();
   return (data ?? []).map((h) => {
     const logs = ((h.habit_logs as { logged_date: string }[] | null) ?? [])
       .map((l) => l.logged_date)
@@ -208,8 +210,9 @@ export async function getBookmarks(userId: string): Promise<Bookmark[]> {
   }));
 }
 
+/** d = jam WIB (lihat wibNow) — getter UTC, bukan lokal. */
 function isoDay(d: Date): string {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
 }
 
 /** Streak berjalan (berakhir hari ini/kemarin) + rekor, dari daftar tanggal urut menurun. */
@@ -218,7 +221,7 @@ function streaks(daysDesc: string[], now: Date): { streak: number; longest: numb
   const days = [...new Set(daysDesc)].sort().reverse();
   const set = new Set(days);
   const day = (offset: number) => {
-    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - offset);
+    const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - offset));
     return isoDay(d);
   };
 

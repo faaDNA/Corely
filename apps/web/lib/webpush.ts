@@ -1,4 +1,5 @@
 import webpush from 'web-push';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/server';
 
 let ready: boolean | null = null;
@@ -21,11 +22,11 @@ export type PushPayload = { title: string; body: string; url?: string };
 
 /**
  * Kirim push ke semua langganan user. Subscription mati (404/410) dihapus dari tabel.
- * Dipakai server action; cron mendatang panggil fungsi ini juga.
+ * `db` opsional — cron pakai service-role client (lihat lib/supabase/service.ts).
  */
-export async function sendPushToUser(userId: string, payload: PushPayload): Promise<number> {
+export async function sendPushToUser(userId: string, payload: PushPayload, db?: SupabaseClient): Promise<number> {
   if (!init()) throw new Error('VAPID belum dikonfigurasi (NEXT_PUBLIC_VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY).');
-  const supabase = createClient();
+  const supabase = db ?? createClient();
   const { data: subs } = await supabase
     .from('push_subscriptions')
     .select('id, endpoint, p256dh, auth')

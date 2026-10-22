@@ -63,7 +63,7 @@ export function ProjectTasksPanel({ projectId, projectName, projects, tasks, set
       status,
       priority: values.priority as TaskPriority,
       dueDate: values.dateMode === 'none' ? undefined : values.dueDate || undefined,
-      dueTime: values.dateMode === 'schedule' ? values.dueTime || undefined : undefined,
+      dueTime: values.dateMode === 'none' ? undefined : values.dueTime || undefined,
       dateMode: values.dateMode === 'none' ? undefined : values.dateMode,
       projectId,
       tags: values.tags ? values.tags.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
