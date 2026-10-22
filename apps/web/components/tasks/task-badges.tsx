@@ -25,7 +25,7 @@ export function TaskBadges({ task, projects }: { task: Task; projects: Project[]
           )}
         >
           {isSchedule ? '🗓' : '📅'} {task.dueDate}
-          {isSchedule && task.dueTime ? ` · ${task.dueTime}` : ''}
+          {task.dueTime ? ` · ${task.dueTime}` : ''}
         </span>
       )}
       {name && (

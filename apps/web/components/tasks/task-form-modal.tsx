@@ -126,18 +126,16 @@ export function TaskFormModal({ open, initial, defaultProjectId, projects, onSub
           </div>
 
           {dateMode !== 'none' && (
-            <div className={cn('grid gap-4', dateMode === 'schedule' ? 'grid-cols-2' : 'grid-cols-1')}>
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label htmlFor="t-due" className="text-xs font-medium text-slate-600 dark:text-slate-300">Tanggal *</label>
                 <input id="t-due" type="date" {...register('dueDate')} className={inputCls} />
                 {errors.dueDate && <p className="text-xs text-red-400">{errors.dueDate.message}</p>}
               </div>
-              {dateMode === 'schedule' && (
-                <div className="space-y-1.5">
-                  <label htmlFor="t-time" className="text-xs font-medium text-slate-600 dark:text-slate-300">Jam (WIB)</label>
-                  <input id="t-time" type="time" {...register('dueTime')} className={inputCls} />
-                </div>
-              )}
+              <div className="space-y-1.5">
+                <label htmlFor="t-time" className="text-xs font-medium text-slate-600 dark:text-slate-300">Jam (WIB, opsional)</label>
+                <input id="t-time" type="time" {...register('dueTime')} className={inputCls} />
+              </div>
             </div>
           )}
 

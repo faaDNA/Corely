@@ -128,9 +128,7 @@ export function TasksClient({
       dueDate:
         values.dateMode === "none" ? undefined : values.dueDate || undefined,
       dueTime:
-        values.dateMode === "schedule"
-          ? values.dueTime || undefined
-          : undefined,
+        values.dateMode === "none" ? undefined : values.dueTime || undefined,
       dateMode: values.dateMode === "none" ? undefined : values.dateMode,
       projectId: values.projectId || undefined,
       tags: values.tags

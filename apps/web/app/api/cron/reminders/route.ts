@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { wibNow } from '@/lib/day';
+import { isoWIB, wibNow } from '@/lib/day';
 import { reminderTargets, type ReminderKind } from '@/lib/reminders';
 import { createServiceClient } from '@/lib/supabase/service';
 import { sendPushToUser } from '@/lib/webpush';
@@ -22,6 +22,8 @@ export async function GET(req: Request) {
 
   const supabase = createServiceClient();
   const nowMs = wibNow().getTime();
+  // rentang 3 hari: jaga-jaga untuk target yang jatuh tepat batas hari (subuh)
+  const dates = [-1, 0, 1].map((o) => isoWIB(new Date(Date.now() + o * 86_400_000)));
 
   // Ambil semua tugas TODO yang punya tanggal & durasi relatif masuk akal
   const { data: tasks, error } = await supabase
@@ -29,7 +31,7 @@ export async function GET(req: Request) {
     .select('id, title, user_id, due_date, due_time')
     .eq('status', 'TODO')
     .is('deleted_at', null)
-    .not('due_date', 'is', null);
+    .in('due_date', dates);
 
   if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
 
