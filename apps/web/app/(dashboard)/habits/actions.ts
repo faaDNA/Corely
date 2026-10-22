@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
+import { isoWIB } from '@/lib/day';
 
 async function requireUser() {
   const {
@@ -48,8 +49,7 @@ export async function toggleHabitToday(habitId: string, done: boolean): Promise<
   try {
     const userId = await requireUser();
     const supabase = createClient();
-    const today = new Date();
-    const iso = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    const iso = isoWIB(); // WIB (GMT+7) — server UTC, jangan new Date() lokal
 
     if (done) {
       const { error } = await supabase
