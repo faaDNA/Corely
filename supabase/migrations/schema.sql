@@ -240,3 +240,46 @@ create table if not exists public.reminder_sent (
   primary key (task_id, kind, due_date)
 );
 alter table public.reminder_sent enable row level security;
+
+-- Pengingat tenggat/jadwal (H & H-1) — pg_cron + pg_net memanggil endpoint Next.js.
+-- Dipakai Hobby Vercel (cron Vercel maks 1x/hari). Interval tiap menit.
+-- URL & secret disimpan di tabel config (GUC butuh superuser yang tidak dimiliki
+-- role SQL Editor Supabase). Isi config SETELAH file ini dijalankan:
+--   insert into public.cron_config(key, value) values
+--     ('url', 'https://APP-KAMU.vercel.app'),
+--     ('secret', 'SAMA DENGAN CRON_SECRET DI VERCEL')
+--   on conflict (key) do update set value = excluded.value;
+-- lalu jalankan file ini lagi sekali agar jadwal benar-benar terdaftar.
+create table if not exists public.cron_config (
+  key text primary key,
+  value text not null
+);
+alter table public.cron_config enable row level security;
+-- RLS tanpa policy: user app tidak bisa baca; owner SQL Editor & pg_cron tetap bisa.
+
+do $cron$ begin
+  perform cron.unschedule('corely-reminders');
+exception when others then
+  raise notice 'unschedule corely-reminders lewati: %', sqlerrm;
+end $cron$;
+
+do $cron$ begin
+  if (select count(*) from public.cron_config where key in ('url', 'secret')) < 2 then
+    raise notice 'Pengingat BELUM dijadwalkan — isi dulu public.cron_config (lihat komentar di atas), lalu jalankan file ini lagi';
+    return;
+  end if;
+  create extension if not exists pg_net;
+  perform cron.schedule(
+    'corely-reminders',
+    '* * * * *',
+    $job$ select net.http_post(
+        url := (select value from public.cron_config where key = 'url') || '/api/cron/reminders',
+        headers := jsonb_build_object('Authorization',
+          'Bearer ' || (select value from public.cron_config where key = 'secret')),
+        body := '{}'::jsonb
+      );
+    $job$
+  );
+exception when others then
+  raise notice 'pg_cron/pg_net lewati — aktifkan di Dashboard: %', sqlerrm;
+end $cron$;
