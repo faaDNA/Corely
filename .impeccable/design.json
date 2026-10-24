@@ -1,0 +1,248 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-24T00:00:00Z",
+  "title": "Design System: Corely",
+  "extensions": {
+    "colorMeta": {
+      "action-blue": {
+        "role": "primary",
+        "displayName": "Biru Tindakan",
+        "canonical": "#2563eb",
+        "tonalRamp": ["#0b1a3a", "#122a5c", "#173d85", "#1d50ae", "#2563eb", "#5b8ef2", "#a5c2f8", "#e2ecfe"]
+      },
+      "action-blue-soft": {
+        "role": "primary",
+        "displayName": "Biru Terpilih",
+        "canonical": "#eff6ff",
+        "tonalRamp": ["#12213c", "#1d3557", "#2a4a78", "#3a679e", "#5b8ef2", "#93b6f7", "#c8dcfb", "#eff6ff"]
+      },
+      "action-blue-line": {
+        "role": "primary",
+        "displayName": "Garis Biru Terpilih",
+        "canonical": "#bfdbfe",
+        "tonalRamp": ["#12213c", "#1d3557", "#2a4a78", "#3a679e", "#5b8ef2", "#93b6f7", "#c8dcfb", "#eff6ff"]
+      },
+      "action-blue-deep": {
+        "role": "primary",
+        "displayName": "Biru Terpilih Tua",
+        "canonical": "#1d4ed8",
+        "tonalRamp": ["#0a1830", "#12274f", "#173a75", "#1d4ed8", "#4c73e3", "#8aa4ee", "#c3d0f7", "#e8edfd"]
+      },
+      "tenggat-amber": {
+        "role": "secondary",
+        "displayName": "Amber Tenggat",
+        "canonical": "#f59e0b",
+        "tonalRamp": ["#3a2405", "#5c3a08", "#85530c", "#b06f0e", "#f59e0b", "#f8b74d", "#fbd699", "#fdf3e0"]
+      },
+      "proyek-purple": {
+        "role": "secondary",
+        "displayName": "Ungu Batas Proyek",
+        "canonical": "#a855f7",
+        "tonalRamp": ["#2e1065", "#4c1d95", "#5b21b6", "#7c3aed", "#a855f7", "#c084fc", "#d8b4fe", "#f3e8ff"]
+      },
+      "done-green": {
+        "role": "secondary",
+        "displayName": "Hijau Selesai",
+        "canonical": "#10b981",
+        "tonalRamp": ["#052e22", "#0a4a37", "#0d664c", "#0f8261", "#10b981", "#4fd3a8", "#96e6ca", "#dcfaf0"]
+      },
+      "cool-paper": {
+        "role": "neutral",
+        "displayName": "Kertas Dingin",
+        "canonical": "#f8fafc",
+        "tonalRamp": ["#0d1420", "#1b2433", "#2c3849", "#495668", "#6b7688", "#97a1b0", "#c9d0d9", "#f8fafc"]
+      },
+      "slate-ink": {
+        "role": "neutral",
+        "displayName": "Tinta Slate",
+        "canonical": "#0f172a",
+        "tonalRamp": ["#0f172a", "#1b2438", "#2b3549", "#414b60", "#5f6a80", "#8b95a8", "#c3c9d4", "#f1f3f7"]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Garis Rambut",
+        "canonical": "#e2e8f0",
+        "tonalRamp": ["#7b8494", "#8d96a4", "#a1a9b6", "#b6bdc7", "#cdd3db", "#e2e8f0", "#eff2f6", "#fbfcfd"]
+      },
+      "slate-muted": {
+        "role": "neutral",
+        "displayName": "Slate Redup",
+        "canonical": "#64748b",
+        "tonalRamp": ["#0f1720", "#1d2733", "#303c4b", "#455366", "#64748b", "#93a0b1", "#c3cbd6", "#f1f4f7"]
+      },
+      "ground-dark": {
+        "role": "neutral",
+        "displayName": "Ground Gelap",
+        "canonical": "#020617",
+        "tonalRamp": ["#020617", "#0a1124", "#141d33", "#222c45", "#38425c", "#5d6880", "#9aa2b4", "#e6e9ef"]
+      },
+      "danger-red": {
+        "role": "tertiary",
+        "displayName": "Merah Bahaya",
+        "canonical": "#dc2626",
+        "tonalRamp": ["#3a0a0a", "#5c1111", "#821919", "#b21f1f", "#dc2626", "#e96565", "#f2a8a8", "#fbe4e4"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Judul pembuka halaman depan; maksimum satu per halaman." },
+      "headline": { "displayName": "Headline", "purpose": "Judul bagian." },
+      "title": { "displayName": "Title", "purpose": "Judul kartu, modal, dan nama modul." },
+      "body": { "displayName": "Body", "purpose": "Isi dan deskripsi; baris dijaga di bawah 75 karakter." },
+      "label": { "displayName": "Label", "purpose": "Penanda kolom dan jenis tanggal; huruf besar berspasi lebar." },
+      "chip": { "displayName": "Chip / Mikro", "purpose": "Label di dalam lencana prioritas, jenis tanggal, tag, dan baris metadata; satu-satunya ukuran di bawah 11px." }
+    },
+    "shadows": [
+      { "name": "floating-tipis", "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)", "purpose": "Menu turun, popup kecil, chip yang menempel pada baris." },
+      { "name": "floating-sedang", "value": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)", "purpose": "Modal, panel samping, notifikasi." }
+    ],
+    "motion": [
+      { "name": "transition-colors", "value": "color 150ms ease, background-color 150ms ease, border-color 150ms ease", "purpose": "Standar untuk hover dan fokus." },
+      { "name": "transition-opacity", "value": "opacity 150ms ease", "purpose": "Meredupkan pasangan baris yang tidak sedang disorot." },
+      { "name": "reveal-on-scroll", "value": "IntersectionObserver, rootMargin 0 0 -18% 0, sekali lalu lepas", "purpose": "Pemicu: bagian layar pertama bergerak saat halaman dibuka; bagian bawahnya baru bergerak saat digulir masuk. Kelas gerak tidak pernah ada di HTML awal." },
+      { "name": "anim-rise", "value": "rise 560ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards", "purpose": "Nada pembuka layar pertama (judul, kalimat, tombol, berjenjang 90ms) dan judul bagian Modul." },
+      { "name": "anim-left", "value": "rise-left 560ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards", "purpose": "Baris kiri buku besar masuk dari kiri, berjenjang 90ms per pasangan." },
+      { "name": "anim-right", "value": "rise-right 560ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards", "purpose": "Pasangan kanan buku besar menyusul dari kanan." },
+      { "name": "anim-arrive", "value": "rise-right 720ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards", "purpose": "Seluruh blok Keunggulan datang dari kanan; durasi lebih panjang supaya blok lebar terasa mengendap." },
+      { "name": "anim-fill", "value": "fill-x 760ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards", "purpose": "Batang progres terisi mendatar dari kiri." },
+      { "name": "anim-grow", "value": "grow-y 620ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards", "purpose": "Batang kebiasaan tumbuh dari bawah, 45ms antar batang." },
+      { "name": "stagger", "value": "rise 560ms, langkah tetap 75ms lewat :nth-child sampai 12 baris", "purpose": "Dua belas baris daftar Modul terisi berurutan saat masuk layar; kelas hanya dipasang JavaScript." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Tindakan utama halaman depan: biru penuh, sudut 12px, tanpa bayangan.",
+      "html": "<button class=\"ds-btn-primary\">Mulai Sekarang</button>",
+      "css": ".ds-btn-primary { background: #2563eb; color: #ffffff; padding: 14px 28px; border: none; border-radius: 12px; font: 600 16px/1.2 ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; cursor: pointer; transition: background-color 150ms ease; } .ds-btn-primary:hover { background: #3b82f6; } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #2563eb; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Tindakan kedua; latar putih dengan garis 1px, tidak pernah memakai biru.",
+      "html": "<button class=\"ds-btn-outline\">Lihat modulnya</button>",
+      "css": ".ds-btn-outline { background: #ffffff; color: #334155; padding: 14px 28px; border: 1px solid #cbd5e1; border-radius: 12px; font: 600 16px/1.2 ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; cursor: pointer; transition: border-color 150ms ease, color 150ms ease; } .ds-btn-outline:hover { border-color: #94a3b8; color: #0f172a; } .ds-btn-outline:focus-visible { outline: none; box-shadow: 0 0 0 2px #2563eb; }"
+    },
+    {
+      "name": "Inline Button",
+      "kind": "button",
+      "refersTo": "button-inline",
+      "description": "Tombol kecil di dalam baris, mis. Simpan pada baris buku besar.",
+      "html": "<button class=\"ds-btn-inline\">Simpan</button>",
+      "css": ".ds-btn-inline { background: #2563eb; color: #ffffff; padding: 8px 12px; border: none; border-radius: 8px; font: 600 12px/1.2 ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; cursor: pointer; transition: background-color 150ms ease; } .ds-btn-inline:hover { background: #3b82f6; } .ds-btn-inline:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Kolom isian tunggal: garis 1px, sudut 8px, fokus mengubah warna garis ke biru.",
+      "html": "<input class=\"ds-input\" placeholder=\"Susun laporan minggu ke-3\" />",
+      "css": ".ds-input { background: #ffffff; color: #0f172a; height: 36px; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font: 400 14px/1.4 ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; width: 100%; transition: border-color 150ms ease; } .ds-input::placeholder { color: #94a3b8; } .ds-input:focus { outline: none; border-color: #2563eb; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Panel isi: garis rambut 1px, sudut 12px, tanpa bayangan, tidak pernah bersarang.",
+      "html": "<div class=\"ds-card\"><p class=\"ds-card-title\">Skripsi</p><p class=\"ds-card-desc\">13 dari 20 tugas selesai</p></div>",
+      "css": ".ds-card { background: #ffffff; color: #0f172a; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; } .ds-card-title { margin: 0; font: 600 16px/1.35 ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; } .ds-card-desc { margin: 6px 0 0; font: 400 14px/1.6 ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; color: #64748b; }"
+    },
+    {
+      "name": "Action Chip",
+      "kind": "chip",
+      "refersTo": "chip-action",
+      "description": "Chip jenis tanggal yang sedang dipilih; satu-satunya tempat Biru Terpilih dipakai di luar navigasi.",
+      "html": "<span class=\"ds-chip-action\">Tenggat</span>",
+      "css": ".ds-chip-action { display: inline-flex; align-items: center; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; border-radius: 999px; padding: 4px 10px; font: 600 11px/1.2 ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; }"
+    },
+    {
+      "name": "Quiet Chip",
+      "kind": "chip",
+      "refersTo": "chip-quiet",
+      "description": "Chip jenis tanggal yang tidak dipilih, atau label modul pada baris; tetap tenang.",
+      "html": "<span class=\"ds-chip-quiet\">Jadwal</span>",
+      "css": ".ds-chip-quiet { display: inline-flex; align-items: center; background: #ffffff; color: #64748b; border: 1px solid #e2e8f0; border-radius: 999px; padding: 4px 10px; font: 500 11px/1.2 ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; }"
+    },
+    {
+      "name": "Nav Item Active",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "Baris navigasi aktif: 36px, sudut 8px, latar Biru Terpilih dengan teks biru.",
+      "html": "<a class=\"ds-nav-active\" href=\"#\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\" /><path d=\"M9 3v18\" /></svg>Dashboard</a>",
+      "css": ".ds-nav-active { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border-radius: 8px; background: #eff6ff; color: #2563eb; text-decoration: none; font: 500 14px/1.2 ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; } .ds-nav-active:hover { background: #e0effe; } .ds-nav-active:focus-visible { outline: none; box-shadow: 0 0 0 2px #2563eb; }"
+    },
+    {
+      "name": "Month Board (MiniCalendar)",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Kisi tanggal di kolom kanan layar pertama; menyorot satu tanggal mewarnai baris dan kolomnya serta menampilkan agenda hari itu.",
+      "html": "<div class=\"ds-board\"><div class=\"ds-board-head\"><span class=\"ds-board-title\">Oktober 2026</span><span class=\"ds-board-note\">Contoh data</span></div><div class=\"ds-board-grid\"><button class=\"ds-cell\" aria-label=\"Selasa, 6 Oktober, 1 agenda\">6<span class=\"ds-marks\"><span class=\"ds-mark ds-mark-tenggat\"></span></span></button><button class=\"ds-cell ds-cell-active\" aria-label=\"Sabtu, 3 Oktober, 1 agenda\">3<span class=\"ds-marks\"><span class=\"ds-mark ds-mark-tenggat\"></span></span></button><button class=\"ds-cell\" aria-label=\"Minggu, 4 Oktober, 1 agenda\">4<span class=\"ds-marks\"><span class=\"ds-mark ds-mark-jadwal\"></span></span></button></div><p class=\"ds-board-day\">Sabtu, 3 Oktober</p><div class=\"ds-board-item\"><span class=\"ds-mark ds-mark-tenggat\"></span><span class=\"ds-board-text\">Susun laporan minggu ke-3</span><span class=\"ds-board-time\">14:00</span></div></div>",
+      "css": ".ds-board { border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; background: #ffffff; font-family: ui-sans-serif, system-ui, -apple-system, \\\"Segoe UI\\\", Roboto, Helvetica, Arial, sans-serif; width: 368px; } .ds-board-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; } .ds-board-title { font: 600 14px/1.3 inherit; color: #0f172a; } .ds-board-note { font-size: 11px; color: #64748b; } .ds-board-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 16px; } .ds-cell { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; height: 40px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: #334155; font: 400 12px/1.2 inherit; cursor: pointer; transition: background-color 150ms ease, color 150ms ease; } .ds-cell:hover { background: #f1f5f9; } .ds-cell-active { background: #eff6ff; border-color: #2563eb; color: #1d4ed8; font-weight: 600; } .ds-marks { display: flex; gap: 2px; height: 4px; } .ds-mark { width: 4px; height: 4px; border-radius: 1px; display: inline-block; } .ds-mark-tenggat { background: #f59e0b; } .ds-mark-jadwal { background: #2563eb; } .ds-mark-proyek { background: #a855f7; } .ds-board-day { margin: 16px 0 0; padding-top: 12px; border-top: 1px solid #e2e8f0; font: 700 11px/1.2 inherit; letter-spacing: 0.12em; text-transform: uppercase; color: #64748b; } .ds-board-item { display: flex; align-items: center; gap: 10px; margin-top: 8px; font-size: 14px; color: #0f172a; } .ds-board-text { flex: 1; } .ds-board-time { font-size: 12px; color: #64748b; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Ledger Pair (Signature)",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Komponen tanda tangan halaman depan: baris kiri yang ditulis sekali, baris kanan hasil hitungannya, sejajar dan terpisah garis rambut.",
+      "html": "<div class=\"ds-ledger\"><div class=\"ds-ledger-left\"><span class=\"ds-ledger-label\">Yang Anda tulis sekali</span><div class=\"ds-ledger-row\"><span class=\"ds-ledger-field\">Susun laporan minggu ke-3</span><span class=\"ds-chip-action\">Tenggat</span></div></div><div class=\"ds-ledger-right\"><span class=\"ds-ledger-label\">Yang Corely hitung sendiri</span><div class=\"ds-ledger-row\"><span class=\"ds-ledger-dot\"></span><span class=\"ds-ledger-text\">Susun laporan minggu ke-3</span><span class=\"ds-ledger-meta\">Tenggat · 14:00</span></div></div></div>",
+      "css": ".ds-ledger { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #e2e8f0; font-family: ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; } .ds-ledger-label { display: block; padding-bottom: 12px; font: 700 11px/1.2 inherit; letter-spacing: 0.12em; text-transform: uppercase; color: #64748b; } .ds-ledger-left, .ds-ledger-right { padding: 16px 0; } .ds-ledger-right { border-left: 1px solid #e2e8f0; padding-left: 32px; } .ds-ledger-row { display: flex; align-items: center; gap: 10px; padding: 14px 0; border-bottom: 1px solid #e2e8f0; transition: opacity 150ms ease; } .ds-ledger-row:hover { opacity: 1; } .ds-ledger-field { flex: 1; height: 36px; display: flex; align-items: center; padding: 0 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #ffffff; color: #334155; font-size: 14px; } .ds-ledger-dot { width: 16px; height: 16px; border-radius: 999px; border: 2px solid #cbd5e1; flex: none; } .ds-ledger-text { font-size: 14px; color: #0f172a; } .ds-ledger-meta { margin-left: auto; font-size: 12px; color: #94a3b8; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Ruang Kerja Presisi",
+    "overview": "Corely dibaca sebagai meja kerja yang sudah ditata sebelum dipakai: garis rambut yang memisahkan bagian, kolom yang bertakik, angka yang berbaris lurus, dan satu warna aksen yang hanya muncul saat ada sesuatu yang bisa ditekan atau ditandai. Tidak ada hiasan yang tidak mengerjakan apa pun — setiap garis memisahkan, setiap warna menandai keadaan.\n\nKepadatan sengaja menengah-tinggi: baris rapat, tipografi kecil, ruang putih dipakai untuk memisahkan kelompok, bukan untuk mengisi halaman. Permukaan tidak mengambang; kedalaman datang dari garis 1px dan warna permukaan, sedangkan bayangan hanya dipakai oleh elemen yang benar-benar berada di atas halaman (menu turun, popup, notifikasi).\n\nSistem ini melayani pembacaan cepat berulang kali sehari: siapa pun harus bisa menemukan \"apa yang harus dikerjakan hari ini\" dalam hitungan detik, di tema terang maupun gelap, tanpa perlu menyesuaikan apa pun. Rasa komponennya: tegas tapi tenang.",
+    "keyCharacteristics": [
+      "Garis rambut 1px sebagai alat pemisah utama, bukan bayangan.",
+      "Satu aksen biru untuk tindakan dan status terpilih; tiap jenis tanggal punya warnanya sendiri dan tidak pernah bertukar.",
+      "Hijau hanya untuk yang sudah selesai.",
+      "Kartu bersudut 12px dengan garis 1px, tanpa tumpukan kartu di dalam kartu.",
+      "Susunan bertabel: label huruf besar berspasi lebar, angka rata kolom.",
+      "Tema terang dan gelap sama-sama utuh; tidak ada yang sekadar cukup di salah satunya.",
+      "Bahasa Indonesia awam; tidak ada jargon teknis di antarmuka."
+    ],
+    "rules": [
+      { "name": "The One Blue Rule", "body": "Hanya ada satu biru di seluruh produk (#2563eb). Biru kedua hanya boleh berupa tint dari biru yang sama (#eff6ff, #bfdbfe), bukan hue biru lain.", "section": "colors" },
+      { "name": "The No Purple Gradient Rule", "body": "Gradien ungu dilarang di seluruh produk, dalam bentuk apa pun: gradien biru→ungu pada logo, judul, latar, maupun tombol tidak boleh kembali. Ungu padat (#a855f7, tint #9333ea) hanya dipakai sebagai penanda batas proyek dan identitas modul Catatan, selalu sebagai warna blok atau tint rata.", "section": "colors" },
+      { "name": "The Date Type Rule", "body": "Tiap jenis tanggal memiliki satu warna tetap dan tidak pernah bertukar: tenggat amber, jadwal biru, batas proyek ungu. Menukarnya membuat kalender terbaca salah.", "section": "colors" },
+      { "name": "The Green Means Done Rule", "body": "Hijau tidak pernah dipakai untuk tindakan, tautan, jenis tanggal, atau dekorasi. Kalau bukan sudah selesai, warnanya bukan hijau.", "section": "colors" },
+      { "name": "The Label Whisper Rule", "body": "Label huruf besar dipakai maksimum satu baris per kelompok dan tidak pernah muncul di atas judul sebagai pemanis; kalau bisa dihapus tanpa kehilangan arti, hapus.", "section": "typography" },
+      { "name": "The Two-Column Truth Rule", "body": "Kalau sesuatu dijelaskan sebagai masuk sekali, keluar banyak, tampilkan sebagai dua kolom berhadapan yang sejajar barisnya. Jangan dipecah menjadi deretan kartu.", "section": "layout" },
+      { "name": "The Floating-Only Rule", "body": "Permukaan yang diam di dalam alur halaman tidak punya bayangan — hanya garis 1px. Kalau sebuah permukaan punya garis sekaligus bayangan lebar, bayangannya dihapus.", "section": "elevation" },
+      { "name": "The No Halo Rule", "body": "Tidak ada bayangan berwarna dengan offset nol (cahaya biru di bawah tombol). Bayangan selalu punya arah dan blur.", "section": "elevation" },
+      { "name": "The Hairline Rule", "body": "Tidak ada garis berwarna lebih tebal dari 1px pada kartu, baris, atau pemberitahuan. Kalau sesuatu perlu ditekankan, pakai warna latar atau bobot huruf.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do pakai garis rambut 1px (#e2e8f0 / gelap #1e293b) sebagai pemisah utama, termasuk pada setiap baris daftar panjang.",
+      "Do pakai Biru Tindakan (#2563eb) hanya untuk tindakan, tautan aktif, status terpilih, dan penanda tanggal bertipe jadwal.",
+      "Do pakai Amber Tenggat (#f59e0b) hanya untuk penanda tenggat dan keadaan proyek yang dijeda.",
+      "Do pakai Slate Redup (#64748b) untuk penanda batas proyek dan tag kategori, bukan salah satu warna di atas.",
+      "Do pakai Hijau Selesai (#10b981) hanya untuk keadaan yang benar-benar selesai.",
+      "Do jaga setiap kolom isian pada 8px (rounded-lg) dan setiap kartu pada 12px (rounded-xl).",
+      "Do tulis teks sekunder dengan Slate Redup (#64748b) pada tema terang dan #94a3b8 pada tema gelap; keduanya lolos kontras 4.5:1.",
+      "Do tulis semua teks antarmuka dengan istilah awam berbahasa Indonesia.",
+      "Do batasi judul display (3.4rem / 800) satu kali per halaman.",
+      "Do beri setiap keadaan interaktif focus-visible ring 2px warna biru."
+    ],
+    "donts": [
+      "Don't pakai ungu dalam bentuk apa pun, termasuk gradien biru→ungu pada logo dan judul.",
+      "Don't menukar warna antar jenis tanggal, dan jangan memakai hijau untuk jadwal atau tenggat.",
+      "Don't pakai gradien sebagai latar bagian, tombol, atau teks; warna blok rata.",
+      "Don't memakai bayangan pada permukaan yang diam di dalam alur halaman, dan jangan memberi garis sekaligus bayangan lebar pada satu elemen.",
+      "Don't menumpuk kartu di dalam kartu.",
+      "Don't memakai garis berwarna lebih tebal dari 1px di tepi kartu, baris daftar, atau pemberitahuan.",
+      "Don't memakai kotak kartu berukuran sama berisi ikon, judul, dan satu baris teks sebagai susunan utama sebuah bagian; pakai baris bergaris atau dua kolom sejajar.",
+      "Don't memakai angka besar dengan label kecil sebagai pembuka halaman.",
+      "Don't menaruh label kecil huruf besar di atas judul sebagai pemanis.",
+      "Don't memakai mono atau emoji sebagai hiasan; mono hanya untuk kode, emoji tidak dipakai di antarmuka.",
+      "Don't menampilkan klaim, angka pengguna, atau testimoni yang tidak ada."
+    ]
+  }
+}

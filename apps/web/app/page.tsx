@@ -2,6 +2,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { getProfile } from '@/lib/profile';
 import { LandingProfileMenu } from '@/components/landing-profile-menu';
+import { LandingLedger } from '@/components/landing/ledger';
+import { MiniCalendar } from '@/components/landing/mini-calendar';
+import { Reveal } from '@/components/landing/reveal';
 import {
   LayoutDashboard,
   ListChecks,
@@ -19,37 +22,35 @@ import {
   Smartphone,
   Accessibility,
   ShieldCheck,
-  AlertTriangle,
-  CheckCircle2,
   Rocket,
-  X,
-  Check,
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Corely — Satu Workspace untuk Seluruh Produktivitas Anda',
+  title: 'Corely — Tulis sekali, sisanya dihitung sendiri',
+  description:
+    'Satu daftar untuk tugas, proyek, catatan, bookmark, kebiasaan, dan jadwal. Progres, kalender, dan statistik mengikuti sendiri.',
 };
 
-const FEATURES = [
-  { icon: LayoutDashboard, title: 'Dashboard Utama', desc: 'Sapaan personal, tanggal hari ini, ringkasan tugas, proyek aktif, tenggat terdekat, dan aksi cepat.' },
-  { icon: ListChecks, title: 'Manajemen Tugas', desc: 'Status ringkas Todo & Completed, prioritas, tag, dan list view yang bersih. Tugas bisa bertipe Tenggat atau Jadwal hari-H dengan jam.' },
-  { icon: FolderKanban, title: 'Pengelolaan Proyek', desc: 'Kelompokkan aktivitas jangka panjang. Progres & status diturunkan otomatis dari tugas — tanpa bolak-balik mengubah status.' },
-  { icon: NotebookPen, title: 'Catatan Markdown', desc: 'Simpan pengetahuan pribadi format Markdown dengan kategori, tag, pin, dan arsip.' },
-  { icon: Bookmark, title: 'Koleksi Bookmark', desc: 'Simpan situs dan sumber daya penting dengan kategori, tag, favorit, dan pencarian.' },
-  { icon: Flame, title: 'Pelacak Kebiasaan', desc: 'Penandaan harian, riwayat kalender, streak aktif, streak terpanjang, dan tingkat penyelesaian.' },
-  { icon: CalendarDays, title: 'Kalender Terpadu', desc: 'Tenggat & jadwal tugas serta batas proyek muncul otomatis dalam tampilan bulan, minggu, dan hari — tanpa input dua kali.' },
-  { icon: Search, title: 'Pencarian Global', desc: 'Cari tugas, proyek, catatan, dan bookmark dari satu kolom dengan hasil dikelompokkan.' },
-  { icon: BarChart3, title: 'Statistik & Analitik', desc: 'Tingkat penyelesaian tugas, progres proyek, dan konsistensi kebiasaan harian/mingguan/bulanan.' },
-  { icon: Bell, title: 'Notifikasi', desc: 'Pengingat tenggat tugas, batas proyek, acara mendatang, dan kebiasaan harian.' },
-  { icon: Settings, title: 'Profil & Pengaturan', desc: 'Atur profil, tema terang/gelap, format tanggal & jam, serta preferensi tampilan.' },
-  { icon: Lock, title: 'Akun Aman & Pribadi', desc: 'Login dan sesi aman, dengan setiap data hanya dapat diakses oleh pemiliknya.' },
+const MODULES = [
+  { icon: LayoutDashboard, title: 'Dashboard', desc: 'Ringkasan hari ini: tugas terdekat, proyek aktif, dan aksi cepat.' },
+  { icon: ListChecks, title: 'Tugas', desc: 'Daftar bersih dengan prioritas, tag, tenggat, atau jadwal berjam.' },
+  { icon: FolderKanban, title: 'Proyek', desc: 'Progres dan statusnya naik sendiri setiap tugas selesai.' },
+  { icon: CalendarDays, title: 'Kalender', desc: 'Tenggat, jadwal, dan batas proyek muncul di tanggalnya.' },
+  { icon: NotebookPen, title: 'Catatan', desc: 'Catatan pribadi dengan kategori, tag, pin, dan arsip.' },
+  { icon: Flame, title: 'Kebiasaan', desc: 'Penandaan harian, riwayat, dan streak yang dihitung sendiri.' },
+  { icon: Bookmark, title: 'Bookmark', desc: 'Simpan tautan penting dengan kategori, tag, dan favorit.' },
+  { icon: Search, title: 'Pencarian', desc: 'Satu kolom untuk semua modul, hasilnya dikelompokkan.' },
+  { icon: BarChart3, title: 'Analitik', desc: 'Tingkat penyelesaian tugas dan konsistensi kebiasaan.' },
+  { icon: Bell, title: 'Notifikasi', desc: 'Pengingat H-1 dan satu jam sebelum tenggat, zona WIB.' },
+  { icon: Settings, title: 'Pengaturan', desc: 'Profil, tema terang atau gelap, dan format tanggal.' },
+  { icon: Lock, title: 'Akun', desc: 'Sesi aman; setiap akun hanya melihat datanya sendiri.' },
 ];
 
 const BENEFITS = [
-  { icon: Zap, title: 'Cepat & Ringan', desc: 'Halaman muat cepat dengan interaksi responsif.' },
-  { icon: Smartphone, title: 'Responsif di Semua Layar', desc: 'Nyaman di desktop, tablet, maupun ponsel.' },
-  { icon: Accessibility, title: 'Aksesibel', desc: 'Kontras jelas, navigasi mudah, dan struktur semantik.' },
-  { icon: ShieldCheck, title: 'Privat & Aman', desc: 'Data pribadi Anda tetap terisolasi dan aman.' },
+  { icon: Zap, title: 'Ringan dipakai harian', desc: 'Halaman terbuka cepat dan konsisten setiap hari.' },
+  { icon: Smartphone, title: 'Nyaman di semua layar', desc: 'Desktop, tablet, dan ponsel dengan susunan yang sama.' },
+  { icon: Accessibility, title: 'Terbaca jelas', desc: 'Kontras aman di tema terang maupun gelap.' },
+  { icon: ShieldCheck, title: 'Pribadi', desc: 'Data tiap akun terisolasi dan tidak dibagikan.' },
 ];
 
 export default async function LandingPage() {
@@ -59,214 +60,162 @@ export default async function LandingPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-      {/* Header */}
       <header className="glass fixed inset-x-0 top-0 z-50 border-b border-slate-200 dark:border-slate-800">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 font-bold text-white shadow-lg shadow-blue-500/20">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 font-bold text-white">
               C
             </div>
             <span className="text-lg font-bold tracking-tight">Corely</span>
           </div>
           <nav className="hidden items-center gap-8 text-sm font-medium text-slate-500 dark:text-slate-400 md:flex">
-            <a href="#problem" className="transition hover:text-slate-900 dark:hover:text-white">Masalah</a>
-            <a href="#features" className="transition hover:text-slate-900 dark:hover:text-white">Fitur</a>
-            <a href="#preview" className="transition hover:text-slate-900 dark:hover:text-white">Pratinjau</a>
-            <a href="#benefits" className="transition hover:text-slate-900 dark:hover:text-white">Keunggulan</a>
+            <a href="#cara-kerja" className="transition hover:text-slate-900 dark:hover:text-white">
+              Cara kerja
+            </a>
+            <a href="#modul" className="transition hover:text-slate-900 dark:hover:text-white">
+              Modul
+            </a>
+            <a href="#keunggulan" className="transition hover:text-slate-900 dark:hover:text-white">
+              Keunggulan
+            </a>
           </nav>
-          <div className="flex items-center gap-3">
-            {loggedIn ? (
-              <LandingProfileMenu name={greet ?? ''} email={profile?.email ?? ''} />
-            ) : (
-              <Link href="/login" className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-blue-600/30 transition hover:bg-blue-500">
-                Masuk
-              </Link>
-            )}
-          </div>
+          {loggedIn ? (
+            <LandingProfileMenu name={greet ?? ''} email={profile?.email ?? ''} />
+          ) : (
+            <Link
+              href="/login"
+              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-500"
+            >
+              Masuk
+            </Link>
+          )}
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden pb-20 pt-32 md:pb-28 md:pt-40">
-        <div className="pointer-events-none absolute -top-40 left-1/2 h-[400px] w-[800px] -translate-x-1/2 rounded-full bg-blue-600/20 blur-[120px]" />
-        <div className="relative z-10 mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-blue-500 dark:bg-blue-400" />
-            Aplikasi Produktivitas Pribadi
-          </div>
-          <h1 className="mx-auto max-w-4xl text-4xl font-extrabold leading-tight tracking-tight sm:text-6xl">
-            Satu Dashboard untuk{' '}
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:via-indigo-300 dark:to-purple-400">
-              Seluruh Kehidupan Digital Anda
-            </span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-600 dark:text-slate-400 sm:text-xl">
-            Kelola tugas, proyek, catatan, bookmark, kebiasaan harian, dan jadwal — semua dalam satu aplikasi pribadi yang rapi dan terpusat.
-          </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link href={loggedIn ? '/dashboard' : '/login'} className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-8 py-3.5 font-semibold text-white shadow-xl shadow-blue-600/25 transition hover:bg-blue-500 sm:w-auto">
-              <Rocket className="h-5 w-5" /> {loggedIn ? 'Buka Dashboard' : 'Mulai Sekarang'}
-            </Link>
-            <a href="#features" className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-8 py-3.5 font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700 sm:w-auto">
-              Jelajahi Fitur
-            </a>
-          </div>
-          <div className="mx-auto mt-16 grid max-w-4xl grid-cols-2 gap-4 border-t border-slate-200 dark:border-slate-800/80 pt-8 text-left md:grid-cols-4">
-            <div><div className="text-2xl font-bold text-slate-900 dark:text-white">12 Modul</div><div className="mt-0.5 text-xs text-slate-400">Fitur produktivitas lengkap</div></div>
-            <div><div className="text-2xl font-bold text-slate-900 dark:text-white">100% Pribadi</div><div className="mt-0.5 text-xs text-slate-400">Data Anda tetap milik Anda</div></div>
-            <div><div className="text-2xl font-bold text-slate-900 dark:text-white">Dark Mode</div><div className="mt-0.5 text-xs text-slate-400">Tema terang & gelap</div></div>
-            <div><div className="text-2xl font-bold text-slate-900 dark:text-white">Semua Layar</div><div className="mt-0.5 text-xs text-slate-400">Desktop, tablet, mobile</div></div>
-          </div>
-        </div>
-      </section>
-
-      {/* Problem / Solution */}
-      <section id="problem" className="border-y border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900/50 py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto mb-16 max-w-3xl text-center">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Mengapa Corely?</h2>
-            <p className="mt-4 text-slate-600 dark:text-slate-400">Aktivitas harian kita sering tersebar di banyak aplikasi berbeda, sehingga sulit melihat prioritas dalam satu pandangan.</p>
-          </div>
-          <div className="grid gap-8 md:grid-cols-2">
-            <div className="rounded-2xl border border-red-200 bg-red-50 p-8 dark:border-red-900/30 dark:bg-red-950/20">
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 text-red-600 dark:text-red-400"><AlertTriangle className="h-6 w-6" /></div>
-              <h3 className="mb-4 text-xl font-semibold text-slate-900 dark:text-white">Masalah: Semuanya Terpencar</h3>
-              <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                <li className="flex items-start gap-2"><X className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />Tugas ada di satu aplikasi, catatan di aplikasi lain.</li>
-                <li className="flex items-start gap-2"><X className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />Bookmark tercecer di browser, jadwal di kalender terpisah.</li>
-                <li className="flex items-start gap-2"><X className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />Progres proyek sulit dipantau tanpa gambaran menyeluruh.</li>
-                <li className="flex items-start gap-2"><X className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />Waktu habis berpindah-pindah aplikasi hanya untuk cek prioritas.</li>
-              </ul>
-            </div>
-            <div className="rounded-2xl border border-blue-200 bg-blue-50 p-8 dark:border-blue-900/30 dark:bg-blue-950/20">
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400"><CheckCircle2 className="h-6 w-6" /></div>
-              <h3 className="mb-4 text-xl font-semibold text-slate-900 dark:text-white">Solusi: Semua di Satu Tempat</h3>
-              <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                <li className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />Satu dashboard untuk melihat seluruh aktivitas harian Anda.</li>
-                <li className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />Tugas, proyek, catatan, dan jadwal saling terhubung.</li>
-                <li className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />Statistik produktivitas membantu Anda tetap konsisten.</li>
-                <li className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />Ringkas, cepat, dan nyaman digunakan setiap hari.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section id="features" className="py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto mb-16 max-w-3xl text-center">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Fitur-Fitur Corely</h2>
-            <p className="mt-4 text-slate-600 dark:text-slate-400">Aplikasi ini menyediakan modul lengkap untuk mengelola seluruh kebutuhan produktivitas pribadi Anda.</p>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {FEATURES.map((f) => (
-              <div key={f.title} className="rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 transition hover:border-slate-700">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600/10 text-blue-600 dark:bg-slate-800 dark:text-blue-400"><f.icon className="h-5 w-5" /></div>
-                <h3 className="mb-2 text-lg font-semibold text-slate-900 dark:text-white">{f.title}</h3>
-                <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Preview */}
-      <section id="preview" className="border-t border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900/40 py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto mb-12 max-w-3xl text-center">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Tampilan Dashboard</h2>
-            <p className="mt-4 text-slate-600 dark:text-slate-400">Antarmuka modern dan bersih yang menampilkan ringkasan harian Anda dalam satu layar.</p>
-          </div>
-          <div className="mx-auto max-w-5xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-950">
-            <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-900">
-              <div className="flex items-center gap-2">
-                <span className="inline-block h-3 w-3 rounded-full bg-red-500/80" />
-                <span className="inline-block h-3 w-3 rounded-full bg-yellow-500/80" />
-                <span className="inline-block h-3 w-3 rounded-full bg-green-500/80" />
-                <span className="ml-2 font-mono text-xs text-slate-500">app.corely.dev/dashboard</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-slate-400">
-                <span className="h-2 w-2 rounded-full bg-emerald-400" /> Tersinkronisasi
+      <main>
+        {/* Pembuka: janji + bukti + tindakan, semuanya di layar pertama. */}
+        <section className="mx-auto max-w-6xl px-4 pb-16 pt-28 sm:px-6 md:pb-24 md:pt-36 lg:px-8">
+          {/* Dua kolom di layar lebar: janji di kiri, papan bulan di kanan. Isinya dipusatkan tegak
+              terhadap tinggi baris, dan garis rambut pemisah memanjang penuh seperti di buku besar. */}
+          <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_368px]">
+            <div className="lg:flex lg:flex-col lg:justify-center lg:pr-14">
+              <h1 className="anim-rise max-w-xl text-4xl font-extrabold leading-[1.06] tracking-tight sm:text-5xl lg:text-[3.4rem]">
+                Tulis sekali.{' '}
+                <span className="text-blue-600 dark:text-blue-400">Sisanya biar dihitung.</span>
+              </h1>
+              <p
+                className="anim-rise mt-5 max-w-xl text-base leading-relaxed text-slate-600 sm:text-lg dark:text-slate-400"
+                style={{ animationDelay: '90ms' }}
+              >
+                Tugas, proyek, catatan, dan jadwal biasanya tersebar di banyak aplikasi. Di Corely semuanya berangkat
+                dari satu daftar yang sama — daftar tugas, kalender, progres proyek, dan statistik mengikuti dari situ.
+              </p>
+              <div className="anim-rise mt-8 flex flex-col gap-3 sm:flex-row" style={{ animationDelay: '170ms' }}>
+                <Link
+                  href={loggedIn ? '/dashboard' : '/login'}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-7 py-3.5 font-semibold text-white transition hover:bg-blue-500 motion-safe:hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:focus-visible:ring-offset-slate-950"
+                >
+                  <Rocket className="h-5 w-5" /> {loggedIn ? 'Buka Dashboard' : 'Mulai Sekarang'}
+                </Link>
+                <a
+                  href="#modul"
+                  className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-7 py-3.5 font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900 motion-safe:hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:text-white"
+                >
+                  Lihat modulnya
+                </a>
               </div>
             </div>
-            <div className="grid min-h-[320px] md:grid-cols-5">
-              <div className="space-y-1 border-r border-slate-200 bg-slate-50 p-4 text-sm dark:border-slate-800 dark:bg-slate-900/60">
-                <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Menu Utama</p>
-                {['Dashboard', 'Tugas', 'Proyek', 'Catatan', 'Kebiasaan', 'Kalender'].map((m, i) => (
-                  <div key={m} className={`rounded-lg px-3 py-2 ${i === 0 ? 'bg-blue-600/10 font-medium text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400'}`}>{m}</div>
-                ))}
-              </div>
-              <div className="space-y-4 p-6 md:col-span-4">
-                <div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">Selamat Datang kembali!</h3>
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Sabtu, 3 Oktober 2026 • 4 tugas aktif hari ini</p>
-                </div>
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                  {[['Tugas Tertunda', '8'], ['Proyek Aktif', '3'], ['Streak', '12 Hari'], ['Catatan', '24']].map(([l, v]) => (
-                    <div key={l} className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-4">
-                      <div className="text-xs text-slate-400">{l}</div>
-                      <div className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{v}</div>
-                    </div>
-                  ))}
-                </div>
-                <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-4">
-                  <p className="mb-2 text-sm font-semibold text-slate-900 dark:text-white">Proyek Aktif</p>
-                  <div className="space-y-2">
-                    <div className="h-2 w-[65%] rounded-full bg-blue-500" />
-                    <div className="h-2 w-[40%] rounded-full bg-emerald-500" />
+
+            <div
+              className="anim-right mt-12 border-t border-slate-200 pt-8 lg:mt-0 lg:flex lg:flex-col lg:justify-center lg:border-l lg:border-t-0 lg:pl-14 lg:pt-0 dark:border-slate-800"
+              style={{ animationDelay: '250ms' }}
+            >
+              <MiniCalendar />
+            </div>
+          </div>
+
+          {/* Bukti: kiri ditulis sekali, kanan hasil hitungannya. */}
+          <div id="cara-kerja" className="mt-14 scroll-mt-24 border-t border-slate-200 pt-6 dark:border-slate-800">
+            <LandingLedger />
+            <Reveal delay={520}>
+              <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">Contoh tampilan dengan data contoh.</p>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Modul: satu daftar bergaris, bukan deretan kartu seragam. */}
+        <section id="modul" className="scroll-mt-24 border-y border-slate-200 bg-white py-16 dark:border-slate-800 dark:bg-slate-900/40 md:py-20">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <Reveal>
+              <h2 className="max-w-2xl text-2xl font-bold tracking-tight sm:text-3xl">
+                Dua belas modul, satu sumber data.
+              </h2>
+              <p className="mt-3 max-w-2xl text-slate-600 dark:text-slate-400">
+                Setiap modul membaca dan menulis ke daftar yang sama, jadi tidak ada data yang perlu dimasukkan dua kali.
+              </p>
+            </Reveal>
+            <Reveal stagger className="mt-10 grid gap-x-12 sm:grid-cols-2">
+              {MODULES.map((m) => (
+                <div key={m.title} className="flex gap-3.5 border-b border-slate-200 py-4 dark:border-slate-800">
+                  <m.icon className="mt-0.5 h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" />
+                  <div>
+                    <h3 className="text-sm font-semibold">{m.title}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-slate-500 dark:text-slate-400">{m.desc}</p>
                   </div>
                 </div>
-              </div>
+              ))}
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Keunggulan: empat pernyataan pendek tanpa bingkai kartu. */}
+        <section id="keunggulan" className="mx-auto max-w-6xl scroll-mt-24 px-4 py-16 sm:px-6 md:py-20 lg:px-8">
+          <Reveal kind="arrive">
+            <h2 className="max-w-2xl text-2xl font-bold tracking-tight sm:text-3xl">Dirancang untuk dibuka tiap hari.</h2>
+            <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+              {BENEFITS.map((b) => (
+                <div key={b.title}>
+                  <b.icon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <h3 className="mt-3 text-sm font-semibold">{b.title}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-slate-500 dark:text-slate-400">{b.desc}</p>
+                </div>
+              ))}
             </div>
-          </div>
-        </div>
-      </section>
+          </Reveal>
+        </section>
 
-      {/* Benefits */}
-      <section id="benefits" className="py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto mb-16 max-w-3xl text-center">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Dirancang untuk Penggunaan Sehari-hari</h2>
-            <p className="mt-4 text-slate-600 dark:text-slate-400">Antarmuka yang bersih dan konsisten membuat aplikasi ini nyaman dipakai kapan saja.</p>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {BENEFITS.map((b) => (
-              <div key={b.title} className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600/10 text-blue-600 dark:bg-slate-800 dark:text-blue-400"><b.icon className="h-5 w-5" /></div>
-                <h3 className="mb-2 font-semibold text-slate-900 dark:text-white">{b.title}</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">{b.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="relative overflow-hidden py-20">
-        <div className="mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
-          <div className="rounded-3xl border border-blue-200 bg-gradient-to-b from-blue-50 to-white p-10 dark:border-blue-500/30 dark:from-blue-900/40 dark:to-slate-900 sm:p-16">
-            <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white sm:text-4xl">Mulai Kelola Produktivitas Anda Hari Ini</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-sm text-slate-600 dark:text-slate-300 sm:text-base">
-              Satu tempat untuk tugas, proyek, catatan, dan jadwal Anda. Rapi, terpusat, dan siap digunakan setiap hari.
+        {/* Penutup. */}
+        <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6 lg:px-8">
+          <div className="rounded-2xl border border-slate-200 bg-white p-8 sm:p-12 dark:border-slate-800 dark:bg-slate-900/40">
+            <h2 className="max-w-xl text-2xl font-bold tracking-tight sm:text-3xl">
+              Mulai dari satu tugas hari ini.
+            </h2>
+            <p className="mt-3 max-w-xl text-slate-600 dark:text-slate-400">
+              Tulis satu tugas, lalu lihat sendiri daftar, kalender, dan progres proyeknya ikut berubah.
             </p>
-            <div className="mt-8 flex justify-center">
-              <Link href={loggedIn ? '/dashboard' : '/login'} className="rounded-xl bg-blue-600 px-8 py-3.5 font-semibold text-white shadow-xl shadow-blue-600/30 transition hover:bg-blue-500">
-                {loggedIn ? 'Lanjut ke Dashboard' : 'Masuk ke Dashboard'}
-              </Link>
-            </div>
+            <Link
+              href={loggedIn ? '/dashboard' : '/login'}
+              className="mt-7 inline-flex items-center justify-center rounded-xl bg-blue-600 px-7 py-3.5 font-semibold text-white transition hover:bg-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+            >
+              {loggedIn ? 'Lanjut ke Dashboard' : 'Masuk ke Dashboard'}
+            </Link>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-200 py-8 text-center text-xs text-slate-500 dark:border-slate-800">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 sm:flex-row">
-          <div>© 2026 Corely. Seluruh hak cipta dilindungi.</div>
+      <footer className="border-t border-slate-200 py-8 dark:border-slate-800">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 text-xs text-slate-500 sm:flex-row sm:px-6 lg:px-8">
+          <div>© 2026 Corely</div>
           <div className="flex items-center gap-6">
-            <a href="#features" className="transition hover:text-slate-900 dark:hover:text-slate-300">Fitur</a>
-            <a href="#preview" className="transition hover:text-slate-900 dark:hover:text-slate-300">Tampilan</a>
-            <a href="#benefits" className="transition hover:text-slate-900 dark:hover:text-slate-300">Keunggulan</a>
+            <a href="#cara-kerja" className="transition hover:text-slate-900 dark:hover:text-slate-300">
+              Cara kerja
+            </a>
+            <a href="#modul" className="transition hover:text-slate-900 dark:hover:text-slate-300">
+              Modul
+            </a>
+            <a href="#keunggulan" className="transition hover:text-slate-900 dark:hover:text-slate-300">
+              Keunggulan
+            </a>
           </div>
         </div>
       </footer>

@@ -31,3 +31,9 @@ plan-backend.md
 # supabase local
 supabase/.temp/
 supabase/.branches/
+
+# artefak kerja desain (sketsa & proses), bukan bagian produk
+.impeccable/mocks/
+.impeccable/build/
+.impeccable/review/
+.impeccable/decision-payload.json
