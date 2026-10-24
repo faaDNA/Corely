@@ -4,6 +4,7 @@ import { getProfile } from '@/lib/profile';
 import { LandingProfileMenu } from '@/components/landing-profile-menu';
 import { LandingLedger } from '@/components/landing/ledger';
 import { MiniCalendar } from '@/components/landing/mini-calendar';
+import { Reveal } from '@/components/landing/reveal';
 import {
   LayoutDashboard,
   ListChecks,
@@ -136,22 +137,24 @@ export default async function LandingPage() {
           {/* Bukti: kiri ditulis sekali, kanan hasil hitungannya. */}
           <div id="cara-kerja" className="mt-14 scroll-mt-24 border-t border-slate-200 pt-6 dark:border-slate-800">
             <LandingLedger />
-            <p className="anim-rise mt-3 text-xs text-slate-500 dark:text-slate-400" style={{ animationDelay: '520ms' }}>
-              Contoh tampilan dengan data contoh.
-            </p>
+            <Reveal delay={520}>
+              <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">Contoh tampilan dengan data contoh.</p>
+            </Reveal>
           </div>
         </section>
 
         {/* Modul: satu daftar bergaris, bukan deretan kartu seragam. */}
         <section id="modul" className="scroll-mt-24 border-y border-slate-200 bg-white py-16 dark:border-slate-800 dark:bg-slate-900/40 md:py-20">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <h2 className="max-w-2xl text-2xl font-bold tracking-tight sm:text-3xl">
-              Dua belas modul, satu sumber data.
-            </h2>
-            <p className="mt-3 max-w-2xl text-slate-600 dark:text-slate-400">
-              Setiap modul membaca dan menulis ke daftar yang sama, jadi tidak ada data yang perlu dimasukkan dua kali.
-            </p>
-            <div className="mt-10 grid gap-x-12 sm:grid-cols-2">
+            <Reveal>
+              <h2 className="max-w-2xl text-2xl font-bold tracking-tight sm:text-3xl">
+                Dua belas modul, satu sumber data.
+              </h2>
+              <p className="mt-3 max-w-2xl text-slate-600 dark:text-slate-400">
+                Setiap modul membaca dan menulis ke daftar yang sama, jadi tidak ada data yang perlu dimasukkan dua kali.
+              </p>
+            </Reveal>
+            <Reveal stagger className="mt-10 grid gap-x-12 sm:grid-cols-2">
               {MODULES.map((m) => (
                 <div key={m.title} className="flex gap-3.5 border-b border-slate-200 py-4 dark:border-slate-800">
                   <m.icon className="mt-0.5 h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" />
@@ -161,22 +164,24 @@ export default async function LandingPage() {
                   </div>
                 </div>
               ))}
-            </div>
+            </Reveal>
           </div>
         </section>
 
         {/* Keunggulan: empat pernyataan pendek tanpa bingkai kartu. */}
         <section id="keunggulan" className="mx-auto max-w-6xl scroll-mt-24 px-4 py-16 sm:px-6 md:py-20 lg:px-8">
-          <h2 className="max-w-2xl text-2xl font-bold tracking-tight sm:text-3xl">Dirancang untuk dibuka tiap hari.</h2>
-          <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {BENEFITS.map((b) => (
-              <div key={b.title}>
-                <b.icon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                <h3 className="mt-3 text-sm font-semibold">{b.title}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-slate-500 dark:text-slate-400">{b.desc}</p>
-              </div>
-            ))}
-          </div>
+          <Reveal kind="arrive">
+            <h2 className="max-w-2xl text-2xl font-bold tracking-tight sm:text-3xl">Dirancang untuk dibuka tiap hari.</h2>
+            <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+              {BENEFITS.map((b) => (
+                <div key={b.title}>
+                  <b.icon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <h3 className="mt-3 text-sm font-semibold">{b.title}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-slate-500 dark:text-slate-400">{b.desc}</p>
+                </div>
+              ))}
+            </div>
+          </Reveal>
         </section>
 
         {/* Penutup. */}

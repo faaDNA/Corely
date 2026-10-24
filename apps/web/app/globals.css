@@ -53,8 +53,9 @@ a {
   text-decoration-thickness: 1px;
 }
 
-/* Satu momen animasi yang ditata: buku besar menyusun diri sekali saat halaman
-   terbuka — kiri dari kiri, kanan dari kanan, progres terisi, batang tumbuh.
+/* Satu momen animasi yang ditata: buku besar menyusun diri sekali saat
+   bagiannya digulir masuk — kiri dari kiri, kanan dari kanan, progres terisi,
+   batang tumbuh. Bagian lain hanya memakai `rise` atau gerak dari satu sisi.
    `backwards` sengaja dipakai supaya setelah animasi selesai keadaan redup
    (hover) kembali dikendalikan kelas, bukan tertahan oleh animasi. */
 @keyframes rise {
@@ -120,12 +121,36 @@ a {
   transform-origin: bottom;
   animation: grow-y 620ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards;
 }
+.anim-arrive {
+  animation: rise-right 720ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards;
+}
+
+/* Daftar baris terisi berurutan saat bagiannya digulir masuk: langkah tetap
+   75ms sampai 12 baris. Kelas `.stagger` hanya dipasang JavaScript setelah
+   elemen masuk layar, jadi tanpa JavaScript daftar tampil utuh tanpa gerak. */
+.stagger > * {
+  animation: rise 560ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards;
+}
+.stagger > *:nth-child(2) { animation-delay: 75ms; }
+.stagger > *:nth-child(3) { animation-delay: 150ms; }
+.stagger > *:nth-child(4) { animation-delay: 225ms; }
+.stagger > *:nth-child(5) { animation-delay: 300ms; }
+.stagger > *:nth-child(6) { animation-delay: 375ms; }
+.stagger > *:nth-child(7) { animation-delay: 450ms; }
+.stagger > *:nth-child(8) { animation-delay: 525ms; }
+.stagger > *:nth-child(9) { animation-delay: 600ms; }
+.stagger > *:nth-child(10) { animation-delay: 675ms; }
+.stagger > *:nth-child(11) { animation-delay: 750ms; }
+.stagger > *:nth-child(12) { animation-delay: 825ms; }
+
 @media (prefers-reduced-motion: reduce) {
   .anim-rise,
   .anim-left,
   .anim-right,
+  .anim-arrive,
   .anim-fill,
-  .anim-grow {
+  .anim-grow,
+  .stagger > * {
     animation: none;
   }
 }

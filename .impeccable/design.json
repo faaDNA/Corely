@@ -98,11 +98,14 @@
     "motion": [
       { "name": "transition-colors", "value": "color 150ms ease, background-color 150ms ease, border-color 150ms ease", "purpose": "Standar untuk hover dan fokus." },
       { "name": "transition-opacity", "value": "opacity 150ms ease", "purpose": "Meredupkan pasangan baris yang tidak sedang disorot." },
-      { "name": "anim-rise", "value": "rise 560ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards", "purpose": "Nada pembuka: judul, kalimat penjelas, dan tombol naik berjenjang 90ms." },
+      { "name": "reveal-on-scroll", "value": "IntersectionObserver, rootMargin 0 0 -18% 0, sekali lalu lepas", "purpose": "Pemicu: bagian layar pertama bergerak saat halaman dibuka; bagian bawahnya baru bergerak saat digulir masuk. Kelas gerak tidak pernah ada di HTML awal." },
+      { "name": "anim-rise", "value": "rise 560ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards", "purpose": "Nada pembuka layar pertama (judul, kalimat, tombol, berjenjang 90ms) dan judul bagian Modul." },
       { "name": "anim-left", "value": "rise-left 560ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards", "purpose": "Baris kiri buku besar masuk dari kiri, berjenjang 90ms per pasangan." },
-      { "name": "anim-right", "value": "rise-right 560ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards", "purpose": "Pasangan kanan menyusul dari kanan, 45ms setelah baris kirinya." },
+      { "name": "anim-right", "value": "rise-right 560ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards", "purpose": "Pasangan kanan buku besar menyusul dari kanan." },
+      { "name": "anim-arrive", "value": "rise-right 720ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards", "purpose": "Seluruh blok Keunggulan datang dari kanan; durasi lebih panjang supaya blok lebar terasa mengendap." },
       { "name": "anim-fill", "value": "fill-x 760ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards", "purpose": "Batang progres terisi mendatar dari kiri." },
-      { "name": "anim-grow", "value": "grow-y 620ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards", "purpose": "Batang kebiasaan tumbuh dari bawah, 45ms antar batang." }
+      { "name": "anim-grow", "value": "grow-y 620ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards", "purpose": "Batang kebiasaan tumbuh dari bawah, 45ms antar batang." },
+      { "name": "stagger", "value": "rise 560ms, langkah tetap 75ms lewat :nth-child sampai 12 baris", "purpose": "Dua belas baris daftar Modul terisi berurutan saat masuk layar; kelas hanya dipasang JavaScript." }
     ],
     "breakpoints": [
       { "name": "sm", "value": "640px" },
