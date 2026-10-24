@@ -143,7 +143,7 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
                       )}
                       title={cell.iso}
                     />
-                    <span className="text-[9px] text-slate-500 dark:text-slate-600">{cell.label}</span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-600">{cell.label}</span>
                   </div>
                 );
               })}

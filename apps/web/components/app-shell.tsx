@@ -129,7 +129,7 @@ function SidebarContent({
   return (
     <div className="flex h-full flex-col">
       <Link href="/dashboard" className="flex items-center gap-3 px-3 py-4" onClick={onNavigate}>
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 font-bold text-white shadow-lg shadow-blue-500/20">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 font-bold text-white">
           C
         </div>
         <div className="leading-tight">

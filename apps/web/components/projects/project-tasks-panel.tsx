@@ -126,9 +126,9 @@ export function ProjectTasksPanel({ projectId, projectName, projects, tasks, set
               <span className={cn('min-w-0 flex-1 text-slate-800 dark:text-slate-200', t.status === 'COMPLETED' && 'text-slate-400 line-through')}>
                 {t.title}
                 {t.dateMode === 'schedule' && t.dueDate && (
-                  <span className="ml-2 text-blue-600 dark:text-blue-400">🗓 {t.dueDate}{t.dueTime ? ` · ${t.dueTime}` : ''}</span>
+                  <span className="ml-2 text-blue-600 dark:text-blue-400">{t.dueDate}{t.dueTime ? ` · ${t.dueTime}` : ''}</span>
                 )}
-                {t.dateMode !== 'schedule' && t.dueDate && <span className="ml-2 text-slate-500">📅 {t.dueDate}</span>}
+                {t.dateMode !== 'schedule' && t.dueDate && <span className="ml-2 text-amber-600 dark:text-amber-400">{t.dueDate}</span>}
               </span>
               <span className={cn('shrink-0 rounded border px-1.5 py-0.5 text-[10px]', PRIORITY_BADGE[t.priority])}>{t.priority}</span>
               <span className="flex shrink-0 gap-1 opacity-0 transition group-hover:opacity-100">

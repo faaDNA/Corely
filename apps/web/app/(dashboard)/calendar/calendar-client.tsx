@@ -121,8 +121,8 @@ export function CalendarClient({ tasks, projects }: { tasks: Task[]; projects: P
                   <button key={i} type="button" onClick={() => setSelected(iso)} className={cn('min-h-[68px] rounded-lg border p-1.5 text-left transition', isSel ? 'border-blue-500 bg-blue-500/10' : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700', !inMonth && 'opacity-40')}>
                     <span className={cn('text-xs font-medium', isSel ? 'text-blue-600 dark:text-blue-400' : 'text-slate-700 dark:text-slate-300')}>{d.getDate()}</span>
                     <div className="mt-1 space-y-0.5">
-                      {evs.slice(0, 2).map((e) => <div key={e.id} className={cn('truncate rounded border px-1 py-0.5 text-[9px]', badgeFor(e.type))}>{e.title}</div>)}
-                      {evs.length > 2 && <div className="text-[9px] text-slate-500">+{evs.length - 2} lagi</div>}
+                      {evs.slice(0, 2).map((e) => <div key={e.id} className={cn('truncate rounded border px-1 py-0.5 text-[10px]', badgeFor(e.type))}>{e.title}</div>)}
+                      {evs.length > 2 && <div className="text-[10px] text-slate-500">+{evs.length - 2} lagi</div>}
                     </div>
                   </button>
                 );
