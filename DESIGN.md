@@ -278,7 +278,7 @@ Kisi tanggal di kolom kanan layar pertama — artefak yang bisa disentuh, bukan 
 - **Kisi:** tujuh kolom Senin–Minggu, sel 40px bersudut 6px, jarak 4px, angka bertabular. Tanggal di luar bulan ini diredupkan tetapi tetap dapat disorot.
 - **Penanda:** kotak 4px, maksimum dua per sel - amber tenggat, biru jadwal, ungu batas proyek. Legenda tiga jenis tanggal di bawah kisi memakai warna dan kata yang sama dengan halaman Kalender aplikasi.
 - **Sorotan silang:** menyorot sebuah tanggal mewarnai seluruh baris dan kolomnya (`slate-100` / gelap `slate-800/60`), sedangkan sel yang disorot memakai Biru Terpilih dengan garis 1px biru. Efeknya berguna, bukan sekadar gerak: papan terbaca seperti tabel.
-- **Pita keterangan:** tinggi tetap 68px berisi tanggal terpilih (label huruf besar berspasi lebar) dan paling banyak dua agenda; keadaan kosong menuliskan kalimatnya sendiri. Tinggi tetap mencegah tata letak melompat saat sorotan berpindah.
+- **Pita keterangan:** tinggi tetap **84px** berisi tanggal terpilih (label huruf besar berspasi lebar) dan paling banyak dua agenda; keadaan kosong menuliskan kalimatnya sendiri (dua baris). Tinggi dipatok ke kasus terpanjang, bukan `min-height`: tinggi papan tidak boleh berubah sama sekali saat sorotan berpindah, sebab kolom kiri yang dipusatkan tegak akan ikut bergeser. Ini aturan wajib untuk setiap panel yang isinya berubah-ubah di layar pertama.
 - **Hari ini:** angka lebih tebal dan label "· hari ini" di pita keterangan.
 - **Keadaan:** hover dan fokus keyboard memberi hasil yang sama — setiap tanggal adalah tombol dengan `aria-label` lengkap dan ring fokus 2px; pita keterangan memakai `aria-live="polite"`.
 

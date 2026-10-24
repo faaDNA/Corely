@@ -131,7 +131,7 @@ export function MiniCalendar() {
       <div
         id="papan-bulan-hari-ini"
         aria-live="polite"
-        className="mt-4 min-h-[68px] border-t border-slate-200 pt-3 dark:border-slate-800"
+        className="mt-4 h-[84px] border-t border-slate-200 pt-3 dark:border-slate-800"
       >
         <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
           {WEEKDAY_LONG[current.weekday]}, {current.day} {MONTH_LONG[current.month]}
