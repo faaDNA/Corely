@@ -150,7 +150,7 @@ const pairs = (play: boolean): { input: ReactNode; derived: ReactNode }[] => [
       </>
     ),
     derived: (
-      <Derived title="Pencarian lintas modul">
+      <Derived title="Pencarian lintas fitur">
         <div className="flex h-8 items-center rounded-lg border border-slate-200 bg-white px-2.5 text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-400">
           bab 4
         </div>
