@@ -87,9 +87,9 @@ export function CalendarClient({ tasks, projects }: { tasks: Task[]; projects: P
 
       <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60">
         <div className="flex flex-col gap-3 border-b border-slate-200 dark:border-slate-800 p-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button type="button" onClick={() => move(-1)} aria-label="Previous" className="rounded-lg border border-slate-200 dark:border-slate-700 p-1.5 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"><ChevronLeft className="h-4 w-4" /></button>
-            <span className="min-w-[160px] text-center text-sm font-semibold text-slate-900 dark:text-white">
+            <span className="min-w-[120px] flex-1 text-center text-sm font-semibold text-slate-900 dark:text-white">
               {view === 'day'
                 ? fromISO(selected).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
                 : monthLabel}
@@ -97,9 +97,9 @@ export function CalendarClient({ tasks, projects }: { tasks: Task[]; projects: P
             <button type="button" onClick={() => move(1)} aria-label="Next" className="rounded-lg border border-slate-200 dark:border-slate-700 p-1.5 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"><ChevronRight className="h-4 w-4" /></button>
             <Button variant="outline" size="sm" onClick={() => { const now = new Date(); setCursor(now); setSelected(toISO(now)); }}>Hari Ini</Button>
           </div>
-          <div className="flex rounded-lg border border-slate-200 dark:border-slate-700">
+          <div className="flex w-full rounded-lg border border-slate-200 dark:border-slate-700 sm:w-auto">
             {(['month', 'week', 'day'] as const).map((v) => (
-              <button key={v} type="button" onClick={() => setView(v)} className={cn('rounded-lg px-3 py-1.5 text-xs transition', view === v ? 'bg-blue-600 text-white' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200')}>
+              <button key={v} type="button" onClick={() => setView(v)} className={cn('flex-1 rounded-lg px-3 py-1.5 text-xs transition sm:flex-none', view === v ? 'bg-blue-600 text-white' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200')}>
                 {v === 'month' ? 'Bulan' : v === 'week' ? 'Minggu' : 'Hari'}
               </button>
             ))}
@@ -118,7 +118,7 @@ export function CalendarClient({ tasks, projects }: { tasks: Task[]; projects: P
                 const isSel = iso === selected;
                 const evs = eventsOn(iso);
                 return (
-                  <button key={i} type="button" onClick={() => setSelected(iso)} className={cn('min-h-[68px] rounded-lg border p-1.5 text-left transition', isSel ? 'border-blue-500 bg-blue-500/10' : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700', !inMonth && 'opacity-40')}>
+                  <button key={i} type="button" onClick={() => setSelected(iso)} className={cn('min-h-[56px] rounded-lg border p-1 text-left transition sm:min-h-[68px] sm:p-1.5', isSel ? 'border-blue-500 bg-blue-500/10' : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700', !inMonth && 'opacity-40')}>
                     <span className={cn('text-xs font-medium', isSel ? 'text-blue-600 dark:text-blue-400' : 'text-slate-700 dark:text-slate-300')}>{d.getDate()}</span>
                     <div className="mt-1 space-y-0.5">
                       {evs.slice(0, 2).map((e) => <div key={e.id} className={cn('truncate rounded border px-1 py-0.5 text-[10px]', badgeFor(e.type))}>{e.title}</div>)}

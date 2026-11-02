@@ -124,32 +124,34 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
                 <h3 className="font-semibold text-slate-900 dark:text-white">{h.name}</h3>
                 <span className="rounded bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] uppercase text-slate-600 dark:text-slate-400">{h.frequency}</span>
               </div>
-              <div className="flex items-center gap-4 text-xs text-slate-400">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
                 <span className="inline-flex items-center gap-1 text-amber-400"><Flame className="h-3.5 w-3.5" />Streak: {h.streak} hari</span>
                 <span className="inline-flex items-center gap-1 text-slate-500"><Trophy className="h-3.5 w-3.5" />Rekor: {h.longestStreak} hari</span>
               </div>
             </div>
 
-            {/* 14-day heatmap — dari habit_logs */}
-            <div className="flex items-center gap-1">
-              {days.map((cell) => {
-                const active = (h.recentDays ?? []).includes(cell.iso);
-                return (
-                  <div key={cell.iso} className="flex flex-col items-center gap-1">
-                    <div
-                      className={cn(
-                        'h-6 w-3 rounded-sm',
-                        active ? 'bg-emerald-500/80' : 'bg-slate-200 dark:bg-slate-800'
-                      )}
-                      title={cell.iso}
-                    />
-                    <span className="text-[10px] text-slate-500 dark:text-slate-600">{cell.label}</span>
-                  </div>
-                );
-              })}
+            {/* 14-day heatmap — dari habit_logs (di layar sempit di-scroll, tidak menabrak tombol hapus) */}
+            <div className="min-w-0 flex-1 overflow-x-auto pb-1">
+              <div className="flex min-w-max items-center gap-1">
+                {days.map((cell) => {
+                  const active = (h.recentDays ?? []).includes(cell.iso);
+                  return (
+                    <div key={cell.iso} className="flex flex-col items-center gap-1">
+                      <div
+                        className={cn(
+                          'h-6 w-3 rounded-sm',
+                          active ? 'bg-emerald-500/80' : 'bg-slate-200 dark:bg-slate-800'
+                        )}
+                        title={cell.iso}
+                      />
+                      <span className="text-[10px] text-slate-500 dark:text-slate-600">{cell.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
-            <button type="button" onClick={() => setPendingDelete(h.id)} aria-label="Delete" className="rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:text-slate-600 dark:hover:bg-red-950 dark:hover:text-red-400">
+            <button type="button" onClick={() => setPendingDelete(h.id)} aria-label="Delete" className="shrink-0 rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:text-slate-600 dark:hover:bg-red-950 dark:hover:text-red-400">
               <Trash2 className="h-4 w-4" />
             </button>
           </div>
