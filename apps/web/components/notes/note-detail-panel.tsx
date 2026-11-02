@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Pin, PinOff, Archive, Pencil, Trash2, Check, X } from 'lucide-react';
+import { ArrowLeft, Pin, PinOff, Archive, Pencil, Trash2, Check, X } from 'lucide-react';
 import { cn } from '@repo/ui';
 import type { Note } from '@repo/types';
 import { toast } from '@/components/toast';
@@ -35,13 +35,15 @@ interface Props {
   onTogglePin: (id: string) => void;
   onToggleArchive: (id: string) => void;
   onSaveContent: (id: string, content: string) => void;
+  /** Hanya panggil di mobile (sheet overlay): tutup panel dan kembali ke daftar. */
+  onClose?: () => void;
 }
 
 const proseCls =
   'text-sm leading-relaxed text-slate-700 dark:text-slate-300 [&_code]:rounded [&_code]:bg-slate-100 dark:[&_code]:bg-slate-800 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-xs [&_code]:text-blue-600 dark:[&_code]:text-blue-400 [&_h1]:mb-3 [&_h1]:text-xl [&_h1]:font-bold [&_h1]:text-slate-900 dark:[&_h1]:text-white [&_h2]:mb-2 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-slate-900 dark:[&_h2]:text-white [&_ul]:list-disc [&_ul]:list-inside [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:list-inside [&_ol]:mb-4 [&_p]:mb-4 [&_pre]:mb-3 [&_pre]:rounded-lg [&_pre]:bg-slate-100 dark:[&_pre]:bg-slate-950 [&_pre]:p-3 [&_pre]:font-mono [&_pre]:text-xs [&_pre]:text-slate-800 dark:[&_pre]:text-slate-100 [&_blockquote]:border-l [&_blockquote]:border-blue-500 [&_blockquote]:pl-3 [&_blockquote]:italic [&_blockquote]:text-slate-500 dark:[&_blockquote]:text-slate-400';
 
 /** Panel kanan notes: judul/meta via modal, isi edit inline tanpa scroll internal. */
-export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onToggleArchive, onSaveContent }: Props) {
+export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onToggleArchive, onSaveContent, onClose }: Props) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(note.content);
   const areaRef = useRef<HTMLTextAreaElement>(null);
@@ -82,9 +84,14 @@ export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onTog
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60">
-      <div className="flex items-start justify-between gap-3 border-b border-slate-200 dark:border-slate-800 p-4">
-        <div>
-          <h2 className="text-base font-semibold text-slate-900 dark:text-white">{note.title}</h2>
+      <div className="flex items-start gap-1 border-b border-slate-200 p-3 dark:border-slate-800 sm:gap-3 sm:p-4">
+        {onClose && (
+          <button type="button" onClick={onClose} aria-label="Kembali ke daftar catatan" className="-ml-1 shrink-0 rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 lg:hidden">
+            <ArrowLeft className="h-4 w-4" />
+          </button>
+        )}
+        <div className="min-w-0 flex-1">
+          <h2 className="sm:text-base text-sm font-semibold text-slate-900 dark:text-white">{note.title}</h2>
           <div className="mt-1 flex flex-wrap gap-1">
             <span className="rounded bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-600 dark:text-slate-400">{note.category}</span>
             {note.tags?.map((t) => (
@@ -92,7 +99,7 @@ export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onTog
             ))}
           </div>
         </div>
-        <div className="flex gap-1">
+        <div className="flex shrink-0 gap-1">
           <button type="button" onClick={() => onTogglePin(note.id)} aria-label="Pin" className={cn('rounded-lg p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800', note.pinned ? 'text-amber-500 dark:text-amber-400' : 'text-slate-500')}>
             {note.pinned ? <PinOff className="h-4 w-4" /> : <Pin className="h-4 w-4" />}
           </button>

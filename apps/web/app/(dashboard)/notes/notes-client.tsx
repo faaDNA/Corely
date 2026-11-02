@@ -31,6 +31,9 @@ export function NotesClient({
   const [selectedId, setSelectedId] = useState(
     matchedNote?.id ?? initialNotes[0]?.id ?? "",
   );
+  // Sheet catatan di mobile: overlay penuh, jadi daftar tidak ikut menggulung.
+  // ponytail: state lokal saja; deep-link per catatan belum perlu.
+  const [sheetOpen, setSheetOpen] = useState(Boolean(matchedNote));
   const [q, setQ] = useState(initialQ);
   const [category, setCategory] = useState("all");
   const [showArchived, setShowArchived] = useState(
@@ -155,6 +158,7 @@ export function NotesClient({
     setPendingDelete(null);
     const backup = notes;
     setNotes((prev) => prev.filter((n) => n.id !== id));
+    setSheetOpen(false);
     const res = await deleteNote(id);
     if (!res.ok) {
       toast(res.error ?? "Gagal menghapus catatan.");
@@ -234,7 +238,10 @@ export function NotesClient({
               <button
                 key={n.id}
                 type="button"
-                onClick={() => setSelectedId(n.id)}
+                onClick={() => {
+                  setSelectedId(n.id);
+                  setSheetOpen(true);
+                }}
                 className={cn(
                   "w-full rounded-xl border p-3 text-left transition",
                   selected?.id === n.id
@@ -274,8 +281,15 @@ export function NotesClient({
           </div>
         </div>
 
-        {/* Editor / preview */}
-        <div className="lg:col-span-3">
+        {/* Editor / preview — mobile: sheet full-screen yang menutupi daftar */}
+        <div
+          className={cn(
+            "lg:col-span-3",
+            sheetOpen
+              ? "fixed inset-0 z-40 overflow-y-auto overscroll-contain bg-slate-50 p-3 dark:bg-slate-950 lg:static lg:z-auto lg:overflow-visible lg:bg-transparent lg:p-0"
+              : "hidden lg:block",
+          )}
+        >
           {selected ? (
             <NoteDetailPanel
               note={selected}
@@ -284,12 +298,13 @@ export function NotesClient({
               onTogglePin={() => handleToggle("pinned", selected.id)}
               onToggleArchive={() => handleToggle("archived", selected.id)}
               onSaveContent={handleInlineSave}
+              onClose={() => setSheetOpen(false)}
             />
           ) : (
             <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white p-12 text-center dark:border-slate-800 dark:bg-slate-900/40">
               <FileText className="h-8 w-8 text-slate-600" />
               <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
-                Pilih catatan di samping
+                Pilih catatan dari daftar
               </p>
               <p className="mt-1 text-xs text-slate-500">
                 atau buat catatan baru untuk mulai menulis.
