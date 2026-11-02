@@ -66,7 +66,7 @@ export function TaskListView({
   if (tasks.length === 0) {
     return (
       <div className="rounded-xl border border-dashed border-slate-300 bg-white p-12 text-center dark:border-slate-800 dark:bg-slate-900/40">
-        <p className="text-sm text-slate-500 dark:text-slate-400">Tidak ada tugas yang cocok. 🎉</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">Tidak ada tugas yang cocok.</p>
         <p className="mt-1 text-xs text-slate-500">Ubah filter atau tambah tugas baru.</p>
       </div>
     );

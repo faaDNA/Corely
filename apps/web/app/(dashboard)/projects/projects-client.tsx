@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Plus, Search, Pencil, Trash2, Github, ExternalLink, CirclePause, CirclePlay, Archive, ArchiveRestore } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, Github, ExternalLink, CirclePause, CirclePlay, Archive, ArchiveRestore, Calendar, ListChecks } from 'lucide-react';
 import { Button, cn } from '@repo/ui';
 import type { Project, Task } from '@repo/types';
 import { ProjectFormModal } from '@/components/projects/project-form-modal';
@@ -199,8 +199,8 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
               </div>
 
               <div className="mt-3 flex items-center gap-3 text-xs text-slate-500">
-                {p.deadline && <span>📅 {p.deadline}</span>}
-                <span className="ml-auto">📋 {relatedCount(p.id)} tugas</span>
+                {p.deadline && <span className="inline-flex items-center gap-1"><Calendar className="h-3.5 w-3.5" />{p.deadline}</span>}
+                <span className="ml-auto inline-flex items-center gap-1"><ListChecks className="h-3.5 w-3.5" />{relatedCount(p.id)} tugas</span>
               </div>
 
               {(p.repoUrl || p.deployUrl) && (

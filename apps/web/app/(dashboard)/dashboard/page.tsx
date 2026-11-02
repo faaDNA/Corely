@@ -90,7 +90,7 @@ export default async function DashboardPage() {
           </CardHeader>
           <CardContent className="space-y-2">
             {todayTasks.length === 0 && (
-              <p className="py-4 text-center text-sm text-slate-500">Belum ada tugas untuk hari ini 🎉</p>
+              <p className="py-4 text-center text-sm text-slate-500">Belum ada tugas untuk hari ini.</p>
             )}
             {todayTasks.map((t) => (
               <div key={t.id} className="flex items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-2.5 text-xs">
@@ -195,7 +195,7 @@ export default async function DashboardPage() {
                     )}
                   >
                     <Flame className="h-3 w-3" />
-                    {h.name} · {h.streak}🔥
+                    {h.name} · {h.streak}
                   </span>
                 ))}
               </div>
