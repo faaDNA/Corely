@@ -158,8 +158,8 @@ export function CalendarClient({ tasks, projects }: { tasks: Task[]; projects: P
               {selectedEvents.map((e) => (
                 <div key={e.id} className="flex items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3 text-sm">
                   <span className={cn('rounded border px-2 py-0.5 text-[10px] uppercase', badgeFor(e.type))}>{TYPE_LABEL[e.type]}</span>
-                  <span className="flex-1 text-slate-800 dark:text-slate-200">{e.title}</span>
-                  <span className="text-xs text-slate-500">{e.startDate}</span>
+                  <span className="min-w-0 flex-1 truncate text-slate-800 dark:text-slate-200">{e.title}</span>
+                  <span className="shrink-0 text-xs text-slate-500">{e.startDate}</span>
                 </div>
               ))}
               {selectedEvents.length === 0 && <p className="rounded-lg border border-dashed border-slate-300 dark:border-slate-800 p-6 text-center text-xs text-slate-500">Tidak ada agenda pada tanggal ini.</p>}
