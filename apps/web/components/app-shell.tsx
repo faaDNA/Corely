@@ -145,7 +145,7 @@ function SidebarContent({
       >
         <Search className="h-4 w-4" />
         <span>Search...</span>
-        <kbd className="ml-auto rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] dark:border-slate-800 dark:bg-slate-950">Ctrl K</kbd>
+        <kbd className="ml-auto hidden rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] md:inline-block dark:border-slate-800 dark:bg-slate-950">Ctrl K</kbd>
       </button>
 
       <nav className="flex-1 space-y-1 overflow-y-auto px-3">
@@ -268,6 +268,15 @@ export function AppShell({
             type="button"
           >
             {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          </button>
+
+          <button
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 md:hidden"
+            onClick={() => window.dispatchEvent(new Event('pd-open-search'))}
+            aria-label="Cari global"
+            type="button"
+          >
+            <Search className="h-4 w-4" />
           </button>
 
           <div className="ml-auto flex items-center gap-2">

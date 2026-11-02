@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, CheckSquare, FolderKanban, NotebookPen, Bookmark, CornerDownLeft } from 'lucide-react';
+import { Search, CheckSquare, FolderKanban, NotebookPen, Bookmark, CornerDownLeft, X } from 'lucide-react';
 import { cn } from '@repo/ui';
 import type { SearchItem } from '@/components/app-shell';
 
@@ -106,12 +106,22 @@ export function GlobalSearch({ items }: { items: SearchItem[] }) {
             placeholder="Cari tugas, proyek, catatan, bookmark..."
             className="flex-1 bg-transparent text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none"
           />
-          <kbd className="rounded border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-950 px-1.5 py-0.5 text-[10px] text-slate-500">Esc</kbd>
+          <kbd className="hidden rounded border border-slate-300 bg-white px-1.5 py-0.5 text-[10px] text-slate-500 dark:border-slate-700 dark:bg-slate-950 md:inline-block">Esc</kbd>
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            aria-label="Tutup pencarian"
+            className="rounded-lg p-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 md:hidden"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
 
         <div className="max-h-[50vh] overflow-y-auto p-2">
           {!q.trim() && (
-            <p className="p-4 text-center text-xs text-slate-500">Ketik untuk mencari di seluruh data... (Ctrl+K)</p>
+            <p className="p-4 text-center text-xs text-slate-500">
+              Ketik untuk mencari di seluruh data...<span className="hidden md:inline"> (Ctrl+K)</span>
+            </p>
           )}
           {q.trim() && flat.length === 0 && (
             <p className="p-4 text-center text-xs text-slate-500">Tidak ada hasil untuk &ldquo;{q}&rdquo;</p>

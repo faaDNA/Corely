@@ -38,7 +38,7 @@ function TaskRow({
         {task.description && <p className="text-xs text-slate-500">{task.description}</p>}
         <TaskBadges task={task} projects={projects} />
       </div>
-      <div className="flex shrink-0 gap-1 opacity-0 transition group-hover:opacity-100">
+      <div className="flex shrink-0 gap-1 opacity-100 transition lg:opacity-0 lg:group-hover:opacity-100">
         <button type="button" onClick={onEdit} aria-label="Edit" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-200">
           <Pencil className="h-4 w-4" />
         </button>
@@ -66,7 +66,7 @@ export function TaskListView({
   if (tasks.length === 0) {
     return (
       <div className="rounded-xl border border-dashed border-slate-300 bg-white p-12 text-center dark:border-slate-800 dark:bg-slate-900/40">
-        <p className="text-sm text-slate-500 dark:text-slate-400">Tidak ada tugas yang cocok. 🎉</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">Tidak ada tugas yang cocok.</p>
         <p className="mt-1 text-xs text-slate-500">Ubah filter atau tambah tugas baru.</p>
       </div>
     );

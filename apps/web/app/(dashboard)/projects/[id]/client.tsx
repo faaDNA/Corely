@@ -37,11 +37,11 @@ export default function ProjectDetailClient({
 
       <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-6">
         <div className="flex items-start justify-between gap-3">
-          <div>
-            <h1 className="text-xl font-bold text-slate-900 dark:text-white">{project.name}</h1>
+          <div className="min-w-0">
+            <h1 className="break-words text-xl font-bold text-slate-900 dark:text-white">{project.name}</h1>
             {project.description && <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{project.description}</p>}
           </div>
-          <span className={cn('rounded border px-2 py-1 text-[11px] font-medium', PROJECT_STATUS_BADGE[status])}>
+          <span className={cn('shrink-0 rounded border px-2 py-1 text-[11px] font-medium', PROJECT_STATUS_BADGE[status])}>
             {PROJECT_STATUS_LABELS[status as keyof typeof PROJECT_STATUS_LABELS]}
           </span>
         </div>

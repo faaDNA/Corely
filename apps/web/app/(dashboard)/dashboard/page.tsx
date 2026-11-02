@@ -60,7 +60,7 @@ export default async function DashboardPage() {
     <div className="space-y-6">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <Greeting profile={profile ?? { name: 'Pengguna', nickname: '', email: '' }} />
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Link href="/tasks" className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"><CheckCircle2 className="mr-2 h-4 w-4" />Tugas</Link>
           <Link href="/projects" className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"><FolderKanban className="mr-2 h-4 w-4" />Proyek</Link>
           <Link href="/notes" className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"><NotebookPen className="mr-2 h-4 w-4" />Catatan</Link>
@@ -90,17 +90,17 @@ export default async function DashboardPage() {
           </CardHeader>
           <CardContent className="space-y-2">
             {todayTasks.length === 0 && (
-              <p className="py-4 text-center text-sm text-slate-500">Belum ada tugas untuk hari ini 🎉</p>
+              <p className="py-4 text-center text-sm text-slate-500">Belum ada tugas untuk hari ini.</p>
             )}
             {todayTasks.map((t) => (
               <div key={t.id} className="flex items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-2.5 text-xs">
                 <span className={cn(t.status === 'COMPLETED' && 'text-emerald-400')}>
                   {t.status === 'COMPLETED' ? <CheckCircle2 className="h-4 w-4" /> : <Circle className="h-4 w-4 text-slate-600" />}
                 </span>
-                <span className={cn('flex-1 text-slate-800 dark:text-slate-200', t.status === 'COMPLETED' && 'text-slate-400 line-through')}>
+                <span className={cn('min-w-0 flex-1 truncate text-slate-800 dark:text-slate-200', t.status === 'COMPLETED' && 'text-slate-400 line-through')}>
                   {t.title}
                 </span>
-                <span className={cn('rounded border px-2 py-0.5 text-[10px]', PRIORITY_BADGE[t.priority])}>
+                <span className={cn('shrink-0 rounded border px-2 py-0.5 text-[10px]', PRIORITY_BADGE[t.priority])}>
                   {t.priority}
                 </span>
               </div>
@@ -118,8 +118,8 @@ export default async function DashboardPage() {
             {activeProjects.map((p) => (
               <div key={p.id}>
                 <div className="mb-1 flex justify-between text-xs">
-                  <span className="font-medium text-slate-800 dark:text-slate-200">{p.name}</span>
-                  <span className="font-mono text-blue-600 dark:text-blue-400">{p.progress}%</span>
+                  <span className="min-w-0 truncate font-medium text-slate-800 dark:text-slate-200">{p.name}</span>
+                  <span className="shrink-0 font-mono text-blue-600 dark:text-blue-400">{p.progress}%</span>
                 </div>
                 <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
                   <div
@@ -145,8 +145,8 @@ export default async function DashboardPage() {
             {upcomingDeadlines.map((t) => (
               <div key={t.id} className="flex items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-2.5 text-xs">
                 <CalendarClock className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
-                <span className="flex-1 text-slate-800 dark:text-slate-200">{t.title}</span>
-                <span className="flex items-center gap-1 text-slate-500">
+                <span className="min-w-0 flex-1 truncate text-slate-800 dark:text-slate-200">{t.title}</span>
+                <span className="flex shrink-0 items-center gap-1 text-slate-500">
                   <Clock className="h-3 w-3" />
                   {t.dueDate}
                 </span>
@@ -170,7 +170,7 @@ export default async function DashboardPage() {
                 <div key={n.id} className="flex items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-2.5 text-xs">
                   <NotebookPen className="h-4 w-4 shrink-0 text-purple-600 dark:text-purple-400" />
                   <span className="flex-1 truncate text-slate-800 dark:text-slate-200">{n.title}</span>
-                  <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-600 dark:bg-slate-800 dark:text-slate-400">{n.category}</span>
+                  <span className="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-600 dark:bg-slate-800 dark:text-slate-400">{n.category}</span>
                 </div>
               ))}
             </CardContent>
@@ -195,7 +195,7 @@ export default async function DashboardPage() {
                     )}
                   >
                     <Flame className="h-3 w-3" />
-                    {h.name} · {h.streak}🔥
+                    {h.name} · {h.streak}
                   </span>
                 ))}
               </div>
