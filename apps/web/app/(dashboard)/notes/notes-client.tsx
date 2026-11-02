@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Search, Pin, Archive, FileText } from "lucide-react";
+import { Plus, Search, Pin, Archive, FileText, Pencil, Trash2 } from "lucide-react";
 import { Button, cn } from "@repo/ui";
 import type { Note } from "@repo/types";
 import { NoteFormModal } from "@/components/notes/note-form-modal";
@@ -235,48 +235,94 @@ export function NotesClient({
               </div>
             )}
             {visible.map((n) => (
-              <button
+              <div
                 key={n.id}
-                type="button"
-                onClick={() => {
-                  setSelectedId(n.id);
-                  setSheetOpen(true);
-                }}
                 className={cn(
-                  "w-full rounded-xl border p-3 text-left transition",
+                  "rounded-xl border transition",
                   selected?.id === n.id
                     ? "border-blue-600 bg-blue-600/10"
                     : "border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-slate-700",
                 )}
               >
-                <div className="flex items-center gap-2">
-                  {n.pinned && (
-                    <Pin className="h-3.5 w-3.5 shrink-0 text-amber-500 dark:text-amber-400" />
-                  )}
-                  <p className="flex-1 truncate text-sm font-medium text-slate-900 dark:text-white">
-                    {n.title}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedId(n.id);
+                    setSheetOpen(true);
+                  }}
+                  aria-label={`Buka catatan ${n.title}`}
+                  className="block w-full p-3 text-left focus:outline-none"
+                >
+                  <div className="flex items-center gap-2">
+                    {n.pinned && (
+                      <Pin className="h-3.5 w-3.5 shrink-0 text-amber-500 dark:text-amber-400" />
+                    )}
+                    <p className="flex-1 truncate text-sm font-medium text-slate-900 dark:text-white">
+                      {n.title}
+                    </p>
+                  </div>
+                  <p className="mt-1 line-clamp-2 text-xs text-slate-500">
+                    {n.content}
                   </p>
-                </div>
-                <p className="mt-1 line-clamp-2 text-xs text-slate-500">
-                  {n.content}
-                </p>
-                <div className="mt-2 flex flex-wrap gap-1">
-                  <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-                    {n.category}
-                  </span>
-                  {n.tags?.map((t) => (
-                    <span
-                      key={t}
-                      className="rounded bg-purple-500/10 px-1.5 py-0.5 text-[10px] text-purple-600 dark:text-purple-400"
-                    >
-                      #{t}
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                      {n.category}
                     </span>
-                  ))}
-                  <span className="ml-auto text-[10px] text-slate-600">
-                    {n.updatedAt}
-                  </span>
+                    {n.tags?.map((t) => (
+                      <span
+                        key={t}
+                        className="rounded bg-purple-500/10 px-1.5 py-0.5 text-[10px] text-purple-600 dark:text-purple-400"
+                      >
+                        #{t}
+                      </span>
+                    ))}
+                    <span className="ml-auto text-[10px] text-slate-600">
+                      {n.updatedAt}
+                    </span>
+                  </div>
+                </button>
+                {/* Aksi cepat seluler — di luar button utama jadi markup tetap sah */}
+                <div className="flex items-center gap-1 border-t border-slate-200 px-2 py-1 dark:border-slate-800 lg:hidden">
+                  <button
+                    type="button"
+                    aria-label={n.pinned ? "Lepas pin" : "Pin catatan"}
+                    onClick={() => handleToggle("pinned", n.id)}
+                    className={cn(
+                      "rounded-lg p-1.5 transition hover:bg-slate-100 dark:hover:bg-slate-800",
+                      n.pinned ? "text-amber-500 dark:text-amber-400" : "text-slate-500 dark:text-slate-400",
+                    )}
+                  >
+                    <Pin className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={n.archived ? "Buka arsip" : "Arsipkan"}
+                    onClick={() => handleToggle("archived", n.id)}
+                    className={cn(
+                      "rounded-lg p-1.5 transition hover:bg-slate-100 dark:hover:bg-slate-800",
+                      n.archived ? "text-amber-500 dark:text-amber-400" : "text-slate-500 dark:text-slate-400",
+                    )}
+                  >
+                    <Archive className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Edit judul/kategori/tag"
+                    onClick={() => setModal({ open: true, initial: n })}
+                    className="rounded-lg p-1.5 text-slate-500 transition hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Hapus catatan"
+                    onClick={() => setPendingDelete(n.id)}
+                    className="rounded-lg p-1.5 text-slate-500 transition hover:bg-red-50 hover:text-red-600 dark:text-slate-400 dark:hover:bg-red-950 dark:hover:text-red-400"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                 </div>
-              </button>
+              </div>
             ))}
           </div>
         </div>
