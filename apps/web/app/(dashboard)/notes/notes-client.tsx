@@ -289,7 +289,7 @@ export function NotesClient({
                     onClick={() => handleToggle("pinned", n.id)}
                     className={cn(
                       "rounded-lg p-1.5 transition hover:bg-slate-100 dark:hover:bg-slate-800",
-                      n.pinned ? "text-amber-500 dark:text-amber-400" : "text-slate-500 dark:text-slate-400",
+                      n.pinned ? "text-amber-500 dark:text-amber-400" : "text-slate-500",
                     )}
                   >
                     <Pin className="h-4 w-4" />
@@ -300,7 +300,7 @@ export function NotesClient({
                     onClick={() => handleToggle("archived", n.id)}
                     className={cn(
                       "rounded-lg p-1.5 transition hover:bg-slate-100 dark:hover:bg-slate-800",
-                      n.archived ? "text-amber-500 dark:text-amber-400" : "text-slate-500 dark:text-slate-400",
+                      n.archived ? "text-amber-500 dark:text-amber-400" : "text-slate-500",
                     )}
                   >
                     <Archive className="h-4 w-4" />
@@ -309,7 +309,7 @@ export function NotesClient({
                     type="button"
                     aria-label="Edit judul/kategori/tag"
                     onClick={() => setModal({ open: true, initial: n })}
-                    className="rounded-lg p-1.5 text-slate-500 transition hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                    className="rounded-lg p-1.5 text-slate-500 transition hover:bg-slate-100 dark:hover:bg-slate-800"
                   >
                     <Pencil className="h-4 w-4" />
                   </button>
@@ -317,7 +317,7 @@ export function NotesClient({
                     type="button"
                     aria-label="Hapus catatan"
                     onClick={() => setPendingDelete(n.id)}
-                    className="rounded-lg p-1.5 text-slate-500 transition hover:bg-red-50 hover:text-red-600 dark:text-slate-400 dark:hover:bg-red-950 dark:hover:text-red-400"
+                    className="rounded-lg p-1.5 text-slate-500 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>

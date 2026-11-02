@@ -234,7 +234,7 @@ export function BookmarksClient({
                   </span>
                 ))}
               </div>
-              <div className="mt-3 flex justify-end gap-1 border-t border-slate-200 dark:border-slate-800 pt-3 opacity-0 transition group-hover:opacity-100">
+              <div className="mt-3 flex justify-end gap-1 border-t border-slate-200 dark:border-slate-800 pt-3 opacity-100 transition lg:opacity-0 lg:group-hover:opacity-100">
                 <button
                   type="button"
                   onClick={() => setModal({ open: true, initial: b })}

@@ -155,7 +155,7 @@ export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onTog
               type="button"
               onClick={startEdit}
               title="Klik untuk edit isi"
-              className="absolute right-0 top-0 rounded-lg p-1.5 text-slate-500 opacity-0 transition hover:bg-slate-100 hover:text-slate-700 group-hover:opacity-100 dark:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+              className="absolute right-0 top-0 rounded-lg p-1.5 text-slate-500 opacity-100 transition hover:bg-slate-100 hover:text-slate-700 lg:opacity-0 lg:group-hover:opacity-100 dark:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200"
             >
               <Pencil className="h-3.5 w-3.5" />
             </button>

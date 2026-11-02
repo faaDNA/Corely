@@ -211,7 +211,7 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
                 </div>
               )}
 
-              <div className="relative mt-3 flex justify-end gap-1 border-t border-slate-200 pt-3 transition sm:opacity-0 sm:group-hover:opacity-100 dark:border-slate-800">
+              <div className="relative mt-3 flex justify-end gap-1 border-t border-slate-200 pt-3 transition lg:opacity-0 lg:group-hover:opacity-100 dark:border-slate-800">
                 <button type="button" onClick={() => toggleFlag(p, 'onHold')} aria-label={p.onHold ? 'Lanjutkan proyek' : 'Jeda proyek (On Hold)'} title={p.onHold ? 'Lanjutkan proyek' : 'Jeda proyek'} className={cn('rounded-lg p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800', p.onHold ? 'text-amber-500 dark:text-amber-400' : 'text-slate-500')}>
                   {p.onHold ? <CirclePlay className="h-4 w-4" /> : <CirclePause className="h-4 w-4" />}
                 </button>
