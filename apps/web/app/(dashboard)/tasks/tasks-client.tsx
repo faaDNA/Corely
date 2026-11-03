@@ -7,6 +7,7 @@ import { Button, cn } from "@repo/ui";
 import type { Task, TaskStatus, TaskPriority, Project } from "@repo/types";
 import type { TaskFormValues } from "@/components/tasks/task-schema";
 import { TaskFormModal } from "@/components/tasks/task-form-modal";
+import { Select } from "@/components/select";
 import { TaskListView } from "@/components/tasks/task-views";
 import { toast } from "@/components/toast";
 import { deleteTask, saveTask, toggleTask } from "./actions";
@@ -234,39 +235,38 @@ export function TasksClient({
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-2">
-          <select
+          <Select
             value={priority}
-            onChange={(e) => setPriority(e.target.value)}
-            className="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
-          >
-            <option value="all">All Priorities</option>
-            <option value="HIGH">High</option>
-            <option value="MEDIUM">Medium</option>
-            <option value="LOW">Low</option>
-          </select>
+            onValueChange={setPriority}
+            ariaLabel="Filter prioritas"
+            options={[
+              { value: "all", label: "All Priorities" },
+              { value: "HIGH", label: "High" },
+              { value: "MEDIUM", label: "Medium" },
+              { value: "LOW", label: "Low" },
+            ]}
+          />
 
-          <select
+          <Select
             value={project}
-            onChange={(e) => setProject(e.target.value)}
-            className="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
-          >
-            <option value="none">Tanpa proyek</option>
-            <option value="all">Semua tasks</option>
-            {projects.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
+            onValueChange={(v) => setProject(v)}
+            ariaLabel="Filter proyek"
+            options={[
+              { value: "none", label: "Tanpa proyek" },
+              { value: "all", label: "Semua tasks" },
+              ...projects.map((p) => ({ value: p.id, label: p.name })),
+            ]}
+          />
 
-          <select
+          <Select
             value={sort}
-            onChange={(e) => setSort(e.target.value as never)}
-            className="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
-          >
-            <option value="due">Sort: Due date</option>
-            <option value="new">Sort: Newest</option>
-          </select>
+            onValueChange={(v) => setSort(v as typeof sort)}
+            ariaLabel="Urutan tugas"
+            options={[
+              { value: "due", label: "Sort: Due date" },
+              { value: "new", label: "Sort: Newest" },
+            ]}
+          />
         </div>
       </div>
 

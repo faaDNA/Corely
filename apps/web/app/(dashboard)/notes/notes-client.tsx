@@ -13,6 +13,7 @@ import {
 } from "@/components/notes/note-schema";
 import { deleteNote, saveNote, toggleNote } from "./actions";
 import { toast } from "@/components/toast";
+import { Select } from "@/components/select";
 
 export function NotesClient({
   initialNotes,
@@ -197,18 +198,16 @@ export function NotesClient({
             className="w-full rounded-lg border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500"
           />
         </div>
-        <select
+        <Select
           value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-700 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
-        >
-          <option value="all">Semua Kategori</option>
-          {NOTE_CATEGORIES.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
-          ))}
-        </select>
+          onValueChange={setCategory}
+          ariaLabel="Filter kategori catatan"
+          options={[
+            { value: "all", label: "Semua Kategori" },
+            ...NOTE_CATEGORIES.map((c) => ({ value: c, label: c })),
+          ]}
+          className="px-3 py-2"
+        />
         <button
           type="button"
           onClick={() => setShowArchived((v) => !v)}
