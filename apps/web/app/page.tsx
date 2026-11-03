@@ -312,7 +312,7 @@ export default async function LandingPage() {
 
       <footer className="border-t border-slate-200 py-8 dark:border-slate-800">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 text-xs text-slate-500 sm:flex-row sm:px-6 lg:px-8">
-          <div>© 2026 Corely</div>
+          <div>© 2026 Daffa Naufal Abdillah</div>
           <div className="flex items-center gap-6">
             <a
               href="#cara-kerja"

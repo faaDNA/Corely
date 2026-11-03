@@ -23,6 +23,10 @@ Buka http://localhost:3100. Alur: Landing `/` → `/login` (dummy) → `/dashboa
 
 Semua data masih **dummy** (`lib/mock-data.ts`), tersimpan di local state.
 
+## Lisensi
+
+MIT — lihat [LICENSE](LICENSE).
+
 ## Stack
 
 Next.js 14 · React 18 · TypeScript · Tailwind CSS · Radix UI · Lucide · next-themes · Recharts · react-hook-form · Zod · Turborepo · pnpm
