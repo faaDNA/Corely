@@ -10,6 +10,7 @@ import { logout } from '@/app/(auth)/actions';
 import { changePassword, updateProfile } from './actions';
 import { toast } from '@/components/toast';
 import { SubmitButton } from '@/components/submit-button';
+import { Select } from '@/components/select';
 
 export function SettingsClient({ initialProfile }: { initialProfile: Profile }) {
   const { theme, setTheme } = useTheme();
@@ -201,18 +202,32 @@ export function SettingsClient({ initialProfile }: { initialProfile: Profile }) 
         <CardContent className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1.5">
             <label htmlFor="s-date" className="text-xs font-medium text-slate-600 dark:text-slate-300">Format Tanggal</label>
-            <select id="s-date" value={dateFormat} onChange={(e) => setDateFormat(e.target.value)} className={inputCls}>
-              <option value="id-ID">DD/MM/YYYY (Indonesia)</option>
-              <option value="en-US">MM/DD/YYYY (US)</option>
-              <option value="ISO">YYYY-MM-DD (ISO)</option>
-            </select>
+            <Select
+              id="s-date"
+              value={dateFormat}
+              onValueChange={setDateFormat}
+              ariaLabel="Format Tanggal"
+              options={[
+                { value: "id-ID", label: "DD/MM/YYYY (Indonesia)" },
+                { value: "en-US", label: "MM/DD/YYYY (US)" },
+                { value: "ISO", label: "YYYY-MM-DD (ISO)" },
+              ]}
+              className="w-full px-3 py-2 text-sm"
+            />
           </div>
           <div className="space-y-1.5">
             <label htmlFor="s-time" className="text-xs font-medium text-slate-600 dark:text-slate-300">Format Jam</label>
-            <select id="s-time" value={timeFormat} onChange={(e) => setTimeFormat(e.target.value)} className={inputCls}>
-              <option value="24h">24 jam</option>
-              <option value="12h">12 jam (AM/PM)</option>
-            </select>
+            <Select
+              id="s-time"
+              value={timeFormat}
+              onValueChange={setTimeFormat}
+              ariaLabel="Format Jam"
+              options={[
+                { value: "24h", label: "24 jam" },
+                { value: "12h", label: "12 jam (AM/PM)" },
+              ]}
+              className="w-full px-3 py-2 text-sm"
+            />
           </div>
           <div className="sm:col-span-2">
             <Button size="sm" variant="outline" onClick={savePreferences}><Check className="mr-2 h-4 w-4" />Simpan Preferensi</Button>

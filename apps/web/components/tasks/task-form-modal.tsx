@@ -1,11 +1,12 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { X } from 'lucide-react';
 import { Button, cn } from '@repo/ui';
 import type { Project, Task } from '@repo/types';
+import { Select } from '@/components/select';
 import { taskSchema, type TaskFormValues, PRIORITY_LABELS } from './task-schema';
 
 interface Props {
@@ -28,6 +29,7 @@ function initDateMode(t?: Task | null): 'none' | 'deadline' | 'schedule' {
 export function TaskFormModal({ open, initial, defaultProjectId, projects, onSubmit, onClose }: Props) {
   const {
     register,
+    control,
     handleSubmit,
     reset,
     watch,
@@ -100,11 +102,20 @@ export function TaskFormModal({ open, initial, defaultProjectId, projects, onSub
 
           <div className="space-y-1.5">
             <label htmlFor="t-priority" className="text-xs font-medium text-slate-600 dark:text-slate-300">Prioritas</label>
-            <select id="t-priority" {...register('priority')} className={inputCls}>
-              {Object.entries(PRIORITY_LABELS).map(([v, l]) => (
-                <option key={v} value={v}>{l}</option>
-              ))}
-            </select>
+            <Controller
+              control={control}
+              name="priority"
+              render={({ field }) => (
+                <Select
+                  id="t-priority"
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  ariaLabel="Prioritas"
+                  options={Object.entries(PRIORITY_LABELS).map(([v, l]) => ({ value: v, label: l }))}
+                  className="w-full px-3 py-2 text-sm"
+                />
+              )}
+            />
           </div>
 
           <div className="space-y-1.5">
@@ -141,12 +152,23 @@ export function TaskFormModal({ open, initial, defaultProjectId, projects, onSub
 
           <div className="space-y-1.5">
             <label htmlFor="t-project" className="text-xs font-medium text-slate-600 dark:text-slate-300">Proyek</label>
-            <select id="t-project" {...register('projectId')} className={inputCls}>
-              <option value="">Tanpa proyek</option>
-              {projects.map((p) => (
-                <option key={p.id} value={p.id}>{p.name}</option>
-              ))}
-            </select>
+            <Controller
+              control={control}
+              name="projectId"
+              render={({ field }) => (
+                <Select
+                  id="t-project"
+                  value={field.value ?? ''}
+                  onValueChange={field.onChange}
+                  ariaLabel="Proyek"
+                  options={[
+                    { value: '', label: 'Tanpa proyek' },
+                    ...projects.map((p) => ({ value: p.id, label: p.name })),
+                  ]}
+                  className="w-full px-3 py-2 text-sm"
+                />
+              )}
+            />
           </div>
 
           <div className="space-y-1.5">

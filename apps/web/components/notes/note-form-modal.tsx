@@ -1,11 +1,12 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { X } from 'lucide-react';
 import { Button } from '@repo/ui';
 import type { Note } from '@repo/types';
+import { Select } from '@/components/select';
 import { noteSchema, type NoteFormValues, NOTE_CATEGORIES } from './note-schema';
 
 interface Props {
@@ -19,7 +20,7 @@ const inputCls =
   'w-full rounded-lg border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500 focus:outline-none';
 
 export function NoteFormModal({ open, initial, onSubmit, onClose }: Props) {
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<NoteFormValues>({
+  const { register, control, handleSubmit, reset, formState: { errors } } = useForm<NoteFormValues>({
     resolver: zodResolver(noteSchema),
     defaultValues: {
       title: initial?.title ?? '',
@@ -62,9 +63,20 @@ export function NoteFormModal({ open, initial, onSubmit, onClose }: Props) {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label htmlFor="n-cat" className="text-xs font-medium text-slate-600 dark:text-slate-300">Kategori</label>
-              <select id="n-cat" {...register('category')} className={inputCls}>
-                {NOTE_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
+              <Controller
+                control={control}
+                name="category"
+                render={({ field }) => (
+                  <Select
+                    id="n-cat"
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    ariaLabel="Kategori"
+                    options={NOTE_CATEGORIES.map((c) => ({ value: c, label: c }))}
+                    className="w-full px-3 py-2 text-sm"
+                  />
+                )}
+              />
               {errors.category && <p className="text-xs text-red-400">{errors.category.message}</p>}
             </div>
             <div className="space-y-1.5">

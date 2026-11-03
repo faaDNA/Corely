@@ -1,11 +1,12 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { X } from 'lucide-react';
 import { Button } from '@repo/ui';
 import type { Bookmark } from '@repo/types';
+import { Select } from '@/components/select';
 import { bookmarkSchema, type BookmarkFormValues, BOOKMARK_CATEGORIES } from './bookmark-schema';
 
 interface Props {
@@ -19,7 +20,7 @@ const inputCls =
   'w-full rounded-lg border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500 focus:outline-none';
 
 export function BookmarkFormModal({ open, initial, onSubmit, onClose }: Props) {
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<BookmarkFormValues>({
+  const { register, control, handleSubmit, reset, formState: { errors } } = useForm<BookmarkFormValues>({
     resolver: zodResolver(bookmarkSchema),
     defaultValues: {
       title: initial?.title ?? '',
@@ -71,9 +72,20 @@ export function BookmarkFormModal({ open, initial, onSubmit, onClose }: Props) {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label htmlFor="b-cat" className="text-xs font-medium text-slate-600 dark:text-slate-300">Kategori</label>
-              <select id="b-cat" {...register('category')} className={inputCls}>
-                {BOOKMARK_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
+              <Controller
+                control={control}
+                name="category"
+                render={({ field }) => (
+                  <Select
+                    id="b-cat"
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    ariaLabel="Kategori"
+                    options={BOOKMARK_CATEGORIES.map((c) => ({ value: c, label: c }))}
+                    className="w-full px-3 py-2 text-sm"
+                  />
+                )}
+              />
             </div>
             <div className="space-y-1.5">
               <label htmlFor="b-tags" className="text-xs font-medium text-slate-600 dark:text-slate-300">Tag (pisahkan koma)</label>
