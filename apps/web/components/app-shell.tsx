@@ -233,11 +233,9 @@ export interface SearchItem {
 export function AppShell({
   children,
   profile,
-  searchItems,
 }: {
   children: React.ReactNode;
   profile?: Profile | null;
-  searchItems?: SearchItem[];
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -288,7 +286,7 @@ export function AppShell({
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6">{children}</main>
       </div>
 
-      <GlobalSearch items={searchItems ?? []} />
+      <GlobalSearch />
       <ToastHost />
     </div>
   );

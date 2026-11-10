@@ -1,13 +1,10 @@
 import { redirect } from 'next/navigation';
 import { getProjects, getTasks } from '@/lib/mappers';
-import { createClient } from '@/lib/supabase/server';
+import { getUser } from '@/lib/auth';
 import { ProjectsClient } from './projects-client';
 
 export default async function ProjectsPage({ searchParams }: { searchParams: { q?: string } }) {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser();
   if (!user) redirect('/login');
 
   const [projects, tasks] = await Promise.all([getProjects(user.id), getTasks(user.id)]);

@@ -2,9 +2,10 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, CheckSquare, FolderKanban, NotebookPen, Bookmark, CornerDownLeft, X } from 'lucide-react';
+import { Search, CheckSquare, FolderKanban, NotebookPen, Bookmark, CornerDownLeft, X, Loader2 } from 'lucide-react';
 import { cn } from '@repo/ui';
 import type { SearchItem } from '@/components/app-shell';
+import { fetchSearchItems } from '@/app/(dashboard)/search-actions';
 
 interface Result {
   id: string;
@@ -22,12 +23,15 @@ const ICONS: Record<string, React.ReactNode> = {
   task: <CheckSquare className="h-4 w-4" />,
 };
 
-export function GlobalSearch({ items }: { items: SearchItem[] }) {
+export function GlobalSearch() {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState('');
   const [cursor, setCursor] = useState(0);
+  const [items, setItems] = useState<SearchItem[]>([]);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  // Indeks pencarian diambil hanya saat modal dibuka, bukan tiap navigasi.
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
@@ -50,6 +54,17 @@ export function GlobalSearch({ items }: { items: SearchItem[] }) {
       window.removeEventListener('pd-open-search', onOpen);
     };
   }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    let alive = true;
+    setLoading(true);
+    fetchSearchItems()
+      .then((r) => { if (alive) setItems(r); })
+      .catch(() => { if (alive) setItems([]); })
+      .finally(() => { if (alive) setLoading(false); });
+    return () => { alive = false; };
+  }, [open]);
 
   const results = useMemo<Result[]>(() => {
     const qq = q.trim().toLowerCase();
@@ -118,12 +133,17 @@ export function GlobalSearch({ items }: { items: SearchItem[] }) {
         </div>
 
         <div className="max-h-[50vh] overflow-y-auto p-2">
-          {!q.trim() && (
+          {loading && (
+            <p className="p-4 flex items-center justify-center gap-2 text-center text-xs text-slate-500">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" /> Mengambil data...
+            </p>
+          )}
+          {!loading && !q.trim() && (
             <p className="p-4 text-center text-xs text-slate-500">
               Ketik untuk mencari di seluruh data...<span className="hidden md:inline"> (Ctrl+K)</span>
             </p>
           )}
-          {q.trim() && flat.length === 0 && (
+          {!loading && q.trim() && flat.length === 0 && (
             <p className="p-4 text-center text-xs text-slate-500">Tidak ada hasil untuk &ldquo;{q}&rdquo;</p>
           )}
           {grouped.map(([group, items]) => (

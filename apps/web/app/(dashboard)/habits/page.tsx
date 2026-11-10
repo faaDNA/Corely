@@ -1,13 +1,10 @@
 import { redirect } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
+import { getUser } from '@/lib/auth';
 import { getHabits } from '@/lib/mappers';
 import { HabitsClient } from './habits-client';
 
 export default async function HabitsPage() {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser();
   if (!user) redirect('/login');
   return <HabitsClient initialHabits={await getHabits(user.id)} />;
 }

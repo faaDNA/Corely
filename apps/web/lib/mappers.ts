@@ -124,12 +124,26 @@ export function toBookmarkRow(userId: string, b: Bookmark) {
 
 // Queries
 
+const TASK_COLUMNS = 'id, title, description, status, priority, due_date, due_time, date_mode, project_id, tags, completed_at, created_at, deleted_at';
+
 export async function getTasks(userId: string): Promise<Task[]> {
   const supabase = createClient();
   const { data } = await supabase
     .from('tasks')
-    .select('id, title, description, status, priority, due_date, due_time, date_mode, project_id, tags, completed_at, created_at, deleted_at')
+    .select(TASK_COLUMNS)
     .eq('user_id', userId)
+    .order('due_date', { ascending: true, nullsFirst: false });
+  return (data ?? []).map(taskFromRow);
+}
+
+/** Tugas satu proyek saja — index tasks_project_idx, tanpa memuat seluruh tabel. */
+export async function getProjectTasks(userId: string, projectId: string): Promise<Task[]> {
+  const supabase = createClient();
+  const { data } = await supabase
+    .from('tasks')
+    .select(TASK_COLUMNS)
+    .eq('user_id', userId)
+    .eq('project_id', projectId)
     .order('due_date', { ascending: true, nullsFirst: false });
   return (data ?? []).map(taskFromRow);
 }

@@ -1,17 +1,14 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { getProjects, getTasks } from '@/lib/mappers';
-import { createClient } from '@/lib/supabase/server';
+import { getProjects, getProjectTasks } from '@/lib/mappers';
+import { getUser } from '@/lib/auth';
 import ProjectDetailClient from './client';
 
 export default async function ProjectDetailPage({ params }: { params: { id: string } }) {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser();
   if (!user) redirect('/login');
 
-  const [projects, tasks] = await Promise.all([getProjects(user.id), getTasks(user.id)]);
+  const [projects, tasks] = await Promise.all([getProjects(user.id), getProjectTasks(user.id, params.id)]);
   const project = projects.find((p) => p.id === params.id);
   if (!project) {
     return (
