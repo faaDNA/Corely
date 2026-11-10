@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
+import dynamic from 'next/dynamic';
+const ReactMarkdown = dynamic(() => import('react-markdown'), { ssr: false });
 import { ArrowLeft, Pin, PinOff, Archive, Pencil, Trash2, Check, X } from 'lucide-react';
 import { cn } from '@repo/ui';
 import type { Note } from '@repo/types';

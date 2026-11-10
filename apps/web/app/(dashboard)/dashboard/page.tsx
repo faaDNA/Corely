@@ -11,7 +11,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, cn } from '@repo/ui';
 import { Greeting } from '@/components/greeting';
 import { getProfile } from '@/lib/profile';
-import { createClient } from '@/lib/supabase/server';
+import { getUser } from '@/lib/auth';
 import { getHabits, getNotes, getProjects, getTasks } from '@/lib/mappers';
 import { workingTasks } from '@/lib/task-retention';
 import { deriveProjectStatus, projectProgress } from '@/lib/project-status';
@@ -24,10 +24,7 @@ const PRIORITY_BADGE: Record<string, string> = {
 
 export default async function DashboardPage() {
   const profile = await getProfile();
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser();
   let tasks: Awaited<ReturnType<typeof getTasks>> = [];
   let projects: Awaited<ReturnType<typeof getProjects>> = [];
   let notes: Awaited<ReturnType<typeof getNotes>> = [];
