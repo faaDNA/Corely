@@ -126,8 +126,8 @@ a {
 }
 
 /* Daftar baris terisi berurutan saat bagiannya digulir masuk: langkah tetap
-   75ms sampai 12 baris. Kelas `.stagger` hanya dipasang JavaScript setelah
-   elemen masuk layar, jadi tanpa JavaScript daftar tampil utuh tanpa gerak. */
+   75ms sampai 12 baris. Selama belum in-view, ancestor `.reveal-paused` menahan
+   animasinya di frame awal; tanpa JavaScript animasinya dimatikan. */
 .stagger > * {
   animation: rise 560ms cubic-bezier(0.16, 0.84, 0.44, 1) backwards;
 }
@@ -142,6 +142,21 @@ a {
 .stagger > *:nth-child(10) { animation-delay: 675ms; }
 .stagger > *:nth-child(11) { animation-delay: 750ms; }
 .stagger > *:nth-child(12) { animation-delay: 825ms; }
+
+/* Tahan entrance di frame awal sejak HTML pertama sampai observer melepasnya.
+   Tanpa ini, elemen tampil penuh dulu lalu meloncat ke opacity 0 (blink). */
+.reveal-paused,
+.reveal-paused * {
+  animation-play-state: paused;
+}
+
+/* Tanpa JavaScript: jangan pernah menyembunyikan isi halaman. */
+@media (scripting: none) {
+  .reveal-paused,
+  .reveal-paused * {
+    animation: none;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .anim-rise,

@@ -224,7 +224,7 @@ export default async function LandingPage() {
             className="mt-14 scroll-mt-24 border-t border-slate-200 pt-6 dark:border-slate-800"
           >
             <LandingLedger />
-            <Reveal delay={520}>
+            <Reveal delay={120}>
               <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
                 Contoh tampilan dengan data contoh.
               </p>
