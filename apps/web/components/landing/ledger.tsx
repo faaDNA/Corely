@@ -54,13 +54,13 @@ function TaskLine({ done, title, meta }: { done?: boolean; title: string; meta: 
   );
 }
 
-function Progress({ label, value, done, total, play }: { label: string; value: number; done: number; total: number; play?: boolean }) {
+function Progress({ label, value, done, total }: { label: string; value: number; done: number; total: number }) {
   return (
     <div className="flex items-center gap-2.5">
       <span className="w-24 shrink-0 truncate text-sm text-slate-700 dark:text-slate-300">{label}</span>
       <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
         <span
-          className={`${play ? 'anim-fill' : ''} block h-full rounded-full bg-blue-600`}
+          className="anim-fill block h-full rounded-full bg-blue-600"
           style={{ width: `${value}%`, animationDelay: '460ms' }}
         />
       </span>
@@ -82,8 +82,8 @@ function DateLine({ tone, text }: { tone: 'amber' | 'blue'; text: string }) {
 
 const BARS = ['h-2', 'h-4', 'h-3', 'h-6', 'h-5', 'h-3', 'h-7'];
 
-/** Pasangan baris. `play` menyalakan gerak isi — hanya setelah masuk layar. */
-const pairs = (play: boolean): { input: ReactNode; derived: ReactNode }[] => [
+/** Pasangan baris. */
+const pairs = (): { input: ReactNode; derived: ReactNode }[] => [
   {
     input: (
       <>
@@ -96,7 +96,7 @@ const pairs = (play: boolean): { input: ReactNode; derived: ReactNode }[] => [
       <Derived title="Daftar tugas hari ini">
         <TaskLine title="Susun laporan minggu ke-3" meta="Tenggat · 14:00" />
         <TaskLine done title="Review desain landing page" meta="Selesai 08:41" />
-        <Progress label="Skripsi" value={65} done={13} total={20} play={play} />
+        <Progress label="Skripsi" value={65} done={13} total={20} />
       </Derived>
     ),
   },
@@ -130,7 +130,7 @@ const pairs = (play: boolean): { input: ReactNode; derived: ReactNode }[] => [
           {BARS.map((h, i) => (
             <span
               key={i}
-              className={`${play ? 'anim-grow' : ''} w-4 rounded-t bg-blue-600/70 ${h}`}
+              className={`anim-grow w-4 rounded-t bg-blue-600/70 ${h}`}
               style={{ animationDelay: `${420 + i * 45}ms` }}
             />
           ))}
@@ -183,38 +183,38 @@ export function LandingLedger() {
   // keadaan redup permanen (papan tulis tetap utuh saat keyboard dipakai).
   const dim = (i: number) => (active !== null && active !== i ? 'opacity-50' : 'opacity-100');
 
-  // Kelas gerak hanya dipasang setelah masuk layar; sebelum itu baris tampil
-  // utuh, jadi tanpa JavaScript halaman tidak pernah kehilangan isinya.
-  const anim = (name: string) => (play ? name : '');
+  // Kelas gerak selalu ada; selama bagian ini belum masuk layar, animasinya
+  // ditahan di frame awal lewat `reveal-paused` (globals.css). Tanpa JavaScript
+  // `@media (scripting: none)` mematikan animasi, jadi isi tetap terbaca.
 
   return (
-    <div ref={ref} className="grid grid-cols-1 lg:grid-cols-2">
+    <div ref={ref} className={`grid grid-cols-1 lg:grid-cols-2 ${play ? '' : 'reveal-paused'}`}>
       <p
-        className={`${anim('anim-left')} border-b border-slate-200 pb-3 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500 lg:col-start-1 lg:row-start-1 lg:border-transparent lg:pr-8 dark:border-slate-800 dark:text-slate-400`}
+        className="anim-left border-b border-slate-200 pb-3 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500 lg:col-start-1 lg:row-start-1 lg:border-transparent lg:pr-8 dark:border-slate-800 dark:text-slate-400"
         style={{ animationDelay: '60ms' }}
       >
         Yang Anda tulis sekali
       </p>
       <p
-        className={`${anim('anim-right')} hidden border-b border-transparent pb-3 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500 lg:col-start-2 lg:row-start-1 lg:block lg:border-slate-200 lg:pl-8 dark:text-slate-400 dark:lg:border-slate-800`}
+        className="anim-right hidden border-b border-transparent pb-3 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500 lg:col-start-2 lg:row-start-1 lg:block lg:border-slate-200 lg:pl-8 dark:text-slate-400 dark:lg:border-slate-800"
         style={{ animationDelay: '100ms' }}
       >
         Yang Corely hitung sendiri
       </p>
 
-      {pairs(play).map((pair, i) => (
+      {pairs().map((pair, i) => (
         <div key={i} className="contents">
           <div
             onMouseEnter={() => setActive(i)}
             onMouseLeave={() => setActive(null)}
             style={{ animationDelay: `${120 + i * 90}ms` }}
-            className={`${anim('anim-left')} border-b border-slate-200 py-3.5 lg:col-start-1 lg:pr-8 ${ROW_START[i]} ${dim(i)} transition-opacity dark:border-slate-800`}
+            className={`anim-left border-b border-slate-200 py-3.5 lg:col-start-1 lg:pr-8 ${ROW_START[i]} ${dim(i)} transition-opacity dark:border-slate-800`}
           >
             <div className="flex w-full items-center gap-2">{pair.input}</div>
           </div>
           <div
             style={{ animationDelay: `${165 + i * 90}ms` }}
-            className={`${anim('anim-right')} border-b border-slate-200 py-3.5 lg:col-start-2 lg:border-l lg:pl-8 ${ROW_START[i]} ${dim(i)} transition-opacity dark:border-slate-800`}
+            className={`anim-right border-b border-slate-200 py-3.5 lg:col-start-2 lg:border-l lg:pl-8 ${ROW_START[i]} ${dim(i)} transition-opacity dark:border-slate-800`}
           >
             {pair.derived}
           </div>
