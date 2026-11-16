@@ -102,7 +102,7 @@ export function NotificationsBell() {
           subscribed
             ? 'border-blue-500/50 bg-blue-600/10 text-blue-600 dark:bg-blue-600/15 dark:text-blue-400'
             : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:text-white',
-          blocked && 'border-red-900/40 text-red-600 dark:text-red-400'
+          blocked && 'border-red-300 text-red-600 dark:border-red-900/40 dark:text-red-400'
         )}
       >
         {subscribed ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
@@ -119,7 +119,7 @@ export function NotificationsBell() {
             Status: {blocked ? 'diblokir' : subscribed ? 'aktif' : 'mati'}
           </p>
           {blocked && (
-            <p className="mt-2 rounded-lg bg-red-950/20 px-2 py-1.5 text-[11px] text-red-600 dark:text-red-300">
+            <p className="mt-2 rounded-lg bg-red-50 px-2 py-1.5 text-[11px] text-red-700 dark:bg-red-950/20 dark:text-red-300">
               Izin diblokir browser. Buka pengaturan situs lalu izinkan Notifikasi.
             </p>
           )}

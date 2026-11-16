@@ -32,10 +32,10 @@ export function ForgotPasswordForm() {
           </div>
 
           {state?.error && (
-            <p className="rounded-lg border border-red-900/50 bg-red-950/30 px-3 py-2 text-xs text-red-300">{state.error}</p>
+            <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-300">{state.error}</p>
           )}
           {state?.message && (
-            <p className="rounded-lg border border-emerald-900/50 bg-emerald-950/30 px-3 py-2 text-xs text-emerald-300">{state.message}</p>
+            <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300">{state.message}</p>
           )}
 
           <SubmitButton className="w-full" type="submit">Kirim Tautan Reset</SubmitButton>
