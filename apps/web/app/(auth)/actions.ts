@@ -24,7 +24,9 @@ function idError(msg?: string) {
   const m = (msg ?? '').toLowerCase();
   if (m.includes('invalid login credentials')) return 'Email atau password salah.';
   if (m.includes('already registered')) return 'Email sudah terdaftar. Silakan masuk.';
-  if (m.includes('at least 6') || m.includes('password')) return 'Password minimal 6 karakter.';
+  if (m.includes('different from the old')) return 'Password baru harus berbeda dari password saat ini.';
+  if (m.includes('at least 6') || m.includes('too short')) return 'Password minimal 6 karakter.';
+  if (m.includes('at least one character')) return 'Password terlalu lemah. Tambahkan variasi huruf, angka, atau simbol.';
   if (m.includes('email not confirmed')) return 'Email belum dikonfirmasi. Cek inbox.';
   if (m.includes('rate limit')) return 'Terlalu banyak percobaan. Coba lagi nanti.';
   return msg ?? 'Terjadi kesalahan. Coba lagi.';
