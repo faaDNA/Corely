@@ -7,6 +7,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { googleLogin, login } from '../actions';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@repo/ui';
 import { GoogleIcon } from '@/components/google-icon';
+import { FormAlert } from '@/components/form-alert';
 import { SubmitButton } from '@/components/submit-button';
 
 const initialState: { error?: string; message?: string } = {};
@@ -75,16 +76,7 @@ export function LoginForm() {
             </div>
           </div>
 
-          {state?.error && (
-            <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-300">
-              {state.error}
-            </p>
-          )}
-          {state?.message && (
-            <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300">
-              {state.message}
-            </p>
-          )}
+          <FormAlert state={state} />
 
           <div className="flex justify-end">
             <Link href="/forgot-password" className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">

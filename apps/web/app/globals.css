@@ -150,6 +150,22 @@ a {
   animation-play-state: paused;
 }
 
+/* Alert form: getar pendek tiap percobaan gagal, walau teksnya sama. */
+@keyframes nudge-x {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+}
+@keyframes alert-ring {
+  0% { box-shadow: 0 0 0 0 rgb(220 38 38 / 0.35); }
+  100% { box-shadow: 0 0 0 6px rgb(220 38 38 / 0); }
+}
+.alert-shake {
+  animation: nudge-x 320ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
 /* Tanpa JavaScript: jangan pernah menyembunyikan isi halaman. */
 @media (scripting: none) {
   .reveal-paused,
@@ -167,5 +183,8 @@ a {
   .anim-grow,
   .stagger > * {
     animation: none;
+  }
+  .alert-shake {
+    animation: alert-ring 600ms ease-out;
   }
 }
