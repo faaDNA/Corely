@@ -61,7 +61,7 @@ export function AnalyticsClient({
 
   const projectData = projects
     .filter((p) => deriveProjectStatus(p, workingTasks) === 'IN_PROGRESS')
-    .map((p) => ({ name: p.name.length > 16 ? p.name.slice(0, 16) + '...' : p.name, progress: projectProgress(p, workingTasks) }));
+    .map((p) => ({ name: p.name.length > 12 ? p.name.slice(0, 12) + '...' : p.name, progress: projectProgress(p, workingTasks) }));
 
   const habitData = habits.map((h) => ({
     name: h.name.length > 12 ? h.name.slice(0, 12) + '...' : h.name,

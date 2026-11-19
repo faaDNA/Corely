@@ -55,7 +55,7 @@ export function AnalyticsCharts({
 }) {
   return (
     <>
-      <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4">
+      <div className="min-w-0 rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4">
         <h2 className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">Tugas Selesai vs Dibuat — {periodLabel}</h2>
         {!nonEmpty ? (
           <div className="flex h-[260px] items-center justify-center rounded-lg border border-dashed border-slate-200 dark:border-slate-800 text-xs text-slate-500">
@@ -63,7 +63,7 @@ export function AnalyticsCharts({
           </div>
         ) : (
           <ResponsiveContainer width="100%" height={260}>
-            <AreaChart data={series}>
+            <AreaChart data={series} margin={{ right: 12 }}>
               <defs>
                 <linearGradient id="colorSelesai" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
@@ -75,7 +75,7 @@ export function AnalyticsCharts({
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="name" stroke="#64748b" fontSize={11} />
+              <XAxis dataKey="name" stroke="#64748b" fontSize={11} tickMargin={6} minTickGap={6} />
               <YAxis stroke="#64748b" fontSize={11} allowDecimals={false} />
               <Tooltip content={<ChartTooltip />} />
               <Legend wrapperStyle={{ fontSize: 12 }} />
@@ -87,7 +87,7 @@ export function AnalyticsCharts({
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4">
+        <div className="min-w-0 rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4">
           <h2 className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">Distribusi Status Tugas</h2>
           <ResponsiveContainer width="100%" height={240}>
             <PieChart>
@@ -100,7 +100,7 @@ export function AnalyticsCharts({
           </ResponsiveContainer>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4">
+        <div className="min-w-0 rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4">
           <h2 className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">Progres Proyek Aktif (%)</h2>
           {projectData.length === 0 ? (
             <div className="flex h-[240px] items-center justify-center rounded-lg border border-dashed border-slate-200 dark:border-slate-800 text-xs text-slate-500">
@@ -108,10 +108,10 @@ export function AnalyticsCharts({
             </div>
           ) : (
             <ResponsiveContainer width="100%" height={240}>
-              <BarChart data={projectData} layout="vertical" margin={{ left: 8 }}>
+              <BarChart data={projectData} layout="vertical" margin={{ top: 4, right: 12, bottom: 0, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                <XAxis type="number" domain={[0, 100]} stroke="#64748b" fontSize={11} />
-                <YAxis type="category" dataKey="name" width={110} stroke="#64748b" fontSize={11} />
+                <XAxis type="number" domain={[0, 100]} stroke="#64748b" fontSize={11} tickMargin={6} />
+                <YAxis type="category" dataKey="name" width={88} stroke="#64748b" fontSize={10} />
                 <Tooltip content={<ChartTooltip />} cursor={{ fill: '#1e293b40' }} />
                 <Bar dataKey="progress" fill="#3b82f6" radius={[0, 6, 6, 0]} barSize={16} />
               </BarChart>
@@ -119,7 +119,7 @@ export function AnalyticsCharts({
           )}
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4 lg:col-span-2">
+        <div className="min-w-0 rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4 lg:col-span-2">
           <h2 className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">Konsistensi Kebiasaan — Streak Aktif vs Rekor</h2>
           {habitData.length === 0 ? (
             <div className="flex h-[260px] items-center justify-center rounded-lg border border-dashed border-slate-200 dark:border-slate-800 text-xs text-slate-500">
@@ -127,9 +127,9 @@ export function AnalyticsCharts({
             </div>
           ) : (
             <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={habitData}>
+              <BarChart data={habitData} margin={{ right: 12 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                <XAxis dataKey="name" stroke="#64748b" fontSize={11} />
+                <XAxis dataKey="name" stroke="#64748b" fontSize={11} tickMargin={6} minTickGap={6} />
                 <YAxis stroke="#64748b" fontSize={11} allowDecimals={false} />
                 <Tooltip content={<ChartTooltip />} cursor={{ fill: '#1e293b40' }} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
