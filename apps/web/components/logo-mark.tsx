@@ -1,5 +1,5 @@
 // Simbol Corely: huruf C ditutup centang. Warna ikut `currentColor` (atur via text-*).
-// Geometri sama dengan app/icon.svg — ubah keduanya bersamaan.
+// Geometri sama dengan public/icon.svg — ubah keduanya bersamaan.
 export function LogoMark({ className }: { className?: string }) {
   return (
     <svg

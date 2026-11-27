@@ -5,6 +5,8 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'Corely',
   description: 'Satu workspace untuk seluruh produktivitas Anda.',
+  // Semua ikon statis di public/. PNG dibuat scripts/gen-icons.mjs.
+  icons: { icon: '/icon.svg', apple: '/apple-touch-icon.png' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
