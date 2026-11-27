@@ -1,3 +1,4 @@
+import { LogoMark } from '@/components/logo-mark';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { RegisterForm } from './register-form';
@@ -14,9 +15,7 @@ export default function RegisterPage() {
           Kembali ke Beranda
         </Link>
         <div className="flex items-center justify-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 font-bold text-white">
-            C
-          </div>
+          <LogoMark className="h-10 w-10 text-blue-600 dark:text-blue-500" />
           <span className="font-bold text-lg text-slate-900 dark:text-white">Corely</span>
         </div>
         <RegisterForm />

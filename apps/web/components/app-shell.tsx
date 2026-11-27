@@ -1,5 +1,6 @@
 'use client';
 
+import { LogoMark } from '@/components/logo-mark';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -129,9 +130,7 @@ function SidebarContent({
   return (
     <div className="flex h-full flex-col">
       <Link href="/dashboard" className="flex items-center gap-3 px-3 py-4" onClick={onNavigate}>
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 font-bold text-white">
-          C
-        </div>
+        <LogoMark className="h-9 w-9 text-blue-600 dark:text-blue-500" />
         <div className="leading-tight">
           <p className="font-bold text-slate-900 dark:text-white">Corely</p>
           <p className="text-[11px] text-slate-500">Your productivity hub</p>
