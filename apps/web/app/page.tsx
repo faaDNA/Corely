@@ -1,3 +1,4 @@
+import { LogoMark } from "@/components/logo-mark";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getProfile } from "@/lib/profile";
@@ -127,9 +128,7 @@ export default async function LandingPage() {
       <header className="glass fixed inset-x-0 top-0 z-50 border-b border-slate-200 dark:border-slate-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 font-bold text-white">
-              C
-            </div>
+            <LogoMark className="h-9 w-9 text-blue-600 dark:text-blue-500" />
             <span className="text-lg font-bold tracking-tight">Corely</span>
           </div>
           <nav className="hidden items-center gap-8 text-sm font-medium text-slate-500 dark:text-slate-400 md:flex">
