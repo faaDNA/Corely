@@ -14,8 +14,9 @@ const CHIP_OFF =
 /** Kolom teks seperti di formulir tambah tugas. */
 function Field({ children }: { children: ReactNode }) {
   return (
-    <span className="flex h-9 flex-1 items-center truncate rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200">
-      {children}
+    <span className="flex h-9 min-w-0 flex-1 items-center rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200">
+      {/* truncate di span dalam: teks langsung di flex container tidak dapat elipsis */}
+      <span className="truncate">{children}</span>
     </span>
   );
 }
@@ -193,7 +194,9 @@ export function LandingLedger() {
         className="anim-left border-b border-slate-200 pb-3 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500 lg:col-start-1 lg:row-start-1 lg:border-transparent lg:pr-8 dark:border-slate-800 dark:text-slate-400"
         style={{ animationDelay: '60ms' }}
       >
-        Yang Anda tulis sekali
+        {/* Mobile satu kolom: label kanan tersembunyi, jadi label kiri menjelaskan keduanya. */}
+        <span className="lg:hidden">Anda tulis → Corely hitung</span>
+        <span className="hidden lg:inline">Yang Anda tulis sekali</span>
       </p>
       <p
         className="anim-right hidden border-b border-transparent pb-3 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500 lg:col-start-2 lg:row-start-1 lg:block lg:border-slate-200 lg:pl-8 dark:text-slate-400 dark:lg:border-slate-800"
@@ -205,8 +208,9 @@ export function LandingLedger() {
       {pairs().map((pair, i) => (
         <div key={i} className="contents">
           <div
-            onMouseEnter={() => setActive(i)}
-            onMouseLeave={() => setActive(null)}
+            // Hanya mouse: tap di layar sentuh memicu "enter" tanpa "leave" → baris lain macet redup.
+            onPointerEnter={(e) => e.pointerType === 'mouse' && setActive(i)}
+            onPointerLeave={(e) => e.pointerType === 'mouse' && setActive(null)}
             style={{ animationDelay: `${120 + i * 90}ms` }}
             className={`anim-left border-b border-slate-200 py-3.5 lg:col-start-1 lg:pr-8 ${ROW_START[i]} ${dim(i)} transition-opacity dark:border-slate-800`}
           >
@@ -214,7 +218,8 @@ export function LandingLedger() {
           </div>
           <div
             style={{ animationDelay: `${165 + i * 90}ms` }}
-            className={`anim-right border-b border-slate-200 py-3.5 lg:col-start-2 lg:border-l lg:pl-8 ${ROW_START[i]} ${dim(i)} transition-opacity dark:border-slate-800`}
+            // Mobile: garis biru kiri + indent menandai "hasil hitungan" dari baris input di atasnya.
+            className={`anim-right border-b border-l-2 border-slate-200 border-l-blue-200 py-3.5 pl-4 lg:col-start-2 lg:border-l lg:border-l-slate-200 lg:pl-8 ${ROW_START[i]} ${dim(i)} transition-opacity dark:border-slate-800 dark:border-l-blue-900 dark:lg:border-l-slate-800`}
           >
             {pair.derived}
           </div>

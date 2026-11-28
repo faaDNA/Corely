@@ -159,7 +159,7 @@ export default async function LandingPage() {
           ) : (
             <Link
               href="/login"
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-500"
+              className="inline-flex h-11 items-center rounded-lg bg-blue-600 px-5 text-sm font-medium text-white transition hover:bg-blue-500"
             >
               Masuk
             </Link>
@@ -242,21 +242,22 @@ export default async function LandingPage() {
                 Dua belas fitur, dalam satu aplikasi.
               </h2>
               <p className="mt-3 max-w-2xl text-slate-600 dark:text-slate-400">
-                Satu tugas ditulis sekali, sisanya menyusul sendiri. progres
-                proyeknya naik sendiri tiap tugas selesai, tanggalnya muncul di
-                kalender, dan angka analitik ikut berubah.
+                Satu tugas ditulis sekali, sisanya menyusul. Progres proyek naik
+                tiap tugas selesai, tanggalnya muncul di kalender, dan angka
+                analitik ikut berubah.
               </p>
             </Reveal>
-            <Reveal stagger className="mt-10 grid gap-x-12 sm:grid-cols-2">
+            {/* Mobile: dua kolom ikon + judul saja (12 deskripsi = ±3 layar scroll). */}
+            <Reveal stagger className="mt-10 grid grid-cols-2 gap-x-6 sm:gap-x-12">
               {FEATURES.map((m) => (
                 <div
                   key={m.title}
-                  className="flex gap-3.5 border-b border-slate-200 py-4 dark:border-slate-800"
+                  className="flex gap-3 border-b border-slate-200 py-4 sm:gap-3.5 dark:border-slate-800"
                 >
                   <m.icon className="mt-0.5 h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" />
                   <div>
                     <h3 className="text-sm font-semibold">{m.title}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+                    <p className="mt-1 hidden text-sm leading-relaxed text-slate-500 sm:block dark:text-slate-400">
                       {m.desc}
                     </p>
                   </div>
@@ -312,26 +313,24 @@ export default async function LandingPage() {
       <footer className="border-t border-slate-200 py-8 dark:border-slate-800">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 text-xs text-slate-500 sm:flex-row sm:px-6 lg:px-8">
           <div>© 2026 Daffa Naufal Abdillah</div>
-          <div className="flex items-center gap-6">
-            <a
-              href="#cara-kerja"
-              className="transition hover:text-slate-900 dark:hover:text-slate-300"
-            >
-              Cara kerja
-            </a>
-            <a
-              href="#fitur"
-              className="transition hover:text-slate-900 dark:hover:text-slate-300"
-            >
-              Fitur
-            </a>
-            <a
-              href="#keunggulan"
-              className="transition hover:text-slate-900 dark:hover:text-slate-300"
-            >
-              Keunggulan
-            </a>
-          </div>
+          {/* min-h-11: area sentuh 44px di mobile. */}
+          <nav className="flex flex-wrap items-center justify-center gap-x-6">
+            {[
+              ["#cara-kerja", "Cara kerja"],
+              ["#fitur", "Fitur"],
+              ["#keunggulan", "Keunggulan"],
+              ["/privacy", "Privasi"],
+              ["/terms", "Syarat Layanan"],
+            ].map(([href, label]) => (
+              <a
+                key={href}
+                href={href}
+                className="inline-flex min-h-11 items-center transition hover:text-slate-900 dark:hover:text-slate-300"
+              >
+                {label}
+              </a>
+            ))}
+          </nav>
         </div>
       </footer>
     </div>
