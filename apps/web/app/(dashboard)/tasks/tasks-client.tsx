@@ -1,5 +1,6 @@
 "use client";
 
+import { Dialog, DialogDescription, DialogTitle } from "@/components/dialog";
 import { useEffect, useMemo, useState } from "react";
 import { Plus, Search } from "lucide-react";
 import { Button, cn } from "@repo/ui";
@@ -287,19 +288,15 @@ export function TasksClient({
       />
 
       {pendingDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/60"
-            onClick={() => setPendingDelete(null)}
-          />
+        <Dialog open onClose={() => setPendingDelete(null)} withDescription>
           <div className="relative w-full max-w-sm rounded-xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+            <DialogTitle className="text-sm font-semibold text-slate-900 dark:text-white">
               Hapus tugas ini?
-            </h3>
-            <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+            </DialogTitle>
+            <DialogDescription className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
               Tugas disembunyikan dari daftar. Yang sudah selesai tetap dihitung
               di statistik selama 5 bulan, lalu dihapus permanen.
-            </p>
+            </DialogDescription>
             <div className="mt-4 flex justify-end gap-2">
               <Button
                 variant="ghost"
@@ -313,7 +310,7 @@ export function TasksClient({
               </Button>
             </div>
           </div>
-        </div>
+        </Dialog>
       )}
     </div>
   );

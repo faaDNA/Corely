@@ -1,5 +1,6 @@
 'use client';
 
+import { Dialog, DialogTitle } from '@/components/dialog';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -44,8 +45,7 @@ export function ProjectFormModal({ open, initial, onSubmit, onClose }: Props) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
+    <Dialog open={open} onClose={onClose}>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 shadow-2xl"
@@ -54,24 +54,24 @@ export function ProjectFormModal({ open, initial, onSubmit, onClose }: Props) {
           type="button"
           onClick={onClose}
           className="absolute right-3 top-3 rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
-          aria-label="Close"
+          aria-label="Tutup"
         >
           <X className="h-4 w-4" />
         </button>
 
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{initial ? 'Edit Proyek' : 'Proyek Baru'}</h3>
+        <DialogTitle className="text-lg font-semibold text-slate-900 dark:text-white">{initial ? 'Edit Proyek' : 'Proyek Baru'}</DialogTitle>
 
         <div className="mt-4 space-y-4">
           <div className="space-y-1.5">
             <label htmlFor="p-name" className="text-xs font-medium text-slate-600 dark:text-slate-300">Nama *</label>
             <input id="p-name" {...register('name')} className={inputCls} placeholder="Nama proyek" />
-            {errors.name && <p className="text-xs text-red-400">{errors.name.message}</p>}
+            {errors.name && <p className="text-xs text-red-600 dark:text-red-400">{errors.name.message}</p>}
           </div>
 
           <div className="space-y-1.5">
             <label htmlFor="p-desc" className="text-xs font-medium text-slate-600 dark:text-slate-300">Deskripsi</label>
             <textarea id="p-desc" {...register('description')} rows={2} className={inputCls} placeholder="Deskripsi singkat..." />
-            {errors.description && <p className="text-xs text-red-400">{errors.description.message}</p>}
+            {errors.description && <p className="text-xs text-red-600 dark:text-red-400">{errors.description.message}</p>}
           </div>
 
           <div className="space-y-1.5">
@@ -88,12 +88,12 @@ export function ProjectFormModal({ open, initial, onSubmit, onClose }: Props) {
             <div className="space-y-1.5">
               <label htmlFor="p-repo" className="text-xs font-medium text-slate-600 dark:text-slate-300">Repository URL</label>
               <input id="p-repo" {...register('repoUrl')} className={inputCls} placeholder="https://github.com/..." />
-              {errors.repoUrl && <p className="text-xs text-red-400">{errors.repoUrl.message}</p>}
+              {errors.repoUrl && <p className="text-xs text-red-600 dark:text-red-400">{errors.repoUrl.message}</p>}
             </div>
             <div className="space-y-1.5">
               <label htmlFor="p-deploy" className="text-xs font-medium text-slate-600 dark:text-slate-300">Deployment URL</label>
               <input id="p-deploy" {...register('deployUrl')} className={inputCls} placeholder="https://..." />
-              {errors.deployUrl && <p className="text-xs text-red-400">{errors.deployUrl.message}</p>}
+              {errors.deployUrl && <p className="text-xs text-red-600 dark:text-red-400">{errors.deployUrl.message}</p>}
             </div>
           </div>
         </div>
@@ -103,6 +103,6 @@ export function ProjectFormModal({ open, initial, onSubmit, onClose }: Props) {
           <Button type="submit">{initial ? 'Simpan Perubahan' : 'Tambah Proyek'}</Button>
         </div>
       </form>
-    </div>
+    </Dialog>
   );
 }

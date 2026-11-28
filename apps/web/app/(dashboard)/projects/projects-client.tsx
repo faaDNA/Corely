@@ -1,5 +1,6 @@
 'use client';
 
+import { Dialog, DialogDescription, DialogTitle } from '@/components/dialog';
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Plus, Search, Pencil, Trash2, Github, ExternalLink, CirclePause, CirclePlay, Archive, ArchiveRestore, Calendar, ListChecks } from 'lucide-react';
@@ -229,17 +230,16 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
       />
 
       {pendingDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setPendingDelete(null)} />
+        <Dialog open onClose={() => setPendingDelete(null)} withDescription>
           <div className="relative w-full max-w-sm rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 shadow-2xl">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Hapus proyek ini?</h3>
-            <p className="mt-2 text-xs text-slate-400">Tugas terkait akan dilepas dari proyek. Tindakan tidak bisa dibatalkan.</p>
+            <DialogTitle className="text-sm font-semibold text-slate-900 dark:text-white">Hapus proyek ini?</DialogTitle>
+            <DialogDescription className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">Tugas terkait akan dilepas dari proyek. Tindakan tidak bisa dibatalkan.</DialogDescription>
             <div className="mt-4 flex justify-end gap-2">
               <Button variant="ghost" size="sm" onClick={() => setPendingDelete(null)}>Batal</Button>
               <Button variant="danger" size="sm" onClick={confirmDelete}>Hapus</Button>
             </div>
           </div>
-        </div>
+        </Dialog>
       )}
     </div>
   );

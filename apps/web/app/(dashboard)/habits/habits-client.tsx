@@ -1,5 +1,6 @@
 'use client';
 
+import { Dialog, DialogDescription, DialogTitle } from '@/components/dialog';
 import { useEffect, useState } from 'react';
 import { Plus, Flame, Check, Trophy, Trash2, Loader2 } from 'lucide-react';
 import { Button, cn } from '@repo/ui';
@@ -160,11 +161,12 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
       </div>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setOpen(false)} />
+        <Dialog open onClose={() => setOpen(false)}>
           <form onSubmit={handleAdd} className="relative w-full max-w-md rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 shadow-2xl">
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Kebiasaan Baru</h3>
+            <DialogTitle className="text-lg font-semibold text-slate-900 dark:text-white">Kebiasaan Baru</DialogTitle>
+            <label htmlFor="habit-name" className="sr-only">Nama kebiasaan</label>
             <input
+              id="habit-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Contoh: Baca 20 menit, Olahraga..."
@@ -179,21 +181,20 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
             </Button>
             </div>
           </form>
-        </div>
+        </Dialog>
       )}
 
       {pendingDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setPendingDelete(null)} />
+        <Dialog open onClose={() => setPendingDelete(null)} withDescription>
           <div className="relative w-full max-w-sm rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 shadow-2xl">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Hapus kebiasaan ini?</h3>
-            <p className="mt-2 text-xs text-slate-400">Streak dan riwayat penandaan ikut terhapus. Tindakan ini tidak bisa dibatalkan.</p>
+            <DialogTitle className="text-sm font-semibold text-slate-900 dark:text-white">Hapus kebiasaan ini?</DialogTitle>
+            <DialogDescription className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">Streak dan riwayat penandaan ikut terhapus. Tindakan ini tidak bisa dibatalkan.</DialogDescription>
             <div className="mt-4 flex justify-end gap-2">
               <Button variant="ghost" size="sm" onClick={() => setPendingDelete(null)}>Batal</Button>
               <Button variant="danger" size="sm" onClick={confirmDelete}>Hapus</Button>
             </div>
           </div>
-        </div>
+        </Dialog>
       )}
     </div>
   );
