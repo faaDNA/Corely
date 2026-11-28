@@ -30,16 +30,16 @@ export function NotificationsBell() {
   }, []);
 
   async function enable() {
-    if (!supported) return toast('Browser tidak mendukung notifikasi.');
+    if (!supported) return toast('Browser tidak mendukung notifikasi.', 'error');
     const pub = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-    if (!pub) return toast('Kunci VAPID belum dikonfigurasi.');
+    if (!pub) return toast('Notifikasi belum tersedia. Hubungi pengelola aplikasi.', 'error');
     setBusy(true);
     try {
       const perm = await Notification.requestPermission();
       setPermission(perm);
       if (perm !== 'granted') {
-        if (perm === 'denied') toast('Izin diblokir. Buka pengaturan situs browser untuk mengizinkan kembali.');
-        else toast('Izin ditolak.');
+        if (perm === 'denied') toast('Izin diblokir. Buka pengaturan situs browser untuk mengizinkan kembali.', 'error');
+        else toast('Izin ditolak.', 'error');
         return;
       }
       const reg = await navigator.serviceWorker.register('/sw.js');
@@ -56,7 +56,9 @@ export function NotificationsBell() {
       toast('Notifikasi diaktifkan. Perangkat ini akan menerima pengingat.');
       setOpen(false);
     } catch (e) {
-      toast(e instanceof Error ? e.message : 'Gagal mengaktifkan notifikasi.');
+      // Pesan teknis browser/server (mis. DOMException) bukan untuk pengguna — cukup di console.
+      console.error(e);
+      toast('Gagal mengaktifkan notifikasi. Coba lagi.', 'error');
     } finally {
       setBusy(false);
     }
@@ -76,7 +78,8 @@ export function NotificationsBell() {
       toast('Notifikasi dimatikan untuk perangkat ini.');
       setOpen(false);
     } catch (e) {
-      toast(e instanceof Error ? e.message : 'Gagal mematikan notifikasi.');
+      console.error(e);
+      toast('Gagal mematikan notifikasi. Coba lagi.', 'error');
     } finally {
       setBusy(false);
     }
@@ -84,7 +87,7 @@ export function NotificationsBell() {
 
   async function test() {
     const res = await sendTestNotification();
-    toast(res.ok ? 'Notifikasi uji dikirim.' : res.error ?? 'Gagal kirim notifikasi.');
+    toast(res.ok ? 'Notifikasi uji dikirim.' : res.error ?? 'Gagal kirim notifikasi.', res.ok ? 'success' : 'error');
   }
 
   if (!supported) return null;
@@ -113,7 +116,7 @@ export function NotificationsBell() {
         <div className="absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border border-slate-200 bg-white p-4 shadow-xl dark:border-slate-800 dark:bg-slate-900">
           <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Notifikasi</h3>
           <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-            Pengingat tenggat dikirim sebagai notifikasi browser OS. Aktifkan agar pengingat H-1 dan H tiba di perangkat ini.
+            Pengingat tenggat dikirim sebagai notifikasi di perangkat. Aktifkan agar pengingat H-1 dan H tiba di perangkat ini.
           </p>
           <p className="mt-2 text-[11px] text-slate-500">
             Status: {blocked ? 'diblokir' : subscribed ? 'aktif' : 'mati'}
@@ -150,6 +153,7 @@ export function NotificationsBell() {
               type="button"
               onClick={test}
               title="Kirim notifikasi uji"
+              aria-label="Kirim notifikasi uji"
               className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs transition hover:bg-slate-50 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800"
               disabled={!subscribed}
             >

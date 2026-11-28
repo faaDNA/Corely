@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import type { Profile } from '@repo/types';
 import { createClient } from '@/lib/supabase/server';
 
@@ -20,10 +21,13 @@ export async function updateProfile(profile: Profile): Promise<Result> {
 
   const emailChanged = profile.email !== user.email;
   let email = user.email ?? profile.email;
+  // Konfirmasi email aktif: email lama tetap berlaku sampai link di inbox email baru diklik.
+  let emailPending = false;
   if (emailChanged) {
     const { data, error } = await supabase.auth.updateUser({ email: profile.email });
-    if (error) return { error: 'Ganti email gagal. Cek inbox bila perlu konfirmasi.' };
+    if (error) return { error: 'Ganti email gagal. Coba lagi nanti.' };
     email = data.user.email ?? email;
+    emailPending = email !== profile.email;
   }
 
   const { error } = await supabase
@@ -32,12 +36,18 @@ export async function updateProfile(profile: Profile): Promise<Result> {
     .eq('id', user.id);
   if (error) return { error: `Gagal simpan profil: ${error.message}` };
 
-  return { message: 'Profil disimpan.' };
+  // Nama & inisial di sidebar datang dari layout; tanpa ini tetap nama lama sampai reload.
+  revalidatePath('/', 'layout');
+  return {
+    message: emailPending
+      ? 'Profil disimpan. Buka link konfirmasi di inbox email baru untuk menyelesaikan ganti email.'
+      : 'Profil disimpan.',
+  };
 }
 
 /** Verifikasi password lama via re-auth, lalu ganti password baru. */
 export async function changePassword(current: string, next: string): Promise<Result> {
-  if (!current || !next) return { error: 'Lengkapi semua field password.' };
+  if (!current || !next) return { error: 'Lengkapi semua kolom password.' };
   if (next.length < 6) return { error: 'Password baru minimal 6 karakter.' };
   if (current === next) return { error: 'Password baru harus berbeda dari yang lama.' };
 

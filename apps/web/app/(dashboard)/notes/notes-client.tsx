@@ -1,7 +1,7 @@
 "use client";
 
+import { Dialog, DialogDescription, DialogTitle } from "@/components/dialog";
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Plus, Search, Pin, Archive, FileText, Pencil, Trash2 } from "lucide-react";
 import { Button, cn } from "@repo/ui";
 import type { Note } from "@repo/types";
@@ -9,10 +9,12 @@ import { NoteFormModal } from "@/components/notes/note-form-modal";
 import { NoteDetailPanel } from "@/components/notes/note-detail-panel";
 import {
   NOTE_CATEGORIES,
+  noteCategoryLabel,
   type NoteFormValues,
 } from "@/components/notes/note-schema";
 import { deleteNote, saveNote, toggleNote } from "./actions";
 import { toast } from "@/components/toast";
+import { toISO } from "@/lib/calendar-range";
 import { Select } from "@/components/select";
 
 export function NotesClient({
@@ -22,7 +24,6 @@ export function NotesClient({
   initialNotes: Note[];
   initialQ?: string;
 }) {
-  const router = useRouter();
   const [notes, setNotes] = useState(initialNotes);
   const matchedNote = initialQ
     ? initialNotes.find((n) =>
@@ -58,7 +59,7 @@ export function NotesClient({
     }
   }, [initialQ, initialNotes]);
 
-  // Sinkron ulang saat server kirim data baru (router.refresh) — ganti ID sementara dengan UUID asli.
+  // Sinkron ulang saat server kirim data baru (revalidatePath di server action) — ganti ID sementara dengan UUID asli.
   useEffect(() => {
     setNotes(initialNotes);
     setSelectedId((prev) =>
@@ -101,9 +102,11 @@ export function NotesClient({
         : undefined,
       pinned: modal.initial?.pinned,
       archived: modal.initial?.archived,
-      updatedAt: new Date().toISOString().slice(0, 10),
+      updatedAt: toISO(new Date()),
     };
     setModal({ open: false });
+    const backup = notes;
+    const prevSelected = selectedId;
     if (modal.initial)
       setNotes((prev) =>
         prev.map((n) => (n.id === modal.initial!.id ? payload : n)),
@@ -115,25 +118,30 @@ export function NotesClient({
 
     const res = await saveNote(payload);
     if (!res.ok) {
-      toast(res.error ?? "Gagal menyimpan catatan.");
+      // Rollback: tanpa ini catatan "hantu" ber-ID sementara tertinggal dan error bila diklik.
+      setNotes(backup);
+      setSelectedId(prevSelected);
+      toast(res.error ?? "Gagal menyimpan catatan.", "error");
       return;
     }
     toast(modal.initial ? "Catatan diperbarui." : "Catatan ditambahkan.");
-    router.refresh();
   }
 
-  async function handleInlineSave(id: string, content: string) {
+  /** true = tersimpan di server. State baru diubah setelah ok, supaya draft di panel tidak hilang saat gagal. */
+  async function handleInlineSave(id: string, content: string): Promise<boolean> {
+    const note = notes.find((n) => n.id === id);
+    if (!note) return false;
+    const res = await saveNote({ ...note, content });
+    if (!res.ok) {
+      toast(res.error ?? "Gagal menyimpan isi catatan.", "error");
+      return false;
+    }
     setNotes((prev) =>
       prev.map((n) =>
-        n.id === id
-          ? { ...n, content, updatedAt: new Date().toISOString().slice(0, 10) }
-          : n,
+        n.id === id ? { ...n, content, updatedAt: toISO(new Date()) } : n,
       ),
     );
-    const note = notes.find((n) => n.id === id);
-    if (!note) return;
-    await saveNote({ ...note, content });
-    router.refresh();
+    return true;
   }
 
   async function handleToggle(flag: "pinned" | "archived", id: string) {
@@ -146,11 +154,10 @@ export function NotesClient({
     );
     const res = await toggleNote(note, flag);
     if (!res.ok) {
-      toast(res.error ?? "Gagal memperbarui catatan.");
+      toast(res.error ?? "Gagal memperbarui catatan.", "error");
       setNotes(notes);
       return;
     }
-    router.refresh();
   }
 
   async function confirmDelete() {
@@ -162,12 +169,11 @@ export function NotesClient({
     setSheetOpen(false);
     const res = await deleteNote(id);
     if (!res.ok) {
-      toast(res.error ?? "Gagal menghapus catatan.");
+      toast(res.error ?? "Gagal menghapus catatan.", "error");
       setNotes(backup);
       return;
     }
     toast("Catatan dihapus.");
-    router.refresh();
   }
 
   return (
@@ -204,7 +210,7 @@ export function NotesClient({
           ariaLabel="Filter kategori catatan"
           options={[
             { value: "all", label: "Semua Kategori" },
-            ...NOTE_CATEGORIES.map((c) => ({ value: c, label: c })),
+            ...NOTE_CATEGORIES.map((c) => ({ value: c, label: noteCategoryLabel(c) })),
           ]}
           className="px-3 py-2"
         />
@@ -265,7 +271,7 @@ export function NotesClient({
                   </p>
                   <div className="mt-2 flex flex-wrap gap-1">
                     <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-                      {n.category}
+                      {noteCategoryLabel(n.category)}
                     </span>
                     {n.tags?.map((t) => (
                       <span
@@ -275,7 +281,7 @@ export function NotesClient({
                         #{t}
                       </span>
                     ))}
-                    <span className="ml-auto text-[10px] text-slate-600">
+                    <span className="ml-auto text-[10px] text-slate-600 dark:text-slate-400">
                       {n.updatedAt}
                     </span>
                   </div>
@@ -284,10 +290,10 @@ export function NotesClient({
                 <div className="flex items-center gap-1 border-t border-slate-200 px-2 py-1 dark:border-slate-800 lg:hidden">
                   <button
                     type="button"
-                    aria-label={n.pinned ? "Lepas pin" : "Pin catatan"}
+                    aria-label={n.pinned ? `Lepas sematan ${n.title}` : `Sematkan ${n.title}`}
                     onClick={() => handleToggle("pinned", n.id)}
                     className={cn(
-                      "rounded-lg p-1.5 transition hover:bg-slate-100 dark:hover:bg-slate-800",
+                      "inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg transition hover:bg-slate-100 dark:hover:bg-slate-800",
                       n.pinned ? "text-amber-500 dark:text-amber-400" : "text-slate-500",
                     )}
                   >
@@ -295,10 +301,10 @@ export function NotesClient({
                   </button>
                   <button
                     type="button"
-                    aria-label={n.archived ? "Buka arsip" : "Arsipkan"}
+                    aria-label={n.archived ? `Keluarkan ${n.title} dari arsip` : `Arsipkan ${n.title}`}
                     onClick={() => handleToggle("archived", n.id)}
                     className={cn(
-                      "rounded-lg p-1.5 transition hover:bg-slate-100 dark:hover:bg-slate-800",
+                      "inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg transition hover:bg-slate-100 dark:hover:bg-slate-800",
                       n.archived ? "text-amber-500 dark:text-amber-400" : "text-slate-500",
                     )}
                   >
@@ -306,17 +312,17 @@ export function NotesClient({
                   </button>
                   <button
                     type="button"
-                    aria-label="Edit judul/kategori/tag"
+                    aria-label={`Ubah judul, kategori, tag ${n.title}`}
                     onClick={() => setModal({ open: true, initial: n })}
-                    className="rounded-lg p-1.5 text-slate-500 transition hover:bg-slate-100 dark:hover:bg-slate-800"
+                    className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 dark:hover:bg-slate-800"
                   >
                     <Pencil className="h-4 w-4" />
                   </button>
                   <button
                     type="button"
-                    aria-label="Hapus catatan"
+                    aria-label={`Hapus ${n.title}`}
                     onClick={() => setPendingDelete(n.id)}
-                    className="rounded-lg p-1.5 text-slate-500 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
+                    className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -367,18 +373,14 @@ export function NotesClient({
       />
 
       {pendingDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/60"
-            onClick={() => setPendingDelete(null)}
-          />
+        <Dialog open onClose={() => setPendingDelete(null)} withDescription>
           <div className="relative w-full max-w-sm rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 shadow-2xl">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+            <DialogTitle className="text-sm font-semibold text-slate-900 dark:text-white">
               Hapus catatan ini?
-            </h3>
-            <p className="mt-2 text-xs text-slate-400">
+            </DialogTitle>
+            <DialogDescription className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
               Tindakan ini tidak bisa dibatalkan.
-            </p>
+            </DialogDescription>
             <div className="mt-4 flex justify-end gap-2">
               <Button
                 variant="ghost"
@@ -392,7 +394,7 @@ export function NotesClient({
               </Button>
             </div>
           </div>
-        </div>
+        </Dialog>
       )}
     </div>
   );

@@ -67,11 +67,17 @@ async function handle(req: Request) {
         : '⏰ Besok ada jadwal';
 
     try {
-      sentCount += await sendPushToUser(
+      const delivered = await sendPushToUser(
         task.user_id,
         { title, body: `${task.title}${timeLabel}`, url: '/tasks' },
         supabase
       );
+      sentCount += delivered;
+      // Tak satu perangkat pun menerima (push service error sementara / belum ada langganan):
+      // lepas klaim supaya cron menit berikutnya mencoba lagi. Hanya dalam WINDOW_MS, jadi tidak spam.
+      if (delivered === 0) {
+        await supabase.from('reminder_sent').delete().eq('task_id', task.id).eq('kind', kind).eq('due_date', task.due_date);
+      }
     } catch {
       // VAPID belum diset — klaim tetap tercatat supaya tidak spam saat dikoreksi
     }

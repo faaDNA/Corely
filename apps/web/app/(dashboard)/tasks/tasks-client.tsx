@@ -1,7 +1,7 @@
 "use client";
 
+import { Dialog, DialogDescription, DialogTitle } from "@/components/dialog";
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Plus, Search } from "lucide-react";
 import { Button, cn } from "@repo/ui";
 import type { Task, TaskStatus, TaskPriority, Project } from "@repo/types";
@@ -10,12 +10,14 @@ import { TaskFormModal } from "@/components/tasks/task-form-modal";
 import { Select } from "@/components/select";
 import { TaskListView } from "@/components/tasks/task-views";
 import { toast } from "@/components/toast";
+import { toISO } from "@/lib/calendar-range";
 import { deleteTask, saveTask, toggleTask } from "./actions";
 
 const NEW_ID = () => `new-${Date.now()}`;
 
+/** Tanggal lokal browser (WIB), bukan UTC: toISOString() mundur sehari pukul 00–07 WIB. */
 function todayISO(): string {
-  return new Date().toISOString().slice(0, 10);
+  return toISO(new Date());
 }
 
 export function TasksClient({
@@ -27,7 +29,6 @@ export function TasksClient({
   projects: Project[];
   initialQ?: string;
 }) {
-  const router = useRouter();
   const [tasks, setTasks] = useState(initialTasks);
   const [q, setQ] = useState(initialQ);
   const [status, setStatus] = useState("all");
@@ -42,7 +43,7 @@ export function TasksClient({
   });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
-  // Sinkron ulang saat server kirim data baru (router.refresh).
+  // Sinkron ulang saat server kirim data baru (revalidatePath di server action).
   useEffect(() => setTasks(initialTasks), [initialTasks]);
 
   /** daftar kerja: tanpa task tersoft-delete (deletedAt) */
@@ -85,7 +86,11 @@ export function TasksClient({
         if (!b.dueDate) return -1;
         return a.dueDate < b.dueDate ? -1 : 1;
       }
-      return a.id < b.id ? 1 : -1;
+      // "Terbaru": timestamp buat, bukan id (UUID v4 acak). Tugas optimistik belum punya
+      // timestamp → dianggap paling baru.
+      const ta = a.createdAtTs ?? "￿";
+      const tb = b.createdAtTs ?? "￿";
+      return ta === tb ? 0 : ta < tb ? 1 : -1;
     });
     return out;
   }, [filtered, status, priority, project, sort]);
@@ -111,11 +116,10 @@ export function TasksClient({
     );
     const res = await toggleTask(task);
     if (!res.ok) {
-      toast(res.error ?? "Gagal memperbarui tugas.");
+      toast(res.error ?? "Gagal memperbarui tugas.", "error");
       setTasks(initialTasks);
       return;
     }
-    router.refresh();
   }
 
   async function handleFormSubmit(values: TaskFormValues) {
@@ -153,12 +157,11 @@ export function TasksClient({
 
     const res = await saveTask(payload);
     if (!res.ok) {
-      toast(res.error ?? "Gagal menyimpan tugas.");
+      toast(res.error ?? "Gagal menyimpan tugas.", "error");
       setTasks(initialTasks);
       return;
     }
     toast(modal.initial ? "Tugas diperbarui." : "Tugas ditambahkan.");
-    router.refresh();
   }
 
   async function confirmDelete() {
@@ -170,12 +173,11 @@ export function TasksClient({
     );
     const res = await deleteTask(id);
     if (!res.ok) {
-      toast(res.error ?? "Gagal menghapus tugas.");
+      toast(res.error ?? "Gagal menghapus tugas.", "error");
       setTasks(initialTasks);
       return;
     }
     toast("Tugas dihapus.");
-    router.refresh();
   }
 
   return (
@@ -186,8 +188,7 @@ export function TasksClient({
             Tugas
           </h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Kelola tugas harian, checklist lalu hapus tugas untuk menandai
-            selesai.
+            Kelola tugas harian. Centang untuk menandai selesai.
           </p>
         </div>
         <Button onClick={() => setModal({ open: true, initial: null })}>
@@ -212,9 +213,9 @@ export function TasksClient({
           <div className="flex flex-wrap gap-2">
             {(
               [
-                ["all", "All"],
-                ["TODO", "Todo"],
-                ["COMPLETED", "Completed"],
+                ["all", "Semua"],
+                ["TODO", "Belum"],
+                ["COMPLETED", "Selesai"],
               ] as const
             ).map(([v, l]) => (
               <button
@@ -222,7 +223,7 @@ export function TasksClient({
                 type="button"
                 onClick={() => setStatus(v)}
                 className={cn(
-                  "rounded-lg border px-2.5 py-1 text-xs font-medium transition",
+                  "rounded-lg border px-2.5 py-2 text-xs font-medium transition sm:py-1",
                   status === v
                     ? "border-blue-600 bg-blue-600/10 text-blue-600 dark:text-blue-400"
                     : "border-slate-300 text-slate-500 hover:border-slate-400 dark:border-slate-700 dark:text-slate-400 dark:hover:border-slate-600",
@@ -240,10 +241,10 @@ export function TasksClient({
             onValueChange={setPriority}
             ariaLabel="Filter prioritas"
             options={[
-              { value: "all", label: "All Priorities" },
-              { value: "HIGH", label: "High" },
-              { value: "MEDIUM", label: "Medium" },
-              { value: "LOW", label: "Low" },
+              { value: "all", label: "Semua prioritas" },
+              { value: "HIGH", label: "Tinggi" },
+              { value: "MEDIUM", label: "Sedang" },
+              { value: "LOW", label: "Rendah" },
             ]}
           />
 
@@ -253,7 +254,7 @@ export function TasksClient({
             ariaLabel="Filter proyek"
             options={[
               { value: "none", label: "Tanpa proyek" },
-              { value: "all", label: "Semua tasks" },
+              { value: "all", label: "Semua tugas" },
               ...projects.map((p) => ({ value: p.id, label: p.name })),
             ]}
           />
@@ -263,8 +264,8 @@ export function TasksClient({
             onValueChange={(v) => setSort(v as typeof sort)}
             ariaLabel="Urutan tugas"
             options={[
-              { value: "due", label: "Sort: Due date" },
-              { value: "new", label: "Sort: Newest" },
+              { value: "due", label: "Urutkan: Tenggat" },
+              { value: "new", label: "Urutkan: Terbaru" },
             ]}
           />
         </div>
@@ -287,19 +288,15 @@ export function TasksClient({
       />
 
       {pendingDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/60"
-            onClick={() => setPendingDelete(null)}
-          />
+        <Dialog open onClose={() => setPendingDelete(null)} withDescription>
           <div className="relative w-full max-w-sm rounded-xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+            <DialogTitle className="text-sm font-semibold text-slate-900 dark:text-white">
               Hapus tugas ini?
-            </h3>
-            <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+            </DialogTitle>
+            <DialogDescription className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
               Tugas disembunyikan dari daftar. Yang sudah selesai tetap dihitung
               di statistik selama 5 bulan, lalu dihapus permanen.
-            </p>
+            </DialogDescription>
             <div className="mt-4 flex justify-end gap-2">
               <Button
                 variant="ghost"
@@ -313,7 +310,7 @@ export function TasksClient({
               </Button>
             </div>
           </div>
-        </div>
+        </Dialog>
       )}
     </div>
   );

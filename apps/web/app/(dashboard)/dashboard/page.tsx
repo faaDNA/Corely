@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import {
+  AlertCircle,
   CheckCircle2,
   Circle,
   Clock,
@@ -14,7 +15,10 @@ import { getProfile } from '@/lib/profile';
 import { getUser } from '@/lib/auth';
 import { getHabits, getNotes, getProjects, getTasks } from '@/lib/mappers';
 import { workingTasks } from '@/lib/task-retention';
+import { daysLate, isoWIB } from '@/lib/day';
 import { deriveProjectStatus, projectProgress } from '@/lib/project-status';
+import { priorityLabel } from '@/components/tasks/task-schema';
+import { noteCategoryLabel } from '@/components/notes/note-schema';
 
 const PRIORITY_BADGE: Record<string, string> = {
   HIGH: 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20',
@@ -23,17 +27,24 @@ const PRIORITY_BADGE: Record<string, string> = {
 };
 
 export default async function DashboardPage() {
-  const profile = await getProfile();
   const user = await getUser();
-  let tasks: Awaited<ReturnType<typeof getTasks>> = [];
-  let projects: Awaited<ReturnType<typeof getProjects>> = [];
-  let notes: Awaited<ReturnType<typeof getNotes>> = [];
-  let habits: Awaited<ReturnType<typeof getHabits>> = [];
-  if (user) [tasks, projects, notes, habits] = await Promise.all([getTasks(user.id), getProjects(user.id), getNotes(user.id), getHabits(user.id)]);
+  // Profil ikut paralel (getUser di-cache per request) — sebelumnya menunggu profil dulu (+1 round trip).
+  // Tanpa user (mode dummy tanpa env) tetap render kosong, seperti sebelumnya.
+  const [profile, tasks, projects, notes, habits] = await Promise.all([
+    getProfile(),
+    user ? getTasks(user.id) : [],
+    user ? getProjects(user.id) : [],
+    user ? getNotes(user.id) : [],
+    user ? getHabits(user.id) : [],
+  ]);
 
-  const now = new Date();
-  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  // WIB, bukan getter lokal: server Vercel ber-TZ UTC (meleset sehari pukul 00–07 WIB).
+  const today = isoWIB();
   const activeTasks = workingTasks(tasks);
+  // Terlambat ditaruh di atas "hari ini": justru yang paling mendesak.
+  const overdueTasks = activeTasks
+    .filter((t) => t.status === 'TODO' && t.dueDate && t.dueDate < today)
+    .sort((a, b) => (a.dueDate! < b.dueDate! ? -1 : 1));
   const todayTasks = activeTasks.filter((t) => t.dueDate === today);
   const activeProjects = projects
     .filter((p) => deriveProjectStatus(p, activeTasks) === 'IN_PROGRESS')
@@ -43,13 +54,13 @@ export default async function DashboardPage() {
     .sort((a, b) => (a.dueDate! < b.dueDate! ? -1 : 1))
     .slice(0, 4);
   const upcomingSchedules = activeTasks
-    .filter((t) => t.dueDate && t.status !== 'COMPLETED' && t.dateMode === 'schedule')
+    .filter((t) => t.dueDate && t.dueDate >= today && t.status !== 'COMPLETED' && t.dateMode === 'schedule')
     .sort((a, b) => (a.dueDate! < b.dueDate! ? -1 : 1));
 
   const stats = [
-    { label: 'Tugas Pending', value: tasks.filter((t) => t.status === 'TODO' && !t.deletedAt).length, sub: `${tasks.filter((t) => t.completedAt === today).length} selesai hari ini`, icon: Circle, color: 'text-blue-600 dark:text-blue-400' },
+    { label: 'Tugas Belum Selesai', value: tasks.filter((t) => t.status === 'TODO' && !t.deletedAt).length, sub: `${tasks.filter((t) => t.completedAt === today).length} selesai hari ini`, icon: Circle, color: 'text-blue-600 dark:text-blue-400' },
     { label: 'Proyek Aktif', value: activeProjects.length, sub: `${tasks.filter((t) => t.dueDate && (t.dueDate > today) && t.status !== 'COMPLETED' && t.dateMode !== 'schedule' && !t.deletedAt).length} mendekati tenggat`, icon: FolderKanban, color: 'text-emerald-600 dark:text-emerald-400' },
-    { label: 'Streak Kebiasaan', value: `${habits.length ? Math.max(...habits.map((h) => h.streak)) : 0} Hari`, sub: 'Rekor: ' + (habits.length ? Math.max(...habits.map((h) => h.longestStreak)) : 0) + ' hari', icon: Flame, color: 'text-amber-600 dark:text-amber-400' },
+    { label: 'Kebiasaan Beruntun', value: `${habits.length ? Math.max(...habits.map((h) => h.streak)) : 0} Hari`, sub: 'Rekor: ' + (habits.length ? Math.max(...habits.map((h) => h.longestStreak)) : 0) + ' hari', icon: Flame, color: 'text-amber-600 dark:text-amber-400' },
     { label: 'Catatan', value: notes.length, sub: `${notes.filter((n) => n.pinned).length} disematkan`, icon: NotebookPen, color: 'text-purple-600 dark:text-purple-400' },
   ];
 
@@ -86,19 +97,28 @@ export default async function DashboardPage() {
             <Link href="/tasks" className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">Lihat Semua</Link>
           </CardHeader>
           <CardContent className="space-y-2">
-            {todayTasks.length === 0 && (
+            {overdueTasks.map((t) => (
+              <div key={t.id} className="flex items-center gap-3 rounded-lg border border-red-500/30 bg-red-500/5 p-2.5 text-xs">
+                <AlertCircle className="h-4 w-4 shrink-0 text-red-600 dark:text-red-400" />
+                <span className="min-w-0 flex-1 truncate text-slate-800 dark:text-slate-200">{t.title}</span>
+                <span className="shrink-0 font-medium text-red-600 dark:text-red-400">
+                  Terlambat {daysLate(t.dueDate!, today)} hari
+                </span>
+              </div>
+            ))}
+            {todayTasks.length === 0 && overdueTasks.length === 0 && (
               <p className="py-4 text-center text-sm text-slate-500">Belum ada tugas untuk hari ini.</p>
             )}
             {todayTasks.map((t) => (
               <div key={t.id} className="flex items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-2.5 text-xs">
-                <span className={cn(t.status === 'COMPLETED' && 'text-emerald-400')}>
-                  {t.status === 'COMPLETED' ? <CheckCircle2 className="h-4 w-4" /> : <Circle className="h-4 w-4 text-slate-600" />}
+                <span className={cn(t.status === 'COMPLETED' && 'text-emerald-600 dark:text-emerald-400')}>
+                  {t.status === 'COMPLETED' ? <CheckCircle2 className="h-4 w-4" /> : <Circle className="h-4 w-4 text-slate-400 dark:text-slate-500" />}
                 </span>
-                <span className={cn('min-w-0 flex-1 truncate text-slate-800 dark:text-slate-200', t.status === 'COMPLETED' && 'text-slate-400 line-through')}>
+                <span className={cn('min-w-0 flex-1 truncate text-slate-800 dark:text-slate-200', t.status === 'COMPLETED' && 'text-slate-500 line-through dark:text-slate-400')}>
                   {t.title}
                 </span>
                 <span className={cn('shrink-0 rounded border px-2 py-0.5 text-[10px]', PRIORITY_BADGE[t.priority])}>
-                  {t.priority}
+                  {priorityLabel(t.priority)}
                 </span>
               </div>
             ))}
@@ -167,16 +187,22 @@ export default async function DashboardPage() {
                 <div key={n.id} className="flex items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-2.5 text-xs">
                   <NotebookPen className="h-4 w-4 shrink-0 text-purple-600 dark:text-purple-400" />
                   <span className="flex-1 truncate text-slate-800 dark:text-slate-200">{n.title}</span>
-                  <span className="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-600 dark:bg-slate-800 dark:text-slate-400">{n.category}</span>
+                  <span className="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-600 dark:bg-slate-800 dark:text-slate-400">{noteCategoryLabel(n.category)}</span>
                 </div>
               ))}
+              {notes.length === 0 && (
+                <p className="py-4 text-center text-sm text-slate-500">
+                  Belum ada catatan.{' '}
+                  <Link href="/notes" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">Tulis catatan</Link>
+                </p>
+              )}
             </CardContent>
           </Card>
 
           {/* Habit summary */}
           <Card>
             <CardHeader className="flex-row items-center justify-between space-y-0">
-              <CardTitle className="text-base">Habit Hari Ini</CardTitle>
+              <CardTitle className="text-base">Kebiasaan Hari Ini</CardTitle>
               <Link href="/habits" className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">Semua</Link>
             </CardHeader>
             <CardContent>
@@ -196,6 +222,12 @@ export default async function DashboardPage() {
                   </span>
                 ))}
               </div>
+              {habits.length === 0 && (
+                <p className="py-4 text-center text-sm text-slate-500">
+                  Belum ada kebiasaan.{' '}
+                  <Link href="/habits" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">Buat kebiasaan</Link>
+                </p>
+              )}
             </CardContent>
           </Card>
         </div>

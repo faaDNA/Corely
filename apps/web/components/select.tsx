@@ -60,7 +60,7 @@ export function Select({
         <DropdownMenu.Content
           sideOffset={6}
           collisionPadding={8}
-          className="z-50 max-h-64 min-w-[var(--radix-dropdown-menu-trigger-width)] overflow-y-auto rounded-xl border border-slate-200 bg-white p-1 shadow-lg dark:border-slate-800 dark:bg-slate-900"
+          className="z-[60] max-h-64 min-w-[var(--radix-dropdown-menu-trigger-width)] overflow-y-auto rounded-xl border border-slate-200 bg-white p-1 shadow-lg dark:border-slate-800 dark:bg-slate-900"
         >
           <DropdownMenu.RadioGroup
             value={value}

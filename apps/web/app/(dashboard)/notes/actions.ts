@@ -3,15 +3,11 @@
 import { revalidatePath } from 'next/cache';
 import type { Note } from '@repo/types';
 import { createClient } from '@/lib/supabase/server';
+import { requireUserId } from '@/lib/auth';
 import { toNoteRow } from '@/lib/mappers';
 
-async function requireUser() {
-  const {
-    data: { user },
-  } = await createClient().auth.getUser();
-  if (!user) throw new Error('Sesi berakhir. Masuk ulang.');
-  return user.id;
-}
+// Satu sumber: lib/auth (getClaims, tanpa round trip Auth bila JWT asimetrik).
+const requireUser = requireUserId;
 
 function refresh() {
   revalidatePath('/notes');

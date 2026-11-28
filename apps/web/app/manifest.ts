@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Corely',
     short_name: 'Corely',
-    description: 'Satu workspace untuk seluruh produktivitas Anda.',
+    description: 'Satu ruang kerja untuk seluruh produktivitas Anda.',
     start_url: '/dashboard',
     display: 'standalone',
     background_color: '#f8fafc',

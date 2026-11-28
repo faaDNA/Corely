@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { isoWIB, wibNow } from './day.ts';
+import { daysLate, isoWIB, wibNow } from './day.ts';
 
 // 00:30 WIB (17:30 UTC sebelumnya) → sudah hari berikutnya
 assert.equal(isoWIB(new Date('2026-10-21T17:30:00Z')), '2026-10-22');
@@ -7,5 +7,10 @@ assert.equal(isoWIB(new Date('2026-10-21T17:30:00Z')), '2026-10-22');
 assert.equal(isoWIB(new Date('2026-10-21T16:59:00Z')), '2026-10-21');
 // wibNow dibaca dengan getter UTC
 assert.equal(wibNow(new Date('2026-10-21T17:30:00Z')).getUTCDate(), 22);
+
+// terlambat lintas bulan; tenggat hari ini = 0; masa depan negatif
+assert.equal(daysLate('2026-10-30', '2026-11-02'), 3);
+assert.equal(daysLate('2026-11-02', '2026-11-02'), 0);
+assert.equal(daysLate('2026-11-05', '2026-11-02'), -3);
 
 console.log('day.test.ts OK');

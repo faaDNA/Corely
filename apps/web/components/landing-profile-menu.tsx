@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ChevronDown, LayoutDashboard, LogOut } from 'lucide-react';
-import { logout } from '@/app/(auth)/actions';
+import { logoutAndReleasePush } from '@/lib/logout-client';
 import { SubmitButton } from './submit-button';
 
 /** Menu profil di header landing — mirip popup profil dashboard: Dashboard + Keluar. */
@@ -48,7 +48,7 @@ export function LandingProfileMenu({ name, email }: { name: string; email: strin
             <LayoutDashboard className="h-4 w-4" />
             Dashboard
           </Link>
-          <form action={logout} className="mt-1">
+          <form action={logoutAndReleasePush} className="mt-1">
             <SubmitButton
               type="submit"
               role="menuitem"

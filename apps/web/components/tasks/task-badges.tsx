@@ -2,6 +2,8 @@
 
 import type { Project, Task } from '@repo/types';
 import { cn } from '@repo/ui';
+import { daysLate, isoWIB } from '@/lib/day';
+import { priorityLabel } from './task-schema';
 
 const PRIORITY_BADGE: Record<string, string> = {
   HIGH: 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20',
@@ -12,10 +14,12 @@ const PRIORITY_BADGE: Record<string, string> = {
 export function TaskBadges({ task, projects }: { task: Task; projects: Project[] }) {
   const isSchedule = task.dateMode === 'schedule';
   const name = projects.find((p) => p.id === task.projectId)?.name;
+  // isoWIB (bukan tanggal lokal): sama di render server (UTC) dan browser → tanpa hydration mismatch.
+  const late = task.status === 'TODO' && task.dueDate ? daysLate(task.dueDate, isoWIB()) : 0;
   return (
     <div className="flex flex-wrap items-center gap-1.5">
       <span className={cn('rounded border px-1.5 py-0.5 text-[10px] font-medium', PRIORITY_BADGE[task.priority])}>
-        {task.priority}
+        {priorityLabel(task.priority)}
       </span>
       {task.dueDate && (
         <span
@@ -26,6 +30,11 @@ export function TaskBadges({ task, projects }: { task: Task; projects: Project[]
         >
           {isSchedule ? 'Jadwal' : 'Tenggat'} {task.dueDate}
           {task.dueTime ? ` · ${task.dueTime}` : ''}
+        </span>
+      )}
+      {late > 0 && (
+        <span className="rounded bg-red-500/10 px-1.5 py-0.5 text-[10px] font-medium text-red-600 dark:text-red-400">
+          Terlambat {late} hari
         </span>
       )}
       {name && (

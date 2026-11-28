@@ -3,23 +3,22 @@
 import { revalidatePath } from 'next/cache';
 import type { Task } from '@repo/types';
 import { createClient } from '@/lib/supabase/server';
+import { requireUserId } from '@/lib/auth';
 import { getTasks, toTaskRow } from '@/lib/mappers';
+import { isoWIB } from '@/lib/day';
 
 const COLS =
   'id, title, description, status, priority, due_date, due_time, date_mode, project_id, tags, completed_at, deleted_at';
 
-async function requireUser() {
-  const {
-    data: { user },
-  } = await createClient().auth.getUser();
-  if (!user) throw new Error('Sesi berakhir. Masuk ulang.');
-  return user.id;
-}
+// Satu sumber: lib/auth (getClaims, tanpa round trip Auth bila JWT asimetrik).
+const requireUser = requireUserId;
 
 function refresh() {
   revalidatePath('/tasks');
   revalidatePath('/projects');
   revalidatePath('/dashboard');
+  // Detail proyek ikut di-render ulang dalam respons action → client tak perlu router.refresh().
+  revalidatePath('/projects/[id]', 'page');
 }
 
 export async function saveTask(task: Task): Promise<{ ok: boolean; error?: string }> {
@@ -54,7 +53,7 @@ export async function toggleTask(task: Task): Promise<{ ok: boolean; error?: str
       .from('tasks')
       .update({
         status: next,
-        completed_at: next === 'COMPLETED' ? new Date().toISOString().slice(0, 10) : null,
+        completed_at: next === 'COMPLETED' ? isoWIB() : null,
       })
       .eq('id', task.id)
       .eq('user_id', userId);

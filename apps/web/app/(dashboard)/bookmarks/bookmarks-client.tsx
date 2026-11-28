@@ -1,13 +1,14 @@
 "use client";
 
+import { Dialog, DialogDescription, DialogTitle } from "@/components/dialog";
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Plus, Search, Star, Pencil, Trash2, ExternalLink } from "lucide-react";
 import { Button, cn } from "@repo/ui";
 import type { Bookmark } from "@repo/types";
 import { BookmarkFormModal } from "@/components/bookmarks/bookmark-form-modal";
 import {
   BOOKMARK_CATEGORIES,
+  bookmarkCategoryLabel,
   type BookmarkFormValues,
 } from "@/components/bookmarks/bookmark-schema";
 import { deleteBookmark, saveBookmark, toggleBookmark } from "./actions";
@@ -29,7 +30,6 @@ export function BookmarksClient({
   initialBookmarks: Bookmark[];
   initialQ?: string;
 }) {
-  const router = useRouter();
   const [bookmarks, setBookmarks] = useState(initialBookmarks);
   const [q, setQ] = useState(initialQ);
   const [category, setCategory] = useState("all");
@@ -40,7 +40,7 @@ export function BookmarksClient({
   }>({ open: false });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
-  // Sinkron ulang saat server kirim data baru (router.refresh) — ganti ID sementara dengan UUID asli.
+  // Sinkron ulang saat server kirim data baru (revalidatePath di server action) — ganti ID sementara dengan UUID asli.
   useEffect(() => setBookmarks(initialBookmarks), [initialBookmarks]);
 
   const filtered = useMemo(() => {
@@ -77,6 +77,7 @@ export function BookmarksClient({
       favorite: modal.initial?.favorite,
     };
     setModal({ open: false });
+    const backup = bookmarks;
     if (modal.initial)
       setBookmarks((prev) =>
         prev.map((b) => (b.id === modal.initial!.id ? payload : b)),
@@ -85,11 +86,12 @@ export function BookmarksClient({
 
     const res = await saveBookmark(payload);
     if (!res.ok) {
-      toast(res.error ?? "Gagal menyimpan bookmark.");
+      // Rollback: tanpa ini item "hantu" ber-ID sementara tertinggal dan error bila diklik.
+      setBookmarks(backup);
+      toast(res.error ?? "Gagal menyimpan bookmark.", "error");
       return;
     }
     toast(modal.initial ? "Bookmark diperbarui." : "Bookmark ditambahkan.");
-    router.refresh();
   }
 
   async function handleToggle(b: Bookmark) {
@@ -98,11 +100,10 @@ export function BookmarksClient({
     );
     const res = await toggleBookmark(b);
     if (!res.ok) {
-      toast(res.error ?? "Gagal memperbarui bookmark.");
+      toast(res.error ?? "Gagal memperbarui bookmark.", "error");
       setBookmarks(initialBookmarks);
       return;
     }
-    router.refresh();
   }
 
   async function confirmDelete() {
@@ -113,12 +114,11 @@ export function BookmarksClient({
     setPendingDelete(null);
     const res = await deleteBookmark(id);
     if (!res.ok) {
-      toast(res.error ?? "Gagal menghapus bookmark.");
+      toast(res.error ?? "Gagal menghapus bookmark.", "error");
       setBookmarks(backup);
       return;
     }
     toast("Bookmark dihapus.");
-    router.refresh();
   }
 
   return (
@@ -129,7 +129,7 @@ export function BookmarksClient({
             Bookmark
           </h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Simpan situs atau link penting dengan kategori, tag, dan favorit.
+            Simpan situs atau tautan penting dengan kategori, tag, dan favorit.
           </p>
         </div>
         <Button onClick={() => setModal({ open: true, initial: null })}>
@@ -154,7 +154,7 @@ export function BookmarksClient({
           ariaLabel="Filter kategori bookmark"
           options={[
             { value: "all", label: "Semua Kategori" },
-            ...BOOKMARK_CATEGORIES.map((c) => ({ value: c, label: c })),
+            ...BOOKMARK_CATEGORIES.map((c) => ({ value: c, label: bookmarkCategoryLabel(c) })),
           ]}
           className="px-3 py-2"
         />
@@ -191,12 +191,13 @@ export function BookmarksClient({
                 <button
                   type="button"
                   onClick={() => handleToggle(b)}
-                  aria-label="Favorite"
+                  aria-label={b.favorite ? `Hapus ${b.title} dari favorit` : `Jadikan ${b.title} favorit`}
+                  aria-pressed={!!b.favorite}
                   className={cn(
-                    "rounded-lg p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800",
+                    "-m-1 inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800",
                     b.favorite
                       ? "text-amber-500 dark:text-amber-400"
-                      : "text-slate-400 dark:text-slate-600",
+                      : "text-slate-500 dark:text-slate-400",
                   )}
                 >
                   <Star
@@ -211,7 +212,7 @@ export function BookmarksClient({
                 href={b.url}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300"
+                className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
               >
                 {domain(b.url)} <ExternalLink className="h-3 w-3" />
               </a>
@@ -222,7 +223,7 @@ export function BookmarksClient({
               )}
               <div className="mt-2 flex flex-wrap gap-1">
                 <span className="rounded bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-600 dark:text-slate-400">
-                  {b.category}
+                  {bookmarkCategoryLabel(b.category)}
                 </span>
                 {b.tags?.map((t) => (
                   <span
@@ -233,20 +234,20 @@ export function BookmarksClient({
                   </span>
                 ))}
               </div>
-              <div className="mt-3 flex justify-end gap-1 border-t border-slate-200 dark:border-slate-800 pt-3 opacity-100 transition lg:opacity-0 lg:group-hover:opacity-100">
+              <div className="mt-3 flex justify-end gap-1 border-t border-slate-200 dark:border-slate-800 pt-3 transition group-focus-within:opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100">
                 <button
                   type="button"
                   onClick={() => setModal({ open: true, initial: b })}
-                  aria-label="Edit"
-                  className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                  aria-label={`Ubah ${b.title}`}
+                  className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
                 >
                   <Pencil className="h-4 w-4" />
                 </button>
                 <button
                   type="button"
                   onClick={() => setPendingDelete(b.id)}
-                  aria-label="Delete"
-                  className="rounded-lg p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
+                  aria-label={`Hapus ${b.title}`}
+                  className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
@@ -264,18 +265,14 @@ export function BookmarksClient({
       />
 
       {pendingDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/60"
-            onClick={() => setPendingDelete(null)}
-          />
+        <Dialog open onClose={() => setPendingDelete(null)} withDescription>
           <div className="relative w-full max-w-sm rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 shadow-2xl">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+            <DialogTitle className="text-sm font-semibold text-slate-900 dark:text-white">
               Hapus bookmark ini?
-            </h3>
-            <p className="mt-2 text-xs text-slate-400">
+            </DialogTitle>
+            <DialogDescription className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
               Tindakan ini tidak bisa dibatalkan.
-            </p>
+            </DialogDescription>
             <div className="mt-4 flex justify-end gap-2">
               <Button
                 variant="ghost"
@@ -289,7 +286,7 @@ export function BookmarksClient({
               </Button>
             </div>
           </div>
-        </div>
+        </Dialog>
       )}
     </div>
   );

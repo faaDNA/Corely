@@ -14,3 +14,8 @@ export function isoWIB(at: Date = new Date()): string {
   const d = wibNow(at);
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
 }
+
+/** Selisih hari kalender `today - due` (keduanya 'YYYY-MM-DD'). >0 = terlambat. */
+export function daysLate(due: string, today: string): number {
+  return Math.round((Date.parse(today) - Date.parse(due)) / 86_400_000);
+}

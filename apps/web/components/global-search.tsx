@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, CheckSquare, FolderKanban, NotebookPen, Bookmark, CornerDownLeft, X, Loader2 } from 'lucide-react';
 import { cn } from '@repo/ui';
@@ -55,12 +55,18 @@ export function GlobalSearch() {
     };
   }, []);
 
+  // Indeks dipakai ulang antar-buka selama < 60 dtk: Ctrl+K berulang tidak menarik 4 tabel tiap kali.
+  const fetchedAt = useRef(0);
   useEffect(() => {
-    if (!open) return;
+    if (!open || Date.now() - fetchedAt.current < 60_000) return;
     let alive = true;
     setLoading(true);
     fetchSearchItems()
-      .then((r) => { if (alive) setItems(r); })
+      .then((r) => {
+        if (!alive) return;
+        setItems(r);
+        fetchedAt.current = Date.now();
+      })
       .catch(() => { if (alive) setItems([]); })
       .finally(() => { if (alive) setLoading(false); });
     return () => { alive = false; };
@@ -118,6 +124,7 @@ export function GlobalSearch() {
             value={q}
             onChange={(e) => { setQ(e.target.value); setCursor(0); }}
             onKeyDown={onInputKey}
+            aria-label="Cari"
             placeholder="Cari tugas, proyek, catatan, bookmark..."
             className="flex-1 bg-transparent text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none"
           />

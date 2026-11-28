@@ -8,6 +8,7 @@ import { cn } from '@repo/ui';
 import type { Note } from '@repo/types';
 import { toast } from '@/components/toast';
 import { TIGHT, withHardBreaks } from '@/lib/markdown';
+import { noteCategoryLabel } from './note-schema';
 
 /**
  * Grow/shrink textarea ikuti isi, jaga posisi scroll window.
@@ -35,7 +36,8 @@ interface Props {
   onDelete: (id: string) => void;
   onTogglePin: (id: string) => void;
   onToggleArchive: (id: string) => void;
-  onSaveContent: (id: string, content: string) => void;
+  /** Resolve true bila tersimpan di server. */
+  onSaveContent: (id: string, content: string) => Promise<boolean>;
   /** Hanya panggil di mobile (sheet overlay): tutup panel dan kembali ke daftar. */
   onClose?: () => void;
 }
@@ -47,6 +49,7 @@ const proseCls =
 export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onToggleArchive, onSaveContent, onClose }: Props) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(note.content);
+  const [saving, setSaving] = useState(false);
   const areaRef = useRef<HTMLTextAreaElement>(null);
 
   // ganti catatan → keluar mode edit, sinkron draft
@@ -71,12 +74,16 @@ export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onTog
     startEdit();
   }
 
-  function save() {
+  async function save() {
     if (draft.length > 5000) {
-      toast('Isi maksimal 5000 karakter.');
+      toast('Isi maksimal 5000 karakter.', 'error');
       return;
     }
-    onSaveContent(note.id, draft);
+    setSaving(true);
+    const ok = await onSaveContent(note.id, draft);
+    setSaving(false);
+    // Gagal → tetap di mode edit, draft utuh (toast error dari pemanggil).
+    if (!ok) return;
     setEditing(false);
     toast('Isi catatan disimpan.');
   }
@@ -87,30 +94,30 @@ export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onTog
     <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60">
       <div className="flex items-start gap-1 border-b border-slate-200 p-3 dark:border-slate-800 sm:gap-3 sm:p-4">
         {onClose && (
-          <button type="button" onClick={onClose} aria-label="Kembali ke daftar catatan" className="-ml-1 shrink-0 rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 lg:hidden">
+          <button type="button" onClick={onClose} aria-label="Kembali ke daftar catatan" className="-ml-1 shrink-0 rounded-lg p-2.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 lg:hidden">
             <ArrowLeft className="h-4 w-4" />
           </button>
         )}
         <div className="min-w-0 flex-1">
           <h2 className="sm:text-base text-sm font-semibold text-slate-900 dark:text-white">{note.title}</h2>
           <div className="mt-1 flex flex-wrap gap-1">
-            <span className="rounded bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-600 dark:text-slate-400">{note.category}</span>
+            <span className="rounded bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-600 dark:text-slate-400">{noteCategoryLabel(note.category)}</span>
             {note.tags?.map((t) => (
               <span key={t} className="rounded bg-purple-500/10 px-1.5 py-0.5 text-[10px] text-purple-600 dark:text-purple-400">#{t}</span>
             ))}
           </div>
         </div>
         <div className="flex shrink-0 gap-1">
-          <button type="button" onClick={() => onTogglePin(note.id)} aria-label="Pin" className={cn('rounded-lg p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800', note.pinned ? 'text-amber-500 dark:text-amber-400' : 'text-slate-500')}>
+          <button type="button" onClick={() => onTogglePin(note.id)} aria-label={note.pinned ? 'Lepas sematan' : 'Sematkan'} aria-pressed={note.pinned} className={cn('rounded-lg p-2.5 hover:bg-slate-100 dark:hover:bg-slate-800', note.pinned ? 'text-amber-500 dark:text-amber-400' : 'text-slate-500')}>
             {note.pinned ? <PinOff className="h-4 w-4" /> : <Pin className="h-4 w-4" />}
           </button>
-          <button type="button" onClick={() => onToggleArchive(note.id)} aria-label="Archive" className={cn('rounded-lg p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800', note.archived ? 'text-amber-500 dark:text-amber-400' : 'text-slate-500')}>
+          <button type="button" onClick={() => onToggleArchive(note.id)} aria-label={note.archived ? 'Keluarkan dari arsip' : 'Arsipkan'} className={cn('rounded-lg p-2.5 hover:bg-slate-100 dark:hover:bg-slate-800', note.archived ? 'text-amber-500 dark:text-amber-400' : 'text-slate-500')}>
             <Archive className="h-4 w-4" />
           </button>
-          <button type="button" onClick={() => onMetaEdit(note)} aria-label="Edit judul/kategori/tag" title="Edit judul, kategori, tag" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-200">
+          <button type="button" onClick={() => onMetaEdit(note)} aria-label="Ubah judul, kategori, tag" title="Ubah judul, kategori, tag" className="rounded-lg p-2.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-200">
             <Pencil className="h-4 w-4" />
           </button>
-          <button type="button" onClick={() => onDelete(note.id)} aria-label="Delete" className="rounded-lg p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400">
+          <button type="button" onClick={() => onDelete(note.id)} aria-label={`Hapus ${note.title}`} className="rounded-lg p-2.5 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400">
             <Trash2 className="h-4 w-4" />
           </button>
         </div>
@@ -130,7 +137,7 @@ export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onTog
               placeholder="Tulis isi catatan (Markdown)..."
               className="w-full resize-none overflow-hidden rounded-lg border border-blue-600 bg-white dark:bg-slate-950 px-3 py-2 font-mono text-xs leading-relaxed text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none"
             />
-            <p className={cn('text-right text-[11px]', draft.length > 5000 ? 'text-red-400' : 'text-slate-600')}>
+            <p className={cn('text-right text-[11px]', draft.length > 5000 ? 'text-red-600 dark:text-red-400' : 'text-slate-600 dark:text-slate-400')}>
               {draft.length}/5000
             </p>
             <div className="flex justify-end gap-2">
@@ -144,9 +151,10 @@ export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onTog
               <button
                 type="button"
                 onClick={save}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-blue-500"
+                disabled={saving}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-blue-500 disabled:opacity-60"
               >
-                <Check className="h-3.5 w-3.5" />Simpan isi
+                <Check className="h-3.5 w-3.5" />{saving ? 'Menyimpan…' : 'Simpan isi'}
               </button>
             </div>
           </div>
@@ -155,12 +163,13 @@ export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onTog
             <button
               type="button"
               onClick={startEdit}
-              title="Klik untuk edit isi"
-              className="absolute right-0 top-0 rounded-lg p-1.5 text-slate-500 opacity-100 transition hover:bg-slate-100 hover:text-slate-700 lg:opacity-0 lg:group-hover:opacity-100 dark:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+              aria-label="Ubah isi catatan"
+              title="Klik untuk mengubah isi"
+              className="absolute right-0 top-0 rounded-lg p-2.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 group-focus-within:opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
             >
               <Pencil className="h-3.5 w-3.5" />
             </button>
-            <div onClick={startEditFromText} title="Klik untuk edit isi" className="cursor-text">
+            <div onClick={startEditFromText} title="Klik untuk mengubah isi" className="cursor-text">
               <div className={proseCls}>
                 <ReactMarkdown
                   components={{

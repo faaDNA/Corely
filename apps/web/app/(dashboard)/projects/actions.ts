@@ -3,27 +3,30 @@
 import { revalidatePath } from 'next/cache';
 import type { Project } from '@repo/types';
 import { createClient } from '@/lib/supabase/server';
+import { requireUserId } from '@/lib/auth';
 import { getProjects, toProjectRow } from '@/lib/mappers';
+import { isHttpUrl } from '@/lib/push-endpoint';
 
 const COLS = 'id, name, description, on_hold, archived, deadline, technologies, repo_url, deploy_url';
 
-async function requireUser() {
-  const {
-    data: { user },
-  } = await createClient().auth.getUser();
-  if (!user) throw new Error('Sesi berakhir. Masuk ulang.');
-  return user.id;
-}
+// Satu sumber: lib/auth (getClaims, tanpa round trip Auth bila JWT asimetrik).
+const requireUser = requireUserId;
 
 function refresh() {
   revalidatePath('/projects');
   revalidatePath('/tasks');
+  revalidatePath('/projects/[id]', 'page');
+  revalidatePath('/dashboard');
 }
 
 export async function saveProject(project: Project): Promise<{ ok: boolean; error?: string }> {
   try {
     const userId = await requireUser();
     const supabase = createClient();
+    // Dirender di <a href>: tolak javascript:/data: yang lolos z.string().url() di client.
+    for (const u of [project.repoUrl, project.deployUrl]) {
+      if (u && !isHttpUrl(u)) return { ok: false, error: 'URL harus diawali http:// atau https://.' };
+    }
     const row = toProjectRow(userId, project);
     const exists = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(project.id);
 

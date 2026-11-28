@@ -10,4 +10,18 @@ export const bookmarkSchema = z.object({
 
 export type BookmarkFormValues = z.infer<typeof bookmarkSchema>;
 
+// Nilai disimpan di DB apa adanya (Inggris); tampilan lewat label.
 export const BOOKMARK_CATEGORIES = ['Programming', 'Learning', 'Tools', 'Design', 'News', 'Personal', 'Other'] as const;
+
+export const BOOKMARK_CATEGORY_LABELS: Record<string, string> = {
+  Programming: 'Pemrograman',
+  Learning: 'Belajar',
+  Tools: 'Alat',
+  Design: 'Desain',
+  News: 'Berita',
+  Personal: 'Pribadi',
+  Other: 'Lainnya',
+};
+
+// Kategori lama/kustom → tampil apa adanya.
+export const bookmarkCategoryLabel = (c: string) => BOOKMARK_CATEGORY_LABELS[c] ?? c;

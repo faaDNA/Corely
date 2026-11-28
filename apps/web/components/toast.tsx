@@ -19,16 +19,16 @@ function ToastHostImpl() {
       const { message, kind } = (e as CustomEvent).detail as { message: string; kind: ToastKind };
       const id = Date.now() + Math.random();
       setItems((prev) => [...prev, { id, kind, message }]);
-      setTimeout(() => setItems((prev) => prev.filter((t) => t.id !== id)), 3200);
+      // Error bertahan lebih lama: perlu dibaca, bukan sekadar konfirmasi.
+      setTimeout(() => setItems((prev) => prev.filter((t) => t.id !== id)), kind === 'error' ? 7000 : 3200);
     }
     window.addEventListener('pd-toast', onToast);
     return () => window.removeEventListener('pd-toast', onToast);
   }, []);
 
-  if (items.length === 0) return null;
-
+  // Container selalu ada: live region harus sudah terpasang sebelum pesan masuk agar diumumkan pembaca layar.
   return (
-    <div className="pointer-events-none fixed bottom-4 right-4 z-[60] flex flex-col gap-2">
+    <div role="status" aria-live="polite" className="pointer-events-none fixed bottom-4 right-4 z-[60] flex flex-col gap-2">
       {items.map((t) => (
         <div
           key={t.id}
@@ -41,7 +41,7 @@ function ToastHostImpl() {
         >
           {t.kind === 'success' ? <CheckCircle2 className="h-4 w-4 shrink-0" /> : <AlertCircle className="h-4 w-4 shrink-0" />}
           <span className="flex-1">{t.message}</span>
-          <button type="button" onClick={() => setItems((prev) => prev.filter((x) => x.id !== t.id))} aria-label="Close" className="opacity-60 hover:opacity-100">
+          <button type="button" onClick={() => setItems((prev) => prev.filter((x) => x.id !== t.id))} aria-label="Tutup" className="-m-2 p-2 opacity-60 hover:opacity-100">
             <X className="h-3.5 w-3.5" />
           </button>
         </div>

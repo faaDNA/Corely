@@ -7,6 +7,6 @@ export default async function ProjectsPage({ searchParams }: { searchParams: { q
   const user = await getUser();
   if (!user) redirect('/login');
 
-  const [projects, tasks] = await Promise.all([getProjects(user.id), getTasks(user.id)]);
+  const [projects, tasks] = await Promise.all([getProjects(user.id), getTasks(user.id, { activeOnly: true })]);
   return <ProjectsClient initialProjects={projects} tasks={tasks} initialQ={searchParams.q ?? ''} />;
 }

@@ -9,4 +9,17 @@ export const noteSchema = z.object({
 
 export type NoteFormValues = z.infer<typeof noteSchema>;
 
+// Nilai disimpan di DB apa adanya (Inggris); tampilan lewat label.
 export const NOTE_CATEGORIES = ['Programming', 'Career', 'University', 'Personal', 'Ideas', 'Other'] as const;
+
+export const NOTE_CATEGORY_LABELS: Record<string, string> = {
+  Programming: 'Pemrograman',
+  Career: 'Karier',
+  University: 'Kuliah',
+  Personal: 'Pribadi',
+  Ideas: 'Ide',
+  Other: 'Lainnya',
+};
+
+// Kategori lama/kustom → tampil apa adanya.
+export const noteCategoryLabel = (c: string) => NOTE_CATEGORY_LABELS[c] ?? c;

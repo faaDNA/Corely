@@ -1,8 +1,8 @@
 'use client';
 
+import { Dialog, DialogDescription, DialogTitle } from '@/components/dialog';
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Plus, Search, Pencil, Trash2, Github, ExternalLink, CirclePause, CirclePlay, Archive, ArchiveRestore, Calendar, ListChecks } from 'lucide-react';
 import { Button, cn } from '@repo/ui';
 import type { Project, Task } from '@repo/types';
@@ -13,14 +13,13 @@ import { saveProject, deleteProject } from './actions';
 import { toast } from '@/components/toast';
 
 export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { initialProjects: Project[]; tasks: Task[]; initialQ?: string }) {
-  const router = useRouter();
   const [projects, setProjects] = useState(initialProjects);
   const [q, setQ] = useState(initialQ);
   const [status, setStatus] = useState('all');
   const [modal, setModal] = useState<{ open: boolean; initial?: Project | null }>({ open: false });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
-  // Sinkron ulang saat server kirim data baru (router.refresh) — ganti ID sementara dengan UUID asli.
+  // Sinkron ulang saat server kirim data baru (revalidatePath di server action) — ganti ID sementara dengan UUID asli.
   useEffect(() => setProjects(initialProjects), [initialProjects]);
 
   const withStatus = useMemo(
@@ -61,12 +60,11 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
     setProjects((prev) => prev.map((x) => (x.id === p.id ? payload : x)));
     const res = await saveProject(payload);
     if (!res.ok) {
-      toast(res.error ?? 'Gagal mengubah status proyek.');
+      toast(res.error ?? 'Gagal mengubah status proyek.', 'error');
       setProjects(initialProjects);
       return;
     }
     toast(flag === 'onHold' ? (on ? 'Proyek dijeda.' : 'Proyek dilanjutkan.') : on ? 'Proyek diarsipkan.' : 'Proyek dikeluarkan dari arsip.');
-    router.refresh();
   }
 
   async function handleFormSubmit(values: ProjectFormValues) {
@@ -88,12 +86,11 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
     setProjects(optimistic);
     const res = await saveProject(payload);
     if (!res.ok) {
-      toast(res.error ?? 'Gagal menyimpan proyek.');
+      toast(res.error ?? 'Gagal menyimpan proyek.', 'error');
       setProjects(initialProjects);
       return;
     }
     toast(modal.initial ? 'Proyek diperbarui.' : 'Proyek ditambahkan.');
-    router.refresh();
   }
 
   async function confirmDelete() {
@@ -103,12 +100,11 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
     setProjects((prev) => prev.filter((p) => p.id !== id));
     const res = await deleteProject(id);
     if (!res.ok) {
-      toast(res.error ?? 'Gagal menghapus proyek.');
+      toast(res.error ?? 'Gagal menghapus proyek.', 'error');
       setProjects(initialProjects);
       return;
     }
     toast('Proyek dihapus.');
-    router.refresh();
   }
 
   return (
@@ -116,7 +112,7 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Proyek</h1>
-          <p className="mt-1 text-sm text-slate-400 dark:text-slate-400">Kelola proyek serta pantau progres dan tugasnya di satu tempat.</p>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Kelola proyek serta pantau progres dan tugasnya di satu tempat.</p>
         </div>
         <Button onClick={() => setModal({ open: true, initial: null })}><Plus className="mr-2 h-4 w-4" />Proyek Baru</Button>
       </header>
@@ -135,11 +131,11 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
         <div className="flex flex-wrap gap-2">
           {(
             [
-              ['all', 'All'],
-              ['IN_PROGRESS', 'In Progress'],
-              ['COMPLETED', 'Completed'],
-              ['ON_HOLD', 'On Hold'],
-              ['ARCHIVED', 'Archived'],
+              ['all', 'Semua'],
+              ['IN_PROGRESS', PROJECT_STATUS_LABELS.IN_PROGRESS],
+              ['COMPLETED', PROJECT_STATUS_LABELS.COMPLETED],
+              ['ON_HOLD', PROJECT_STATUS_LABELS.ON_HOLD],
+              ['ARCHIVED', PROJECT_STATUS_LABELS.ARCHIVED],
             ] as const
           ).map(([v, l]) => (
             <button
@@ -147,7 +143,7 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
               type="button"
               onClick={() => setStatus(v)}
               className={cn(
-                'rounded-lg border px-2.5 py-1 text-xs font-medium transition',
+                'rounded-lg border px-2.5 py-2 text-xs font-medium transition sm:py-1',
                 status === v ? 'border-blue-600 bg-blue-600/10 text-blue-600 dark:text-blue-400' : 'border-slate-300 text-slate-500 hover:border-slate-400 dark:border-slate-700 dark:text-slate-400 dark:hover:border-slate-600'
               )}
             >
@@ -185,7 +181,7 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
 
               <div className="mt-3">
                 <div className="mb-1 flex justify-between text-[11px]">
-                  <span className="text-slate-400">Progress</span>
+                  <span className="text-slate-500 dark:text-slate-400">Progres</span>
                   <span className={cn('font-mono', p.onHold ? 'text-amber-600 dark:text-amber-400' : 'text-blue-600 dark:text-blue-400')}>{pr}%</span>
                 </div>
                 <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
@@ -205,21 +201,21 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
 
               {(p.repoUrl || p.deployUrl) && (
                 <div className="relative mt-3 flex items-center gap-3 text-xs">
-                  {p.repoUrl && <a href={p.repoUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300"><Github className="h-3.5 w-3.5" />Repo</a>}
-                  {p.deployUrl && <a href={p.deployUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300"><ExternalLink className="h-3.5 w-3.5" />Live</a>}
-                  <Link href={`/projects/${p.id}`} className="ml-auto text-blue-400 hover:text-blue-300">Detail →</Link>
+                  {p.repoUrl && <a href={p.repoUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"><Github className="h-3.5 w-3.5" />Repositori</a>}
+                  {p.deployUrl && <a href={p.deployUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"><ExternalLink className="h-3.5 w-3.5" />Situs</a>}
+                  <Link href={`/projects/${p.id}`} className="ml-auto text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">Detail →</Link>
                 </div>
               )}
 
-              <div className="relative mt-3 flex justify-end gap-1 border-t border-slate-200 pt-3 transition lg:opacity-0 lg:group-hover:opacity-100 dark:border-slate-800">
-                <button type="button" onClick={() => toggleFlag(p, 'onHold')} aria-label={p.onHold ? 'Lanjutkan proyek' : 'Jeda proyek (On Hold)'} title={p.onHold ? 'Lanjutkan proyek' : 'Jeda proyek'} className={cn('rounded-lg p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800', p.onHold ? 'text-amber-500 dark:text-amber-400' : 'text-slate-500')}>
+              <div className="relative mt-3 flex justify-end gap-1 border-t border-slate-200 pt-3 transition group-focus-within:opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 dark:border-slate-800">
+                <button type="button" onClick={() => toggleFlag(p, 'onHold')} aria-label={p.onHold ? 'Lanjutkan proyek' : 'Jeda proyek'} title={p.onHold ? 'Lanjutkan proyek' : 'Jeda proyek'} className={cn('inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800', p.onHold ? 'text-amber-500 dark:text-amber-400' : 'text-slate-500')}>
                   {p.onHold ? <CirclePlay className="h-4 w-4" /> : <CirclePause className="h-4 w-4" />}
                 </button>
-                <button type="button" onClick={() => toggleFlag(p, 'archived')} aria-label={p.archived ? 'Keluarkan dari arsip' : 'Arsipkan proyek'} title={p.archived ? 'Keluarkan dari arsip' : 'Arsipkan proyek'} className={cn('rounded-lg p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800', p.archived ? 'text-slate-800 dark:text-slate-200' : 'text-slate-500')}>
+                <button type="button" onClick={() => toggleFlag(p, 'archived')} aria-label={p.archived ? 'Keluarkan dari arsip' : 'Arsipkan proyek'} title={p.archived ? 'Keluarkan dari arsip' : 'Arsipkan proyek'} className={cn('inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800', p.archived ? 'text-slate-800 dark:text-slate-200' : 'text-slate-500')}>
                   {p.archived ? <ArchiveRestore className="h-4 w-4" /> : <Archive className="h-4 w-4" />}
                 </button>
-                <button type="button" onClick={() => setModal({ open: true, initial: p })} aria-label="Edit" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"><Pencil className="h-4 w-4" /></button>
-                <button type="button" onClick={() => setPendingDelete(p.id)} aria-label="Delete" className="rounded-lg p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"><Trash2 className="h-4 w-4" /></button>
+                <button type="button" onClick={() => setModal({ open: true, initial: p })} aria-label={`Ubah ${p.name}`} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"><Pencil className="h-4 w-4" /></button>
+                <button type="button" onClick={() => setPendingDelete(p.id)} aria-label={`Hapus ${p.name}`} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"><Trash2 className="h-4 w-4" /></button>
               </div>
             </div>
           ))}
@@ -234,17 +230,16 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
       />
 
       {pendingDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setPendingDelete(null)} />
+        <Dialog open onClose={() => setPendingDelete(null)} withDescription>
           <div className="relative w-full max-w-sm rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 shadow-2xl">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Hapus proyek ini?</h3>
-            <p className="mt-2 text-xs text-slate-400">Tugas terkait akan dilepas dari proyek. Tindakan tidak bisa dibatalkan.</p>
+            <DialogTitle className="text-sm font-semibold text-slate-900 dark:text-white">Hapus proyek ini?</DialogTitle>
+            <DialogDescription className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">Tugas terkait akan dilepas dari proyek. Tindakan tidak bisa dibatalkan.</DialogDescription>
             <div className="mt-4 flex justify-end gap-2">
               <Button variant="ghost" size="sm" onClick={() => setPendingDelete(null)}>Batal</Button>
               <Button variant="danger" size="sm" onClick={confirmDelete}>Hapus</Button>
             </div>
           </div>
-        </div>
+        </Dialog>
       )}
     </div>
   );

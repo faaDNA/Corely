@@ -14,6 +14,12 @@ const TYPE_BADGE: Record<string, string> = {
   project: 'bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-500/30',
 };
 
+const DOT_COLOR: Record<string, string> = {
+  task: 'bg-amber-500',
+  schedule: 'bg-blue-500',
+  project: 'bg-purple-500',
+};
+
 function badgeFor(type: string): string {
   return TYPE_BADGE[type] ?? TYPE_BADGE.task;
 }
@@ -61,6 +67,11 @@ export function CalendarClient({ tasks, projects }: { tasks: Task[]; projects: P
     return items.filter((e) => e.startDate === iso);
   }
 
+  function cellLabel(d: Date, count: number) {
+    const date = d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    return `${date}, ${count === 0 ? 'tidak ada agenda' : `${count} agenda`}`;
+  }
+
   function move(delta: number) {
     if (view === 'day') {
       const d = fromISO(selected);
@@ -88,13 +99,13 @@ export function CalendarClient({ tasks, projects }: { tasks: Task[]; projects: P
       <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60">
         <div className="flex flex-col gap-3 border-b border-slate-200 dark:border-slate-800 p-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-2">
-            <button type="button" onClick={() => move(-1)} aria-label="Previous" className="rounded-lg border border-slate-200 dark:border-slate-700 p-1.5 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"><ChevronLeft className="h-4 w-4" /></button>
+            <button type="button" onClick={() => move(-1)} aria-label="Sebelumnya" className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"><ChevronLeft className="h-4 w-4" /></button>
             <span className="min-w-[120px] flex-1 text-center text-sm font-semibold text-slate-900 dark:text-white">
               {view === 'day'
                 ? fromISO(selected).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
                 : monthLabel}
             </span>
-            <button type="button" onClick={() => move(1)} aria-label="Next" className="rounded-lg border border-slate-200 dark:border-slate-700 p-1.5 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"><ChevronRight className="h-4 w-4" /></button>
+            <button type="button" onClick={() => move(1)} aria-label="Berikutnya" className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"><ChevronRight className="h-4 w-4" /></button>
             <Button variant="outline" size="sm" onClick={() => { const now = new Date(); setCursor(now); setSelected(toISO(now)); }}>Hari Ini</Button>
           </div>
           <div className="flex w-full rounded-lg border border-slate-200 dark:border-slate-700 sm:w-auto">
@@ -118,11 +129,16 @@ export function CalendarClient({ tasks, projects }: { tasks: Task[]; projects: P
                 const isSel = iso === selected;
                 const evs = eventsOn(iso);
                 return (
-                  <button key={i} type="button" onClick={() => setSelected(iso)} className={cn('min-h-[56px] rounded-lg border p-1 text-left transition sm:min-h-[68px] sm:p-1.5', isSel ? 'border-blue-500 bg-blue-500/10' : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700', !inMonth && 'opacity-40')}>
+                  <button key={i} type="button" onClick={() => setSelected(iso)} aria-label={cellLabel(d, evs.length)} aria-pressed={isSel} className={cn('min-h-[56px] rounded-lg border p-1 text-left transition sm:min-h-[68px] sm:p-1.5', isSel ? 'border-blue-500 bg-blue-500/10' : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700', !inMonth && 'opacity-40')}>
                     <span className={cn('text-xs font-medium', isSel ? 'text-blue-600 dark:text-blue-400' : 'text-slate-700 dark:text-slate-300')}>{d.getDate()}</span>
-                    <div className="mt-1 space-y-0.5">
+                    {evs.length > 0 && (
+                      <div className="mt-1 flex flex-wrap gap-0.5 sm:hidden" aria-hidden="true">
+                        {Array.from(new Set(evs.map((e) => e.type))).map((t) => <span key={t} className={cn('h-1.5 w-1.5 rounded-full', DOT_COLOR[t] ?? DOT_COLOR.task)} />)}
+                      </div>
+                    )}
+                    <div className="mt-1 hidden space-y-0.5 sm:block">
                       {evs.slice(0, 2).map((e) => <div key={e.id} className={cn('truncate rounded border px-1 py-0.5 text-[10px]', badgeFor(e.type))}>{e.title}</div>)}
-                      {evs.length > 2 && <div className="text-[10px] text-slate-500">+{evs.length - 2} lagi</div>}
+                      {evs.length > 2 && <div className="text-[10px] text-slate-500 dark:text-slate-400">+{evs.length - 2} lagi</div>}
                     </div>
                   </button>
                 );
@@ -138,12 +154,12 @@ export function CalendarClient({ tasks, projects }: { tasks: Task[]; projects: P
               const evs = eventsOn(iso);
               const isSel = iso === selected;
               return (
-                <button key={iso} type="button" onClick={() => setSelected(iso)} className={cn('rounded-lg border p-2 text-left transition', isSel ? 'border-blue-500 bg-blue-500/10' : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700')}>
+                <button key={iso} type="button" onClick={() => setSelected(iso)} aria-label={cellLabel(d, evs.length)} aria-pressed={isSel} className={cn('rounded-lg border p-2 text-left transition', isSel ? 'border-blue-500 bg-blue-500/10' : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700')}>
                   <div className="text-[10px] uppercase text-slate-500">{d.toLocaleDateString('id-ID', { weekday: 'short' })}</div>
                   <div className={cn('text-lg font-semibold', isSel ? 'text-blue-600 dark:text-blue-400' : 'text-slate-900 dark:text-white')}>{d.getDate()}</div>
                   <div className="mt-1 space-y-1">
                     {evs.map((e) => <div key={e.id} className={cn('truncate rounded border px-1 py-0.5 text-[10px]', badgeFor(e.type))}>{e.title}</div>)}
-                    {evs.length === 0 && <div className="text-[10px] text-slate-600">—</div>}
+                    {evs.length === 0 && <div className="text-[10px] text-slate-600 dark:text-slate-400">—</div>}
                   </div>
                 </button>
               );
@@ -151,9 +167,9 @@ export function CalendarClient({ tasks, projects }: { tasks: Task[]; projects: P
           </div>
         )}
 
-        {view === 'day' && (
-          <div className="p-4">
-            <p className="mb-3 text-xs text-slate-400">{fromISO(selected).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
+        {/* Daftar agenda tanggal terpilih — semua view, agar tap tanggal di HP terlihat hasilnya */}
+        <section aria-live="polite" className={cn('p-4', view !== 'day' && 'border-t border-slate-200 dark:border-slate-800')}>
+            <h2 className="mb-3 text-xs font-semibold text-slate-600 dark:text-slate-300">{fromISO(selected).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</h2>
             <div className="space-y-2">
               {selectedEvents.map((e) => (
                 <div key={e.id} className="flex items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3 text-sm">
@@ -162,13 +178,12 @@ export function CalendarClient({ tasks, projects }: { tasks: Task[]; projects: P
                   <span className="shrink-0 text-xs text-slate-500">{e.startDate}</span>
                 </div>
               ))}
-              {selectedEvents.length === 0 && <p className="rounded-lg border border-dashed border-slate-300 dark:border-slate-800 p-6 text-center text-xs text-slate-500">Tidak ada agenda pada tanggal ini.</p>}
+              {selectedEvents.length === 0 && <p className="rounded-lg border border-dashed border-slate-300 dark:border-slate-800 p-6 text-center text-xs text-slate-500 dark:text-slate-400">Tidak ada agenda di tanggal ini.</p>}
             </div>
-          </div>
-        )}
+        </section>
       </div>
 
-      <div className="flex flex-wrap gap-3 text-xs text-slate-400">
+      <div className="flex flex-wrap gap-3 text-xs text-slate-500 dark:text-slate-400">
         <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-amber-500" />Tenggat Tugas</span>
         <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-blue-500" />Jadwal Tugas</span>
         <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-purple-500" />Batas Proyek</span>
