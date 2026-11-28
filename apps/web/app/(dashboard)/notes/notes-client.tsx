@@ -281,7 +281,7 @@ export function NotesClient({
                         #{t}
                       </span>
                     ))}
-                    <span className="ml-auto text-[10px] text-slate-600">
+                    <span className="ml-auto text-[10px] text-slate-600 dark:text-slate-400">
                       {n.updatedAt}
                     </span>
                   </div>
@@ -293,7 +293,7 @@ export function NotesClient({
                     aria-label={n.pinned ? `Lepas sematan ${n.title}` : `Sematkan ${n.title}`}
                     onClick={() => handleToggle("pinned", n.id)}
                     className={cn(
-                      "rounded-lg p-1.5 transition hover:bg-slate-100 dark:hover:bg-slate-800",
+                      "inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg transition hover:bg-slate-100 dark:hover:bg-slate-800",
                       n.pinned ? "text-amber-500 dark:text-amber-400" : "text-slate-500",
                     )}
                   >
@@ -304,7 +304,7 @@ export function NotesClient({
                     aria-label={n.archived ? `Keluarkan ${n.title} dari arsip` : `Arsipkan ${n.title}`}
                     onClick={() => handleToggle("archived", n.id)}
                     className={cn(
-                      "rounded-lg p-1.5 transition hover:bg-slate-100 dark:hover:bg-slate-800",
+                      "inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg transition hover:bg-slate-100 dark:hover:bg-slate-800",
                       n.archived ? "text-amber-500 dark:text-amber-400" : "text-slate-500",
                     )}
                   >
@@ -314,7 +314,7 @@ export function NotesClient({
                     type="button"
                     aria-label={`Ubah judul, kategori, tag ${n.title}`}
                     onClick={() => setModal({ open: true, initial: n })}
-                    className="rounded-lg p-1.5 text-slate-500 transition hover:bg-slate-100 dark:hover:bg-slate-800"
+                    className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 dark:hover:bg-slate-800"
                   >
                     <Pencil className="h-4 w-4" />
                   </button>
@@ -322,7 +322,7 @@ export function NotesClient({
                     type="button"
                     aria-label={`Hapus ${n.title}`}
                     onClick={() => setPendingDelete(n.id)}
-                    className="rounded-lg p-1.5 text-slate-500 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
+                    className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>

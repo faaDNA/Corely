@@ -115,7 +115,7 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
                 'flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border transition',
                 h.completedToday
                   ? 'border-emerald-500 bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
-                  : 'border-slate-300 bg-white text-slate-500 hover:border-slate-400 hover:text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-600 dark:hover:border-slate-700 dark:hover:text-slate-400'
+                  : 'border-slate-300 bg-white text-slate-500 hover:border-slate-400 hover:text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-500 dark:hover:border-slate-700 dark:hover:text-slate-400'
               )}
             >
               <Check className="h-6 w-6" />
@@ -126,8 +126,8 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
                 <h3 className="font-semibold text-slate-900 dark:text-white">{h.name}</h3>
                 <span className="rounded bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] uppercase text-slate-600 dark:text-slate-400">{frequencyLabel(h.frequency)}</span>
               </div>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
-                <span className="inline-flex items-center gap-1 text-amber-400"><Flame className="h-3.5 w-3.5" />Beruntun: {h.streak} hari</span>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
+                <span className="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400"><Flame className="h-3.5 w-3.5" />Beruntun: {h.streak} hari</span>
                 <span className="inline-flex items-center gap-1 text-slate-500"><Trophy className="h-3.5 w-3.5" />Rekor: {h.longestStreak} hari</span>
               </div>
             </div>
@@ -146,14 +146,14 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
                         )}
                         title={cell.iso}
                       />
-                      <span className="text-[10px] text-slate-500 dark:text-slate-600">{cell.label}</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400">{cell.label}</span>
                     </div>
                   );
                 })}
               </div>
             </div>
 
-            <button type="button" onClick={() => setPendingDelete(h.id)} aria-label={`Hapus ${h.name}`} className="shrink-0 rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:text-slate-600 dark:hover:bg-red-950 dark:hover:text-red-400">
+            <button type="button" onClick={() => setPendingDelete(h.id)} aria-label={`Hapus ${h.name}`} className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600 dark:text-slate-400 dark:hover:bg-red-950 dark:hover:text-red-400">
               <Trash2 className="h-4 w-4" />
             </button>
           </div>

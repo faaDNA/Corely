@@ -97,7 +97,7 @@ export function ThemeToggle() {
               {theme === key && <Check className="ml-auto h-3.5 w-3.5" />}
             </button>
           ))}
-          <p className="px-3 pb-1 pt-1 text-[10px] text-slate-400">Sistem = ikuti tema OS</p>
+          <p className="px-3 pb-1 pt-1 text-[10px] text-slate-500 dark:text-slate-400">Sistem = ikuti tema OS</p>
         </div>
       )}
     </div>
@@ -114,6 +114,11 @@ function SidebarContent({
   const pathname = usePathname();
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
+  // Default "Ctrl K" saat SSR; deteksi Mac setelah mount agar tak hydration mismatch.
+  const [shortcut, setShortcut] = useState('Ctrl K');
+  useEffect(() => {
+    if (/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)) setShortcut('⌘ K');
+  }, []);
 
   useEffect(() => {
     function onDoc(e: MouseEvent) {
@@ -144,7 +149,7 @@ function SidebarContent({
       >
         <Search className="h-4 w-4" />
         <span>Cari...</span>
-        <kbd className="ml-auto hidden rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] md:inline-block dark:border-slate-800 dark:bg-slate-950">Ctrl K</kbd>
+        <kbd className="ml-auto hidden rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] md:inline-block dark:border-slate-800 dark:bg-slate-950">{shortcut}</kbd>
       </button>
 
       <nav className="flex-1 space-y-1 overflow-y-auto px-3">
@@ -259,7 +264,7 @@ export function AppShell({
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="glass sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-slate-200 px-4 dark:border-slate-800 sm:px-6">
           <button
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 md:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 md:hidden"
             onClick={() => setMobileOpen((v) => !v)}
             aria-label={mobileOpen ? 'Tutup menu' : 'Buka menu'}
             type="button"
@@ -268,7 +273,7 @@ export function AppShell({
           </button>
 
           <button
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 md:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 md:hidden"
             onClick={() => window.dispatchEvent(new Event('pd-open-search'))}
             aria-label="Cari global"
             type="button"

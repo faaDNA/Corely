@@ -34,7 +34,7 @@ export function LoginForm() {
           </SubmitButton>
         </form>
 
-        <div className="mb-4 flex items-center gap-3 text-[11px] text-slate-400">
+        <div className="mb-4 flex items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400">
           <span className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
           atau
           <span className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
@@ -86,7 +86,7 @@ export function LoginForm() {
 
           <SubmitButton className="w-full" type="submit">Masuk</SubmitButton>
 
-          <p className="text-center text-xs text-slate-400">
+          <p className="text-center text-xs text-slate-500 dark:text-slate-400">
             Belum punya akun?{' '}
             <Link href="/register" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">Daftar</Link>
           </p>

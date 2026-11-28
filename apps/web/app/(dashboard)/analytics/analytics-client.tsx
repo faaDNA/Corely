@@ -25,7 +25,7 @@ const AnalyticsCharts = dynamic(
 function StatCard({ label, value, sub, color }: { label: string; value: string; sub?: string; color?: string }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4">
-      <div className="text-xs text-slate-400">{label}</div>
+      <div className="text-xs text-slate-500 dark:text-slate-400">{label}</div>
       <div className="mt-1 text-2xl font-bold text-slate-900 dark:text-white" style={color ? { color } : undefined}>
         {value}
       </div>

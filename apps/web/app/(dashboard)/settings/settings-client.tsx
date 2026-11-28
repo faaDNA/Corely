@@ -3,21 +3,18 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
-import { Sun, Moon, Monitor, User, Palette, SlidersHorizontal, LogOut, Check, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Sun, Moon, Monitor, User, Palette, LogOut, Check, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Button, Card, CardContent, CardHeader, CardTitle, CardDescription, cn } from '@repo/ui';
 import type { Profile } from '@repo/types';
 import { logoutAndReleasePush } from '@/lib/logout-client';
 import { changePassword, updateProfile } from './actions';
 import { toast } from '@/components/toast';
 import { SubmitButton } from '@/components/submit-button';
-import { Select } from '@/components/select';
 
 export function SettingsClient({ initialProfile }: { initialProfile: Profile }) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [profile, setProfile] = useState(initialProfile);
-  const [dateFormat, setDateFormat] = useState('id-ID');
-  const [timeFormat, setTimeFormat] = useState('24h');
   const [pw, setPw] = useState({ current: '', next: '', confirm: '' });
   const [showPw, setShowPw] = useState({ current: false, next: false, confirm: false });
   const [saving, setSaving] = useState({ profile: false, password: false });
@@ -63,10 +60,6 @@ export function SettingsClient({ initialProfile }: { initialProfile: Profile }) 
     }
   }
 
-  function savePreferences() {
-    toast('Preferensi tersimpan (dummy).');
-  }
-
   const themeOptions = [
     { key: 'light', label: 'Terang', icon: Sun },
     { key: 'dark', label: 'Gelap', icon: Moon },
@@ -80,7 +73,7 @@ export function SettingsClient({ initialProfile }: { initialProfile: Profile }) 
     <div className="space-y-6">
       <header>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Pengaturan</h1>
-        <p className="mt-1 text-sm text-slate-400">Kelola profil, tampilan, dan preferensi aplikasi.</p>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Kelola profil, password, dan tampilan aplikasi.</p>
       </header>
 
       {/* Profile */}
@@ -189,48 +182,6 @@ export function SettingsClient({ initialProfile }: { initialProfile: Profile }) 
                 {mounted && theme === key && <Check className="ml-auto h-4 w-4" />}
               </button>
             ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Preferences */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base"><SlidersHorizontal className="h-4 w-4 text-emerald-400" />Preferensi</CardTitle>
-          <CardDescription>Format dan tampilan bawaan.</CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-3 sm:grid-cols-2">
-          <div className="space-y-1.5">
-            <label htmlFor="s-date" className="text-xs font-medium text-slate-600 dark:text-slate-300">Format Tanggal</label>
-            <Select
-              id="s-date"
-              value={dateFormat}
-              onValueChange={setDateFormat}
-              ariaLabel="Format Tanggal"
-              options={[
-                { value: "id-ID", label: "DD/MM/YYYY (Indonesia)" },
-                { value: "en-US", label: "MM/DD/YYYY (AS)" },
-                { value: "ISO", label: "YYYY-MM-DD (ISO)" },
-              ]}
-              className="w-full px-3 py-2 text-sm"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <label htmlFor="s-time" className="text-xs font-medium text-slate-600 dark:text-slate-300">Format Jam</label>
-            <Select
-              id="s-time"
-              value={timeFormat}
-              onValueChange={setTimeFormat}
-              ariaLabel="Format Jam"
-              options={[
-                { value: "24h", label: "24 jam" },
-                { value: "12h", label: "12 jam (AM/PM)" },
-              ]}
-              className="w-full px-3 py-2 text-sm"
-            />
-          </div>
-          <div className="sm:col-span-2">
-            <Button size="sm" variant="outline" onClick={savePreferences}><Check className="mr-2 h-4 w-4" />Simpan Preferensi</Button>
           </div>
         </CardContent>
       </Card>

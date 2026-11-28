@@ -194,10 +194,10 @@ export function BookmarksClient({
                   aria-label={b.favorite ? `Hapus ${b.title} dari favorit` : `Jadikan ${b.title} favorit`}
                   aria-pressed={!!b.favorite}
                   className={cn(
-                    "rounded-lg p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800",
+                    "-m-1 inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800",
                     b.favorite
                       ? "text-amber-500 dark:text-amber-400"
-                      : "text-slate-400 dark:text-slate-600",
+                      : "text-slate-500 dark:text-slate-400",
                   )}
                 >
                   <Star
@@ -212,7 +212,7 @@ export function BookmarksClient({
                 href={b.url}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300"
+                className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
               >
                 {domain(b.url)} <ExternalLink className="h-3 w-3" />
               </a>
@@ -234,12 +234,12 @@ export function BookmarksClient({
                   </span>
                 ))}
               </div>
-              <div className="mt-3 flex justify-end gap-1 border-t border-slate-200 dark:border-slate-800 pt-3 opacity-100 transition lg:opacity-0 lg:group-hover:opacity-100">
+              <div className="mt-3 flex justify-end gap-1 border-t border-slate-200 dark:border-slate-800 pt-3 transition group-focus-within:opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100">
                 <button
                   type="button"
                   onClick={() => setModal({ open: true, initial: b })}
                   aria-label={`Ubah ${b.title}`}
-                  className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                  className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
                 >
                   <Pencil className="h-4 w-4" />
                 </button>
@@ -247,7 +247,7 @@ export function BookmarksClient({
                   type="button"
                   onClick={() => setPendingDelete(b.id)}
                   aria-label={`Hapus ${b.title}`}
-                  className="rounded-lg p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
+                  className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>

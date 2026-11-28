@@ -112,7 +112,7 @@ export function RegisterForm() {
 
           <SubmitButton className="w-full" type="submit">Daftar</SubmitButton>
 
-          <p className="text-center text-xs text-slate-400">
+          <p className="text-center text-xs text-slate-500 dark:text-slate-400">
             Sudah punya akun?{' '}
             <Link href="/login" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">Masuk</Link>
           </p>

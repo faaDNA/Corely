@@ -223,7 +223,7 @@ export function TasksClient({
                 type="button"
                 onClick={() => setStatus(v)}
                 className={cn(
-                  "rounded-lg border px-2.5 py-1 text-xs font-medium transition",
+                  "rounded-lg border px-2.5 py-2 text-xs font-medium transition sm:py-1",
                   status === v
                     ? "border-blue-600 bg-blue-600/10 text-blue-600 dark:text-blue-400"
                     : "border-slate-300 text-slate-500 hover:border-slate-400 dark:border-slate-700 dark:text-slate-400 dark:hover:border-slate-600",

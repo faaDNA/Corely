@@ -126,12 +126,12 @@ export function ProjectTasksPanel({ projectId, projectName, projects, tasks, set
         <div className="mt-3 space-y-2">
           {related.map((t) => (
             <div key={t.id} className="group flex items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3 text-xs">
-              <button type="button" onClick={() => toggle(t.id)} aria-label={t.status === 'COMPLETED' ? `Tandai belum selesai: ${t.title}` : `Tandai selesai: ${t.title}`} aria-pressed={t.status === 'COMPLETED'} className="shrink-0">
+              <button type="button" onClick={() => toggle(t.id)} aria-label={t.status === 'COMPLETED' ? `Tandai belum selesai: ${t.title}` : `Tandai selesai: ${t.title}`} aria-pressed={t.status === 'COMPLETED'} className="-m-2.5 shrink-0 p-2.5">
                 {t.status === 'COMPLETED'
                   ? <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-                  : <Circle className="h-5 w-5 text-slate-400 transition hover:text-emerald-600 dark:text-slate-600 dark:hover:text-emerald-400" />}
+                  : <Circle className="h-5 w-5 text-slate-400 transition hover:text-emerald-600 dark:text-slate-500 dark:hover:text-emerald-400" />}
               </button>
-              <span className={cn('min-w-0 flex-1 text-slate-800 dark:text-slate-200', t.status === 'COMPLETED' && 'text-slate-400 line-through')}>
+              <span className={cn('min-w-0 flex-1 text-slate-800 dark:text-slate-200', t.status === 'COMPLETED' && 'text-slate-500 line-through dark:text-slate-400')}>
                 {t.title}
                 {t.dateMode === 'schedule' && t.dueDate && (
                   <span className="ml-2 text-blue-600 dark:text-blue-400">{t.dueDate}{t.dueTime ? ` · ${t.dueTime}` : ''}</span>
@@ -139,9 +139,9 @@ export function ProjectTasksPanel({ projectId, projectName, projects, tasks, set
                 {t.dateMode !== 'schedule' && t.dueDate && <span className="ml-2 text-amber-600 dark:text-amber-400">{t.dueDate}</span>}
               </span>
               <span className={cn('shrink-0 rounded border px-1.5 py-0.5 text-[10px]', PRIORITY_BADGE[t.priority])}>{priorityLabel(t.priority)}</span>
-              <span className="flex shrink-0 gap-1 opacity-100 transition lg:opacity-0 lg:group-hover:opacity-100">
-                <button type="button" onClick={() => setModal({ open: true, initial: t })} aria-label={`Ubah ${t.title}`} className="rounded p-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-200"><Pencil className="h-3.5 w-3.5" /></button>
-                <button type="button" onClick={() => setPendingDelete(t.id)} aria-label={`Hapus ${t.title}`} className="rounded p-1 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"><Trash2 className="h-3.5 w-3.5" /></button>
+              <span className="-my-1.5 flex shrink-0 gap-1 transition group-focus-within:opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100">
+                <button type="button" onClick={() => setModal({ open: true, initial: t })} aria-label={`Ubah ${t.title}`} className="inline-flex items-center justify-center rounded p-2.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-200"><Pencil className="h-3.5 w-3.5" /></button>
+                <button type="button" onClick={() => setPendingDelete(t.id)} aria-label={`Hapus ${t.title}`} className="inline-flex items-center justify-center rounded p-2.5 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"><Trash2 className="h-3.5 w-3.5" /></button>
               </span>
             </div>
           ))}
