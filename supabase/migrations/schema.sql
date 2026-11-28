@@ -143,13 +143,17 @@ end $$;
 -- index
 create index if not exists tasks_user_active_idx on public.tasks (user_id, deleted_at);
 create index if not exists tasks_project_idx on public.tasks (project_id);
-create index if not exists tasks_due_idx on public.tasks (due_date);
-create index if not exists tasks_completed_idx on public.tasks (completed_at);
+-- Cron pengingat tiap menit hanya mencari TODO aktif: index parsial lebih kecil & cepat.
+drop index if exists public.tasks_due_idx;
+create index if not exists tasks_due_todo_idx on public.tasks (due_date) where status = 'TODO' and deleted_at is null;
+-- tasks_completed_idx tidak dipakai filter mana pun (completed_at hanya di-select) → beban tulis saja.
+drop index if exists public.tasks_completed_idx;
 create index if not exists projects_user_idx on public.projects (user_id);
 create index if not exists notes_user_idx on public.notes (user_id);
 create index if not exists bookmarks_user_idx on public.bookmarks (user_id);
 create index if not exists habits_user_idx on public.habits (user_id);
-create index if not exists habit_logs_habit_idx on public.habit_logs (habit_id);
+-- habit_logs_habit_idx redundan: unique (habit_id, logged_date) sudah jadi index dengan habit_id di depan.
+drop index if exists public.habit_logs_habit_idx;
 
 create index if not exists push_subs_user_idx on public.push_subscriptions (user_id);
 
@@ -185,37 +189,39 @@ alter table public.bookmarks enable row level security;
 alter table public.habits enable row level security;
 alter table public.habit_logs enable row level security;
 
+-- (select auth.uid()) bukan auth.uid(): dievaluasi sekali per query (initPlan), bukan per baris.
+-- Lint Supabase "auth_rls_initplan".
 drop policy if exists "own push subs" on public.push_subscriptions;
-create policy "own push subs" on public.push_subscriptions for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "own push subs" on public.push_subscriptions for all using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 
 drop policy if exists "own profiles" on public.profiles;
-create policy "own profiles" on public.profiles for all using (auth.uid() = id) with check (auth.uid() = id);
+create policy "own profiles" on public.profiles for all using ((select auth.uid()) = id) with check ((select auth.uid()) = id);
 
 drop policy if exists "own projects" on public.projects;
-create policy "own projects" on public.projects for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "own projects" on public.projects for all using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 
 -- with check juga memastikan project_id milik user sendiri (FK saja tidak cek pemilik).
 drop policy if exists "own tasks" on public.tasks;
-create policy "own tasks" on public.tasks for all using (auth.uid() = user_id) with check (
-  auth.uid() = user_id
-  and (project_id is null or exists (select 1 from public.projects p where p.id = project_id and p.user_id = auth.uid()))
+create policy "own tasks" on public.tasks for all using ((select auth.uid()) = user_id) with check (
+  (select auth.uid()) = user_id
+  and (project_id is null or exists (select 1 from public.projects p where p.id = project_id and p.user_id = (select auth.uid())))
 );
 
 drop policy if exists "own notes" on public.notes;
-create policy "own notes" on public.notes for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "own notes" on public.notes for all using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 
 drop policy if exists "own bookmarks" on public.bookmarks;
-create policy "own bookmarks" on public.bookmarks for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "own bookmarks" on public.bookmarks for all using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 
 drop policy if exists "own habits" on public.habits;
-create policy "own habits" on public.habits for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "own habits" on public.habits for all using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 
 -- with check juga memastikan habit_id milik user sendiri: tanpa ini log palsu atas habit
 -- orang lain bisa memblokir centang korban (unique habit_id+logged_date).
 drop policy if exists "own habit logs" on public.habit_logs;
-create policy "own habit logs" on public.habit_logs for all using (auth.uid() = user_id) with check (
-  auth.uid() = user_id
-  and exists (select 1 from public.habits h where h.id = habit_id and h.user_id = auth.uid())
+create policy "own habit logs" on public.habit_logs for all using ((select auth.uid()) = user_id) with check (
+  (select auth.uid()) = user_id
+  and exists (select 1 from public.habits h where h.id = habit_id and h.user_id = (select auth.uid()))
 );
 
 -- Purge sampah task setiap tanggal 1, 00:30 — floor = awal bulan now - 4 bulan

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Plus, Search } from "lucide-react";
 import { Button, cn } from "@repo/ui";
 import type { Task, TaskStatus, TaskPriority, Project } from "@repo/types";
@@ -29,7 +28,6 @@ export function TasksClient({
   projects: Project[];
   initialQ?: string;
 }) {
-  const router = useRouter();
   const [tasks, setTasks] = useState(initialTasks);
   const [q, setQ] = useState(initialQ);
   const [status, setStatus] = useState("all");
@@ -44,7 +42,7 @@ export function TasksClient({
   });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
-  // Sinkron ulang saat server kirim data baru (router.refresh).
+  // Sinkron ulang saat server kirim data baru (revalidatePath di server action).
   useEffect(() => setTasks(initialTasks), [initialTasks]);
 
   /** daftar kerja: tanpa task tersoft-delete (deletedAt) */
@@ -121,7 +119,6 @@ export function TasksClient({
       setTasks(initialTasks);
       return;
     }
-    router.refresh();
   }
 
   async function handleFormSubmit(values: TaskFormValues) {
@@ -164,7 +161,6 @@ export function TasksClient({
       return;
     }
     toast(modal.initial ? "Tugas diperbarui." : "Tugas ditambahkan.");
-    router.refresh();
   }
 
   async function confirmDelete() {
@@ -181,7 +177,6 @@ export function TasksClient({
       return;
     }
     toast("Tugas dihapus.");
-    router.refresh();
   }
 
   return (

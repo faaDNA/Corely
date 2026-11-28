@@ -51,7 +51,6 @@ export function ProjectTasksPanel({ projectId, projectName, projects, tasks, set
       toast(res.error ?? 'Gagal memperbarui tugas.', 'error');
       return;
     }
-    onChanged?.();
   }
 
   async function submit(values: TaskFormValues) {
@@ -92,7 +91,6 @@ export function ProjectTasksPanel({ projectId, projectName, projects, tasks, set
     } else {
       toast(modal.initial ? 'Tugas diperbarui.' : `Tugas ditambahkan ke ${projectName}.`);
     }
-    onChanged?.();
   }
 
   async function confirmDelete() {
@@ -108,7 +106,6 @@ export function ProjectTasksPanel({ projectId, projectName, projects, tasks, set
       return;
     }
     toast('Tugas dihapus.');
-    onChanged?.();
   }
 
   return (

@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Plus, Flame, Check, Trophy, Trash2, Loader2 } from 'lucide-react';
 import { Button, cn } from '@repo/ui';
 import type { Habit } from '@repo/types';
@@ -13,14 +12,13 @@ function isoDay(d: Date): string {
 }
 
 export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
-  const router = useRouter();
   const [habits, setHabits] = useState(initialHabits);
   const [name, setName] = useState('');
   const [open, setOpen] = useState(false);
   const [adding, setAdding] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
-  // Sinkron ulang saat server kirim data baru (router.refresh) — item baru muncul tanpa navigasi.
+  // Sinkron ulang saat server kirim data baru (revalidatePath di server action) — item baru muncul tanpa navigasi.
   useEffect(() => setHabits(initialHabits), [initialHabits]);
 
   async function handleToggle(h: Habit) {
@@ -48,7 +46,6 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
       setHabits(initialHabits);
       return;
     }
-    router.refresh();
   }
 
   async function handleAdd(e: React.FormEvent) {
@@ -64,7 +61,6 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
       toast('Kebiasaan ditambahkan.');
       setName('');
       setOpen(false);
-      router.refresh();
     } finally {
       setAdding(false);
     }
@@ -83,7 +79,6 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
       return;
     }
     toast('Kebiasaan dihapus.');
-    router.refresh();
   }
 
   const days = Array.from({ length: 14 }, (_, i) => {

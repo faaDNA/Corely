@@ -25,13 +25,16 @@ const PRIORITY_BADGE: Record<string, string> = {
 };
 
 export default async function DashboardPage() {
-  const profile = await getProfile();
   const user = await getUser();
-  let tasks: Awaited<ReturnType<typeof getTasks>> = [];
-  let projects: Awaited<ReturnType<typeof getProjects>> = [];
-  let notes: Awaited<ReturnType<typeof getNotes>> = [];
-  let habits: Awaited<ReturnType<typeof getHabits>> = [];
-  if (user) [tasks, projects, notes, habits] = await Promise.all([getTasks(user.id), getProjects(user.id), getNotes(user.id), getHabits(user.id)]);
+  // Profil ikut paralel (getUser di-cache per request) — sebelumnya menunggu profil dulu (+1 round trip).
+  // Tanpa user (mode dummy tanpa env) tetap render kosong, seperti sebelumnya.
+  const [profile, tasks, projects, notes, habits] = await Promise.all([
+    getProfile(),
+    user ? getTasks(user.id) : [],
+    user ? getProjects(user.id) : [],
+    user ? getNotes(user.id) : [],
+    user ? getHabits(user.id) : [],
+  ]);
 
   // WIB, bukan getter lokal: server Vercel ber-TZ UTC (meleset sehari pukul 00–07 WIB).
   const today = isoWIB();

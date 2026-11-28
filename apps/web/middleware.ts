@@ -45,6 +45,8 @@ export async function middleware(req: NextRequest) {
   return res;
 }
 
+// Dilewati: aset statis, service worker (dicek ulang browser berkala), dan cron (tanpa sesi user,
+// pakai CRON_SECRET) — tidak perlu getUser() ke Supabase Auth.
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|apple-icon|manifest.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|sw\\.js|api/cron|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)'],
 };

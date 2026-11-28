@@ -12,7 +12,7 @@ export async function fetchSearchItems(): Promise<SearchItem[]> {
     getProjects(user.id),
     getNotes(user.id),
     getBookmarks(user.id),
-    getTasks(user.id),
+    getTasks(user.id, { activeOnly: true }),
   ]);
   const items: SearchItem[] = [];
   for (const p of projects) {

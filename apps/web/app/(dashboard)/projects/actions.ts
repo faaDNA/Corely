@@ -3,22 +3,20 @@
 import { revalidatePath } from 'next/cache';
 import type { Project } from '@repo/types';
 import { createClient } from '@/lib/supabase/server';
+import { requireUserId } from '@/lib/auth';
 import { getProjects, toProjectRow } from '@/lib/mappers';
 import { isHttpUrl } from '@/lib/push-endpoint';
 
 const COLS = 'id, name, description, on_hold, archived, deadline, technologies, repo_url, deploy_url';
 
-async function requireUser() {
-  const {
-    data: { user },
-  } = await createClient().auth.getUser();
-  if (!user) throw new Error('Sesi berakhir. Masuk ulang.');
-  return user.id;
-}
+// Satu sumber: lib/auth (getClaims, tanpa round trip Auth bila JWT asimetrik).
+const requireUser = requireUserId;
 
 function refresh() {
   revalidatePath('/projects');
   revalidatePath('/tasks');
+  revalidatePath('/projects/[id]', 'page');
+  revalidatePath('/dashboard');
 }
 
 export async function saveProject(project: Project): Promise<{ ok: boolean; error?: string }> {

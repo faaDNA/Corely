@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Plus, Search, Pin, Archive, FileText, Pencil, Trash2 } from "lucide-react";
 import { Button, cn } from "@repo/ui";
 import type { Note } from "@repo/types";
@@ -23,7 +22,6 @@ export function NotesClient({
   initialNotes: Note[];
   initialQ?: string;
 }) {
-  const router = useRouter();
   const [notes, setNotes] = useState(initialNotes);
   const matchedNote = initialQ
     ? initialNotes.find((n) =>
@@ -59,7 +57,7 @@ export function NotesClient({
     }
   }, [initialQ, initialNotes]);
 
-  // Sinkron ulang saat server kirim data baru (router.refresh) — ganti ID sementara dengan UUID asli.
+  // Sinkron ulang saat server kirim data baru (revalidatePath di server action) — ganti ID sementara dengan UUID asli.
   useEffect(() => {
     setNotes(initialNotes);
     setSelectedId((prev) =>
@@ -125,7 +123,6 @@ export function NotesClient({
       return;
     }
     toast(modal.initial ? "Catatan diperbarui." : "Catatan ditambahkan.");
-    router.refresh();
   }
 
   /** true = tersimpan di server. State baru diubah setelah ok, supaya draft di panel tidak hilang saat gagal. */
@@ -142,7 +139,6 @@ export function NotesClient({
         n.id === id ? { ...n, content, updatedAt: toISO(new Date()) } : n,
       ),
     );
-    router.refresh();
     return true;
   }
 
@@ -160,7 +156,6 @@ export function NotesClient({
       setNotes(notes);
       return;
     }
-    router.refresh();
   }
 
   async function confirmDelete() {
@@ -177,7 +172,6 @@ export function NotesClient({
       return;
     }
     toast("Catatan dihapus.");
-    router.refresh();
   }
 
   return (

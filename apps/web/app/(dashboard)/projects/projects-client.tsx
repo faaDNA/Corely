@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Plus, Search, Pencil, Trash2, Github, ExternalLink, CirclePause, CirclePlay, Archive, ArchiveRestore, Calendar, ListChecks } from 'lucide-react';
 import { Button, cn } from '@repo/ui';
 import type { Project, Task } from '@repo/types';
@@ -13,14 +12,13 @@ import { saveProject, deleteProject } from './actions';
 import { toast } from '@/components/toast';
 
 export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { initialProjects: Project[]; tasks: Task[]; initialQ?: string }) {
-  const router = useRouter();
   const [projects, setProjects] = useState(initialProjects);
   const [q, setQ] = useState(initialQ);
   const [status, setStatus] = useState('all');
   const [modal, setModal] = useState<{ open: boolean; initial?: Project | null }>({ open: false });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
-  // Sinkron ulang saat server kirim data baru (router.refresh) — ganti ID sementara dengan UUID asli.
+  // Sinkron ulang saat server kirim data baru (revalidatePath di server action) — ganti ID sementara dengan UUID asli.
   useEffect(() => setProjects(initialProjects), [initialProjects]);
 
   const withStatus = useMemo(
@@ -66,7 +64,6 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
       return;
     }
     toast(flag === 'onHold' ? (on ? 'Proyek dijeda.' : 'Proyek dilanjutkan.') : on ? 'Proyek diarsipkan.' : 'Proyek dikeluarkan dari arsip.');
-    router.refresh();
   }
 
   async function handleFormSubmit(values: ProjectFormValues) {
@@ -93,7 +90,6 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
       return;
     }
     toast(modal.initial ? 'Proyek diperbarui.' : 'Proyek ditambahkan.');
-    router.refresh();
   }
 
   async function confirmDelete() {
@@ -108,7 +104,6 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
       return;
     }
     toast('Proyek dihapus.');
-    router.refresh();
   }
 
   return (

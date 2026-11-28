@@ -1,19 +1,15 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
+import { requireUserId } from '@/lib/auth';
 import { createServiceClient } from '@/lib/supabase/service';
 import { sendPushToUser } from '@/lib/webpush';
 import { isPushEndpoint, isPushKeys } from '@/lib/push-endpoint';
 
 type Result = { ok: boolean; error?: string; sent?: number };
 
-async function requireUser() {
-  const {
-    data: { user },
-  } = await createClient().auth.getUser();
-  if (!user) throw new Error('Sesi berakhir. Masuk ulang.');
-  return user.id;
-}
+// Satu sumber: lib/auth (getClaims, tanpa round trip Auth bila JWT asimetrik).
+const requireUser = requireUserId;
 
 /** Simpan/perbarui langganan push perangkat ini. */
 export async function savePushSubscription(sub: {

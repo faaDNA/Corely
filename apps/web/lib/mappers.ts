@@ -130,13 +130,16 @@ function rows<T>({ data, error }: { data: T[] | null; error: { message: string }
 
 const TASK_COLUMNS = 'id, title, description, status, priority, due_date, due_time, date_mode, project_id, tags, completed_at, created_at, deleted_at';
 
-export async function getTasks(userId: string): Promise<Task[]> {
+/**
+ * `activeOnly`: tanpa tugas di Tong Sampah — untuk Tugas/Kalender/Proyek/Pencarian yang memang
+ * membuangnya di client (payload lebih kecil, index tasks_user_active_idx). Dashboard & Analitik
+ * pakai versi lengkap: COMPLETED yang dihapus tetap dihitung sampai purge (aturan domain).
+ */
+export async function getTasks(userId: string, opts: { activeOnly?: boolean } = {}): Promise<Task[]> {
   const supabase = createClient();
-  const res = await supabase
-    .from('tasks')
-    .select(TASK_COLUMNS)
-    .eq('user_id', userId)
-    .order('due_date', { ascending: true, nullsFirst: false });
+  let q = supabase.from('tasks').select(TASK_COLUMNS).eq('user_id', userId);
+  if (opts.activeOnly) q = q.is('deleted_at', null);
+  const res = await q.order('due_date', { ascending: true, nullsFirst: false });
   return rows(res).map(taskFromRow);
 }
 

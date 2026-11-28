@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Plus, Search, Star, Pencil, Trash2, ExternalLink } from "lucide-react";
 import { Button, cn } from "@repo/ui";
 import type { Bookmark } from "@repo/types";
@@ -29,7 +28,6 @@ export function BookmarksClient({
   initialBookmarks: Bookmark[];
   initialQ?: string;
 }) {
-  const router = useRouter();
   const [bookmarks, setBookmarks] = useState(initialBookmarks);
   const [q, setQ] = useState(initialQ);
   const [category, setCategory] = useState("all");
@@ -40,7 +38,7 @@ export function BookmarksClient({
   }>({ open: false });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
-  // Sinkron ulang saat server kirim data baru (router.refresh) — ganti ID sementara dengan UUID asli.
+  // Sinkron ulang saat server kirim data baru (revalidatePath di server action) — ganti ID sementara dengan UUID asli.
   useEffect(() => setBookmarks(initialBookmarks), [initialBookmarks]);
 
   const filtered = useMemo(() => {
@@ -92,7 +90,6 @@ export function BookmarksClient({
       return;
     }
     toast(modal.initial ? "Bookmark diperbarui." : "Bookmark ditambahkan.");
-    router.refresh();
   }
 
   async function handleToggle(b: Bookmark) {
@@ -105,7 +102,6 @@ export function BookmarksClient({
       setBookmarks(initialBookmarks);
       return;
     }
-    router.refresh();
   }
 
   async function confirmDelete() {
@@ -121,7 +117,6 @@ export function BookmarksClient({
       return;
     }
     toast("Bookmark dihapus.");
-    router.refresh();
   }
 
   return (
