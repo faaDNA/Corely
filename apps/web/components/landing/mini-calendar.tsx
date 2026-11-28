@@ -91,9 +91,10 @@ export function MiniCalendar() {
               type="button"
               onMouseEnter={() => setActive(i)}
               onFocus={() => setActive(i)}
+              onClick={() => setActive(i)} // Safari iOS: tap tidak memberi fokus ke tombol
               aria-label={`${WEEKDAY_LONG[cell.weekday]}, ${cell.day} ${MONTH_LONG[cell.month]}${marks.length ? `, ${marks.length} agenda` : ''}`}
               className={[
-                'flex h-10 flex-col items-center justify-center gap-1 rounded-md transition-colors',
+                'flex h-11 flex-col items-center justify-center gap-1 rounded-md transition-colors',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
                 isActive
                   ? 'bg-blue-50 dark:bg-blue-950/40'
