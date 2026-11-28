@@ -6,8 +6,9 @@
  * - `\n{3,}` → paragraf `&nbsp;` (baris kosong ekstra tidak dibuang Markdown)
  * - `\n` tunggal → hard break `  \n` (tanpa ini Markdown ubah jadi spasi)
  *
- * Catatan: baris teks tepat DI BAWAH item list tanpa baris kosong jadi kelanjutan `<li>` (rapat, dan
- * rata kiri karena list-style-position: inside). Baris kosong memisahkannya jadi `<p>` sendiri.
+ * Catatan: baris teks tepat DI BAWAH item list tanpa baris kosong jadi kelanjutan `<li>` (rapat, rata
+ * dengan teks item — list-style-position: outside). Baris kosong sebelum baris yang tidak diawali `- `
+ * memisahkannya jadi `<p>` sendiri; baris kosong di antara dua item membuat list "loose" (isi item dibungkus `<p>`).
  */
 export const TIGHT = '\u200B';
 
