@@ -6,7 +6,7 @@ import { useTheme } from 'next-themes';
 import { Sun, Moon, Monitor, User, Palette, SlidersHorizontal, LogOut, Check, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Button, Card, CardContent, CardHeader, CardTitle, CardDescription, cn } from '@repo/ui';
 import type { Profile } from '@repo/types';
-import { logout } from '@/app/(auth)/actions';
+import { logoutAndReleasePush } from '@/lib/logout-client';
 import { changePassword, updateProfile } from './actions';
 import { toast } from '@/components/toast';
 import { SubmitButton } from '@/components/submit-button';
@@ -242,7 +242,7 @@ export function SettingsClient({ initialProfile }: { initialProfile: Profile }) 
           <CardDescription>Kelola sesi dan akun Anda.</CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={logout}>
+          <form action={logoutAndReleasePush}>
             <SubmitButton type="submit" variant="danger" size="sm"><LogOut className="mr-2 h-4 w-4" />Keluar</SubmitButton>
           </form>
         </CardContent>

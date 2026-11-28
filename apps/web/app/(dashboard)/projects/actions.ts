@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import type { Project } from '@repo/types';
 import { createClient } from '@/lib/supabase/server';
 import { getProjects, toProjectRow } from '@/lib/mappers';
+import { isHttpUrl } from '@/lib/push-endpoint';
 
 const COLS = 'id, name, description, on_hold, archived, deadline, technologies, repo_url, deploy_url';
 
@@ -24,6 +25,10 @@ export async function saveProject(project: Project): Promise<{ ok: boolean; erro
   try {
     const userId = await requireUser();
     const supabase = createClient();
+    // Dirender di <a href>: tolak javascript:/data: yang lolos z.string().url() di client.
+    for (const u of [project.repoUrl, project.deployUrl]) {
+      if (u && !isHttpUrl(u)) return { ok: false, error: 'URL harus diawali http:// atau https://.' };
+    }
     const row = toProjectRow(userId, project);
     const exists = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(project.id);
 

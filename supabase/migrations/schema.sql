@@ -194,8 +194,12 @@ create policy "own profiles" on public.profiles for all using (auth.uid() = id) 
 drop policy if exists "own projects" on public.projects;
 create policy "own projects" on public.projects for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
+-- with check juga memastikan project_id milik user sendiri (FK saja tidak cek pemilik).
 drop policy if exists "own tasks" on public.tasks;
-create policy "own tasks" on public.tasks for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "own tasks" on public.tasks for all using (auth.uid() = user_id) with check (
+  auth.uid() = user_id
+  and (project_id is null or exists (select 1 from public.projects p where p.id = project_id and p.user_id = auth.uid()))
+);
 
 drop policy if exists "own notes" on public.notes;
 create policy "own notes" on public.notes for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
@@ -206,8 +210,13 @@ create policy "own bookmarks" on public.bookmarks for all using (auth.uid() = us
 drop policy if exists "own habits" on public.habits;
 create policy "own habits" on public.habits for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
+-- with check juga memastikan habit_id milik user sendiri: tanpa ini log palsu atas habit
+-- orang lain bisa memblokir centang korban (unique habit_id+logged_date).
 drop policy if exists "own habit logs" on public.habit_logs;
-create policy "own habit logs" on public.habit_logs for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "own habit logs" on public.habit_logs for all using (auth.uid() = user_id) with check (
+  auth.uid() = user_id
+  and exists (select 1 from public.habits h where h.id = habit_id and h.user_id = auth.uid())
+);
 
 -- Purge sampah task setiap tanggal 1, 00:30 — floor = awal bulan now - 4 bulan
 -- (5 bulan termasuk bulan ini, ikut window Analitik — sama dengan retentionFloor() di apps/web/lib/task-retention.ts).

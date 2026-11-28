@@ -32,7 +32,7 @@ import { GlobalSearch } from './global-search';
 import { NotificationsBell } from './notifications-bell';
 import { SubmitButton } from './submit-button';
 import { ToastHost } from './toast';
-import { logout } from '@/app/(auth)/actions';
+import { logoutAndReleasePush } from '@/lib/logout-client';
 
 export const NAV_ITEMS = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -202,7 +202,7 @@ function SidebarContent({
               <Settings className="h-4 w-4" />
               Pengaturan
             </Link>
-            <form action={logout} className="mt-1">
+            <form action={logoutAndReleasePush} className="mt-1">
               <SubmitButton
                 type="submit"
                 role="menuitem"

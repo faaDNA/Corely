@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import type { Bookmark } from '@repo/types';
 import { createClient } from '@/lib/supabase/server';
 import { toBookmarkRow } from '@/lib/mappers';
+import { isHttpUrl } from '@/lib/push-endpoint';
 
 async function requireUser() {
   const {
@@ -22,6 +23,8 @@ export async function saveBookmark(bookmark: Bookmark): Promise<{ ok: boolean; e
   try {
     const userId = await requireUser();
     const supabase = createClient();
+    // Dirender di <a href>: tolak javascript:/data: yang lolos z.string().url() di client.
+    if (!isHttpUrl(bookmark.url)) return { ok: false, error: 'URL harus diawali http:// atau https://.' };
     const row = toBookmarkRow(userId, bookmark);
     const exists =
       /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(bookmark.id);
