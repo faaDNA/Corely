@@ -66,14 +66,18 @@ export function ProjectTasksPanel({ projectId, projectName, projects, tasks, set
       dueDate: values.dateMode === 'none' ? undefined : values.dueDate || undefined,
       dueTime: values.dateMode === 'none' ? undefined : values.dueTime || undefined,
       dateMode: values.dateMode === 'none' ? undefined : values.dateMode,
-      projectId,
+      // Hormati pilihan "Proyek" di form (pindah proyek / tanpa proyek), jangan paksa proyek ini.
+      projectId: values.projectId || undefined,
       tags: values.tags ? values.tags.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
       completedAt: status === 'COMPLETED' ? modal.initial?.completedAt ?? toISO(new Date()) : undefined,
     };
+    const stays = payload.projectId === projectId;
     setModal({ open: false });
     if (modal.initial) {
-      setTasks((prev) => prev.map((t) => (t.id === modal.initial!.id ? payload : t)));
-    } else {
+      setTasks((prev) =>
+        stays ? prev.map((t) => (t.id === modal.initial!.id ? payload : t)) : prev.filter((t) => t.id !== modal.initial!.id)
+      );
+    } else if (stays) {
       setTasks((prev) => [...prev, payload]);
     }
     const res = await saveTask(payload);
@@ -82,7 +86,12 @@ export function ProjectTasksPanel({ projectId, projectName, projects, tasks, set
       onChanged?.(); // refresh menarik ulang data benar dari server
       return;
     }
-    toast(modal.initial ? 'Tugas diperbarui.' : `Tugas ditambahkan ke ${projectName}.`);
+    if (!stays) {
+      const target = projects.find((p) => p.id === payload.projectId)?.name;
+      toast(target ? `Tugas dipindah ke ${target}.` : 'Tugas dikeluarkan dari proyek ini.');
+    } else {
+      toast(modal.initial ? 'Tugas diperbarui.' : `Tugas ditambahkan ke ${projectName}.`);
+    }
     onChanged?.();
   }
 

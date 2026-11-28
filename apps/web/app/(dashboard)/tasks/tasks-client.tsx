@@ -87,7 +87,11 @@ export function TasksClient({
         if (!b.dueDate) return -1;
         return a.dueDate < b.dueDate ? -1 : 1;
       }
-      return a.id < b.id ? 1 : -1;
+      // "Terbaru": timestamp buat, bukan id (UUID v4 acak). Tugas optimistik belum punya
+      // timestamp → dianggap paling baru.
+      const ta = a.createdAtTs ?? "￿";
+      const tb = b.createdAtTs ?? "￿";
+      return ta === tb ? 0 : ta < tb ? 1 : -1;
     });
     return out;
   }, [filtered, status, priority, project, sort]);
@@ -188,8 +192,7 @@ export function TasksClient({
             Tugas
           </h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Kelola tugas harian, checklist lalu hapus tugas untuk menandai
-            selesai.
+            Kelola tugas harian. Centang untuk menandai selesai.
           </p>
         </div>
         <Button onClick={() => setModal({ open: true, initial: null })}>

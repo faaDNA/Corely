@@ -35,3 +35,15 @@ assert.equal(monthly[4].selesai, 2); // Oct: 6 + 13
 assert.equal(monthly[3].selesai, 0); // Sep kosong
 
 console.log('OK: task-series tests passed');
+
+// TODO terhapus keluar dari "dibuat"; COMPLETED terhapus tetap dihitung (aturan domain)
+const withDeleted = taskSeries(
+  [
+    t({ createdAt: '2026-10-13', deletedAt: '2026-10-13' }),
+    t({ createdAt: '2026-10-13', status: 'COMPLETED', completedAt: '2026-10-13', deletedAt: '2026-10-13' }),
+  ],
+  'daily',
+  now,
+);
+assert.equal(withDeleted[6].dibuat, 1);
+assert.equal(withDeleted[6].selesai, 1);

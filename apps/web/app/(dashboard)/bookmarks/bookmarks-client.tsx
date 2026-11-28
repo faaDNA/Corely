@@ -77,6 +77,7 @@ export function BookmarksClient({
       favorite: modal.initial?.favorite,
     };
     setModal({ open: false });
+    const backup = bookmarks;
     if (modal.initial)
       setBookmarks((prev) =>
         prev.map((b) => (b.id === modal.initial!.id ? payload : b)),
@@ -85,6 +86,8 @@ export function BookmarksClient({
 
     const res = await saveBookmark(payload);
     if (!res.ok) {
+      // Rollback: tanpa ini item "hantu" ber-ID sementara tertinggal dan error bila diklik.
+      setBookmarks(backup);
       toast(res.error ?? "Gagal menyimpan bookmark.", "error");
       return;
     }

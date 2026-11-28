@@ -45,6 +45,9 @@ export function taskSeries(tasks: Task[], period: Period, now: Date = new Date()
   return bucketRange(period, now).map((b) => ({
     name: b.name,
     selesai: tasks.filter((t) => t.completedAt && t.completedAt >= b.from && t.completedAt <= b.to).length,
-    dibuat: tasks.filter((t) => t.createdAt && t.createdAt >= b.from && t.createdAt <= b.to).length,
+    // Aturan domain: TODO yang dihapus keluar statistik; COMPLETED yang dihapus tetap dihitung sampai purge.
+    dibuat: tasks.filter(
+      (t) => t.createdAt && t.createdAt >= b.from && t.createdAt <= b.to && !(t.deletedAt && t.status === 'TODO')
+    ).length,
   }));
 }

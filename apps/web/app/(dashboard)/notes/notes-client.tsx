@@ -105,6 +105,8 @@ export function NotesClient({
       updatedAt: toISO(new Date()),
     };
     setModal({ open: false });
+    const backup = notes;
+    const prevSelected = selectedId;
     if (modal.initial)
       setNotes((prev) =>
         prev.map((n) => (n.id === modal.initial!.id ? payload : n)),
@@ -116,6 +118,9 @@ export function NotesClient({
 
     const res = await saveNote(payload);
     if (!res.ok) {
+      // Rollback: tanpa ini catatan "hantu" ber-ID sementara tertinggal dan error bila diklik.
+      setNotes(backup);
+      setSelectedId(prevSelected);
       toast(res.error ?? "Gagal menyimpan catatan.", "error");
       return;
     }
