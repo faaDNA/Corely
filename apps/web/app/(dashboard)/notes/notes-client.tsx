@@ -13,6 +13,7 @@ import {
 } from "@/components/notes/note-schema";
 import { deleteNote, saveNote, toggleNote } from "./actions";
 import { toast } from "@/components/toast";
+import { toISO } from "@/lib/calendar-range";
 import { Select } from "@/components/select";
 
 export function NotesClient({
@@ -101,7 +102,7 @@ export function NotesClient({
         : undefined,
       pinned: modal.initial?.pinned,
       archived: modal.initial?.archived,
-      updatedAt: new Date().toISOString().slice(0, 10),
+      updatedAt: toISO(new Date()),
     };
     setModal({ open: false });
     if (modal.initial)
@@ -115,25 +116,29 @@ export function NotesClient({
 
     const res = await saveNote(payload);
     if (!res.ok) {
-      toast(res.error ?? "Gagal menyimpan catatan.");
+      toast(res.error ?? "Gagal menyimpan catatan.", "error");
       return;
     }
     toast(modal.initial ? "Catatan diperbarui." : "Catatan ditambahkan.");
     router.refresh();
   }
 
-  async function handleInlineSave(id: string, content: string) {
+  /** true = tersimpan di server. State baru diubah setelah ok, supaya draft di panel tidak hilang saat gagal. */
+  async function handleInlineSave(id: string, content: string): Promise<boolean> {
+    const note = notes.find((n) => n.id === id);
+    if (!note) return false;
+    const res = await saveNote({ ...note, content });
+    if (!res.ok) {
+      toast(res.error ?? "Gagal menyimpan isi catatan.", "error");
+      return false;
+    }
     setNotes((prev) =>
       prev.map((n) =>
-        n.id === id
-          ? { ...n, content, updatedAt: new Date().toISOString().slice(0, 10) }
-          : n,
+        n.id === id ? { ...n, content, updatedAt: toISO(new Date()) } : n,
       ),
     );
-    const note = notes.find((n) => n.id === id);
-    if (!note) return;
-    await saveNote({ ...note, content });
     router.refresh();
+    return true;
   }
 
   async function handleToggle(flag: "pinned" | "archived", id: string) {
@@ -146,7 +151,7 @@ export function NotesClient({
     );
     const res = await toggleNote(note, flag);
     if (!res.ok) {
-      toast(res.error ?? "Gagal memperbarui catatan.");
+      toast(res.error ?? "Gagal memperbarui catatan.", "error");
       setNotes(notes);
       return;
     }
@@ -162,7 +167,7 @@ export function NotesClient({
     setSheetOpen(false);
     const res = await deleteNote(id);
     if (!res.ok) {
-      toast(res.error ?? "Gagal menghapus catatan.");
+      toast(res.error ?? "Gagal menghapus catatan.", "error");
       setNotes(backup);
       return;
     }

@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import type { Task } from '@repo/types';
 import { createClient } from '@/lib/supabase/server';
 import { getTasks, toTaskRow } from '@/lib/mappers';
+import { isoWIB } from '@/lib/day';
 
 const COLS =
   'id, title, description, status, priority, due_date, due_time, date_mode, project_id, tags, completed_at, deleted_at';
@@ -54,7 +55,7 @@ export async function toggleTask(task: Task): Promise<{ ok: boolean; error?: str
       .from('tasks')
       .update({
         status: next,
-        completed_at: next === 'COMPLETED' ? new Date().toISOString().slice(0, 10) : null,
+        completed_at: next === 'COMPLETED' ? isoWIB() : null,
       })
       .eq('id', task.id)
       .eq('user_id', userId);

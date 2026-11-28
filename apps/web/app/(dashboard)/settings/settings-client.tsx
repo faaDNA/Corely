@@ -38,7 +38,7 @@ export function SettingsClient({ initialProfile }: { initialProfile: Profile }) 
     setSaving((s) => ({ ...s, profile: true }));
     try {
       const res = await updateProfile(profile);
-      toast(res.error ?? res.message ?? 'Profil disimpan.');
+      toast(res.error ?? res.message ?? 'Profil disimpan.', res.error ? 'error' : 'success');
     } finally {
       setSaving((s) => ({ ...s, profile: false }));
     }
@@ -47,13 +47,13 @@ export function SettingsClient({ initialProfile }: { initialProfile: Profile }) 
   async function savePassword(e: React.FormEvent) {
     e.preventDefault();
     if (pw.next !== pw.confirm) {
-      toast('Konfirmasi password tidak cocok.');
+      toast('Konfirmasi password tidak cocok.', 'error');
       return;
     }
     setSaving((s) => ({ ...s, password: true }));
     try {
       const res = await changePassword(pw.current, pw.next);
-      toast(res.error ?? res.message ?? 'Password berhasil diubah.');
+      toast(res.error ?? res.message ?? 'Password berhasil diubah.', res.error ? 'error' : 'success');
       if (!res.error) {
         setPw({ current: '', next: '', confirm: '' });
         setShowPw({ current: false, next: false, confirm: false });

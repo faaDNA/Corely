@@ -44,7 +44,7 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
     );
     const res = await toggleHabitToday(h.id, next);
     if (!res.ok) {
-      toast(res.error ?? 'Gagal memperbarui kebiasaan.');
+      toast(res.error ?? 'Gagal memperbarui kebiasaan.', 'error');
       setHabits(initialHabits);
       return;
     }
@@ -58,7 +58,7 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
     try {
       const res = await addHabit(name.trim());
       if (!res.ok) {
-        toast(res.error ?? 'Gagal menambah kebiasaan.');
+        toast(res.error ?? 'Gagal menambah kebiasaan.', 'error');
         return;
       }
       toast('Kebiasaan ditambahkan.');
@@ -78,7 +78,7 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
     setPendingDelete(null);
     const res = await deleteHabit(id);
     if (!res.ok) {
-      toast(res.error ?? 'Gagal menghapus kebiasaan.');
+      toast(res.error ?? 'Gagal menghapus kebiasaan.', 'error');
       setHabits(backup);
       return;
     }

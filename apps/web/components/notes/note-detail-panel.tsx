@@ -35,7 +35,8 @@ interface Props {
   onDelete: (id: string) => void;
   onTogglePin: (id: string) => void;
   onToggleArchive: (id: string) => void;
-  onSaveContent: (id: string, content: string) => void;
+  /** Resolve true bila tersimpan di server. */
+  onSaveContent: (id: string, content: string) => Promise<boolean>;
   /** Hanya panggil di mobile (sheet overlay): tutup panel dan kembali ke daftar. */
   onClose?: () => void;
 }
@@ -47,6 +48,7 @@ const proseCls =
 export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onToggleArchive, onSaveContent, onClose }: Props) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(note.content);
+  const [saving, setSaving] = useState(false);
   const areaRef = useRef<HTMLTextAreaElement>(null);
 
   // ganti catatan → keluar mode edit, sinkron draft
@@ -71,12 +73,16 @@ export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onTog
     startEdit();
   }
 
-  function save() {
+  async function save() {
     if (draft.length > 5000) {
-      toast('Isi maksimal 5000 karakter.');
+      toast('Isi maksimal 5000 karakter.', 'error');
       return;
     }
-    onSaveContent(note.id, draft);
+    setSaving(true);
+    const ok = await onSaveContent(note.id, draft);
+    setSaving(false);
+    // Gagal → tetap di mode edit, draft utuh (toast error dari pemanggil).
+    if (!ok) return;
     setEditing(false);
     toast('Isi catatan disimpan.');
   }
@@ -144,9 +150,10 @@ export function NoteDetailPanel({ note, onMetaEdit, onDelete, onTogglePin, onTog
               <button
                 type="button"
                 onClick={save}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-blue-500"
+                disabled={saving}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-blue-500 disabled:opacity-60"
               >
-                <Check className="h-3.5 w-3.5" />Simpan isi
+                <Check className="h-3.5 w-3.5" />{saving ? 'Menyimpan…' : 'Simpan isi'}
               </button>
             </div>
           </div>

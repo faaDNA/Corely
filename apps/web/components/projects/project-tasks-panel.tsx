@@ -8,6 +8,7 @@ import { TaskFormModal } from '@/components/tasks/task-form-modal';
 import type { TaskFormValues } from '@/components/tasks/task-schema';
 import { deleteTask, saveTask, toggleTask } from '@/app/(dashboard)/tasks/actions';
 import { toast } from '@/components/toast';
+import { toISO } from '@/lib/calendar-range';
 
 const PRIORITY_BADGE: Record<string, string> = {
   HIGH: 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20',
@@ -40,14 +41,14 @@ export function ProjectTasksPanel({ projectId, projectName, projects, tasks, set
     setTasks((prev) =>
       prev.map((t) =>
         t.id === id
-          ? { ...t, status: next, completedAt: next === 'TODO' ? undefined : new Date().toISOString().slice(0, 10) }
+          ? { ...t, status: next, completedAt: next === 'TODO' ? undefined : toISO(new Date()) }
           : t
       )
     );
     const res = await toggleTask(task);
     if (!res.ok) {
       setTasks((prev) => prev.map((t) => (t.id === id ? task : t)));
-      toast(res.error ?? 'Gagal memperbarui tugas.');
+      toast(res.error ?? 'Gagal memperbarui tugas.', 'error');
       return;
     }
     onChanged?.();
@@ -67,7 +68,7 @@ export function ProjectTasksPanel({ projectId, projectName, projects, tasks, set
       dateMode: values.dateMode === 'none' ? undefined : values.dateMode,
       projectId,
       tags: values.tags ? values.tags.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
-      completedAt: status === 'COMPLETED' ? modal.initial?.completedAt ?? new Date().toISOString().slice(0, 10) : undefined,
+      completedAt: status === 'COMPLETED' ? modal.initial?.completedAt ?? toISO(new Date()) : undefined,
     };
     setModal({ open: false });
     if (modal.initial) {
@@ -77,7 +78,7 @@ export function ProjectTasksPanel({ projectId, projectName, projects, tasks, set
     }
     const res = await saveTask(payload);
     if (!res.ok) {
-      toast(res.error ?? 'Gagal menyimpan tugas.');
+      toast(res.error ?? 'Gagal menyimpan tugas.', 'error');
       onChanged?.(); // refresh menarik ulang data benar dari server
       return;
     }
@@ -89,12 +90,12 @@ export function ProjectTasksPanel({ projectId, projectName, projects, tasks, set
     if (!pendingDelete) return;
     const id = pendingDelete;
     const backup = tasks;
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, deletedAt: new Date().toISOString().slice(0, 10) } : t)));
+    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, deletedAt: toISO(new Date()) } : t)));
     setPendingDelete(null);
     const res = await deleteTask(id);
     if (!res.ok) {
       setTasks(backup);
-      toast(res.error ?? 'Gagal menghapus tugas.');
+      toast(res.error ?? 'Gagal menghapus tugas.', 'error');
       return;
     }
     toast('Tugas dihapus.');

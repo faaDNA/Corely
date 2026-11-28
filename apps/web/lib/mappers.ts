@@ -1,6 +1,6 @@
 import type { Project, Task, Note, Habit, Bookmark } from '@repo/types';
 import { createClient } from '@/lib/supabase/server';
-import { wibNow } from '@/lib/day';
+import { isoWIB, wibNow } from '@/lib/day';
 
 // DB snake_case → app camelCase
 
@@ -32,14 +32,12 @@ export function taskFromRow(row: {
     projectId: row.project_id ?? undefined,
     tags: row.tags ?? undefined,
     completedAt: row.completed_at ?? undefined,
-    // timestamptz → tanggal lokal (hindari geser UTC di deret harian)
-    createdAt: row.created_at ? localDate(new Date(row.created_at)) : undefined,
+    // timestamptz → tanggal WIB. Server Vercel ber-TZ UTC: getter lokal bergeser sehari pukul 00–07 WIB.
+    createdAt: row.created_at ? isoWIB(new Date(row.created_at)) : undefined,
+    // timestamp penuh: urutan "Terbaru" (UUID v4 acak, tidak kronologis)
+    createdAtTs: row.created_at ?? undefined,
     deletedAt: row.deleted_at ?? undefined,
   };
-}
-
-function localDate(d: Date): string {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
 export function projectFromRow(row: {
@@ -124,48 +122,54 @@ export function toBookmarkRow(userId: string, b: Bookmark) {
 
 // Queries
 
+/** Fetch gagal harus jadi error (ditangkap error.tsx), bukan daftar kosong yang dikira data hilang. */
+function rows<T>({ data, error }: { data: T[] | null; error: { message: string } | null }): T[] {
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
 const TASK_COLUMNS = 'id, title, description, status, priority, due_date, due_time, date_mode, project_id, tags, completed_at, created_at, deleted_at';
 
 export async function getTasks(userId: string): Promise<Task[]> {
   const supabase = createClient();
-  const { data } = await supabase
+  const res = await supabase
     .from('tasks')
     .select(TASK_COLUMNS)
     .eq('user_id', userId)
     .order('due_date', { ascending: true, nullsFirst: false });
-  return (data ?? []).map(taskFromRow);
+  return rows(res).map(taskFromRow);
 }
 
 /** Tugas satu proyek saja — index tasks_project_idx, tanpa memuat seluruh tabel. */
 export async function getProjectTasks(userId: string, projectId: string): Promise<Task[]> {
   const supabase = createClient();
-  const { data } = await supabase
+  const res = await supabase
     .from('tasks')
     .select(TASK_COLUMNS)
     .eq('user_id', userId)
     .eq('project_id', projectId)
     .order('due_date', { ascending: true, nullsFirst: false });
-  return (data ?? []).map(taskFromRow);
+  return rows(res).map(taskFromRow);
 }
 
 export async function getProjects(userId: string): Promise<Project[]> {
   const supabase = createClient();
-  const { data } = await supabase
+  const res = await supabase
     .from('projects')
     .select('id, name, description, on_hold, archived, deadline, technologies, repo_url, deploy_url')
     .eq('user_id', userId)
     .order('created_at', { ascending: true });
-  return (data ?? []).map(projectFromRow);
+  return rows(res).map(projectFromRow);
 }
 
 export async function getNotes(userId: string): Promise<Note[]> {
   const supabase = createClient();
-  const { data } = await supabase
+  const res = await supabase
     .from('notes')
     .select('id, title, content, category, tags, pinned, archived, updated_at')
     .eq('user_id', userId)
     .order('updated_at', { ascending: false });
-  return (data ?? []).map((r) => ({
+  return rows(res).map((r) => ({
     id: r.id as string,
     title: r.title as string,
     content: (r.content as string) ?? '',
@@ -173,14 +177,14 @@ export async function getNotes(userId: string): Promise<Note[]> {
     tags: (r.tags as string[] | null) ?? undefined,
     pinned: (r.pinned as boolean) || undefined,
     archived: (r.archived as boolean) || undefined,
-    updatedAt: ((r.updated_at as string) ?? '').slice(0, 10),
+    updatedAt: r.updated_at ? isoWIB(new Date(r.updated_at as string)) : '',
   }));
 }
 
 /** Habit + streak dihitung dari habit_logs (bukan kolom). */
 export async function getHabits(userId: string): Promise<Habit[]> {
   const supabase = createClient();
-  const { data } = await supabase
+  const res = await supabase
     .from('habits')
     .select('id, name, frequency, habit_logs(logged_date)')
     .eq('user_id', userId)
@@ -188,7 +192,7 @@ export async function getHabits(userId: string): Promise<Habit[]> {
 
   // 'hari ini' menurut wibNow() — baca dengan getter UTC, lihat lib/day.ts
   const today = wibNow();
-  return (data ?? []).map((h) => {
+  return rows(res).map((h) => {
     const logs = ((h.habit_logs as { logged_date: string }[] | null) ?? [])
       .map((l) => l.logged_date)
       .sort()
@@ -208,12 +212,12 @@ export async function getHabits(userId: string): Promise<Habit[]> {
 
 export async function getBookmarks(userId: string): Promise<Bookmark[]> {
   const supabase = createClient();
-  const { data } = await supabase
+  const res = await supabase
     .from('bookmarks')
     .select('id, title, url, description, category, tags, favorite, created_at')
     .eq('user_id', userId)
     .order('created_at', { ascending: false });
-  return (data ?? []).map((r) => ({
+  return rows(res).map((r) => ({
     id: r.id as string,
     title: r.title as string,
     url: r.url as string,

@@ -61,7 +61,7 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
     setProjects((prev) => prev.map((x) => (x.id === p.id ? payload : x)));
     const res = await saveProject(payload);
     if (!res.ok) {
-      toast(res.error ?? 'Gagal mengubah status proyek.');
+      toast(res.error ?? 'Gagal mengubah status proyek.', 'error');
       setProjects(initialProjects);
       return;
     }
@@ -88,7 +88,7 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
     setProjects(optimistic);
     const res = await saveProject(payload);
     if (!res.ok) {
-      toast(res.error ?? 'Gagal menyimpan proyek.');
+      toast(res.error ?? 'Gagal menyimpan proyek.', 'error');
       setProjects(initialProjects);
       return;
     }
@@ -103,7 +103,7 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
     setProjects((prev) => prev.filter((p) => p.id !== id));
     const res = await deleteProject(id);
     if (!res.ok) {
-      toast(res.error ?? 'Gagal menghapus proyek.');
+      toast(res.error ?? 'Gagal menghapus proyek.', 'error');
       setProjects(initialProjects);
       return;
     }

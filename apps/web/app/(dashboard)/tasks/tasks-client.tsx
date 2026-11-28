@@ -10,12 +10,14 @@ import { TaskFormModal } from "@/components/tasks/task-form-modal";
 import { Select } from "@/components/select";
 import { TaskListView } from "@/components/tasks/task-views";
 import { toast } from "@/components/toast";
+import { toISO } from "@/lib/calendar-range";
 import { deleteTask, saveTask, toggleTask } from "./actions";
 
 const NEW_ID = () => `new-${Date.now()}`;
 
+/** Tanggal lokal browser (WIB), bukan UTC: toISOString() mundur sehari pukul 00–07 WIB. */
 function todayISO(): string {
-  return new Date().toISOString().slice(0, 10);
+  return toISO(new Date());
 }
 
 export function TasksClient({
@@ -111,7 +113,7 @@ export function TasksClient({
     );
     const res = await toggleTask(task);
     if (!res.ok) {
-      toast(res.error ?? "Gagal memperbarui tugas.");
+      toast(res.error ?? "Gagal memperbarui tugas.", "error");
       setTasks(initialTasks);
       return;
     }
@@ -153,7 +155,7 @@ export function TasksClient({
 
     const res = await saveTask(payload);
     if (!res.ok) {
-      toast(res.error ?? "Gagal menyimpan tugas.");
+      toast(res.error ?? "Gagal menyimpan tugas.", "error");
       setTasks(initialTasks);
       return;
     }
@@ -170,7 +172,7 @@ export function TasksClient({
     );
     const res = await deleteTask(id);
     if (!res.ok) {
-      toast(res.error ?? "Gagal menghapus tugas.");
+      toast(res.error ?? "Gagal menghapus tugas.", "error");
       setTasks(initialTasks);
       return;
     }

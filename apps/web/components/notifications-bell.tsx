@@ -30,16 +30,16 @@ export function NotificationsBell() {
   }, []);
 
   async function enable() {
-    if (!supported) return toast('Browser tidak mendukung notifikasi.');
+    if (!supported) return toast('Browser tidak mendukung notifikasi.', 'error');
     const pub = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-    if (!pub) return toast('Kunci VAPID belum dikonfigurasi.');
+    if (!pub) return toast('Notifikasi belum tersedia. Hubungi pengelola aplikasi.', 'error');
     setBusy(true);
     try {
       const perm = await Notification.requestPermission();
       setPermission(perm);
       if (perm !== 'granted') {
-        if (perm === 'denied') toast('Izin diblokir. Buka pengaturan situs browser untuk mengizinkan kembali.');
-        else toast('Izin ditolak.');
+        if (perm === 'denied') toast('Izin diblokir. Buka pengaturan situs browser untuk mengizinkan kembali.', 'error');
+        else toast('Izin ditolak.', 'error');
         return;
       }
       const reg = await navigator.serviceWorker.register('/sw.js');
@@ -56,7 +56,9 @@ export function NotificationsBell() {
       toast('Notifikasi diaktifkan. Perangkat ini akan menerima pengingat.');
       setOpen(false);
     } catch (e) {
-      toast(e instanceof Error ? e.message : 'Gagal mengaktifkan notifikasi.');
+      // Pesan teknis browser/server (mis. DOMException) bukan untuk pengguna — cukup di console.
+      console.error(e);
+      toast('Gagal mengaktifkan notifikasi. Coba lagi.', 'error');
     } finally {
       setBusy(false);
     }
@@ -76,7 +78,8 @@ export function NotificationsBell() {
       toast('Notifikasi dimatikan untuk perangkat ini.');
       setOpen(false);
     } catch (e) {
-      toast(e instanceof Error ? e.message : 'Gagal mematikan notifikasi.');
+      console.error(e);
+      toast('Gagal mematikan notifikasi. Coba lagi.', 'error');
     } finally {
       setBusy(false);
     }
@@ -84,7 +87,7 @@ export function NotificationsBell() {
 
   async function test() {
     const res = await sendTestNotification();
-    toast(res.ok ? 'Notifikasi uji dikirim.' : res.error ?? 'Gagal kirim notifikasi.');
+    toast(res.ok ? 'Notifikasi uji dikirim.' : res.error ?? 'Gagal kirim notifikasi.', res.ok ? 'success' : 'error');
   }
 
   if (!supported) return null;

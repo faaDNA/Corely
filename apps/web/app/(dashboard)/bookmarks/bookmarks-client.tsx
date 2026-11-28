@@ -85,7 +85,7 @@ export function BookmarksClient({
 
     const res = await saveBookmark(payload);
     if (!res.ok) {
-      toast(res.error ?? "Gagal menyimpan bookmark.");
+      toast(res.error ?? "Gagal menyimpan bookmark.", "error");
       return;
     }
     toast(modal.initial ? "Bookmark diperbarui." : "Bookmark ditambahkan.");
@@ -98,7 +98,7 @@ export function BookmarksClient({
     );
     const res = await toggleBookmark(b);
     if (!res.ok) {
-      toast(res.error ?? "Gagal memperbarui bookmark.");
+      toast(res.error ?? "Gagal memperbarui bookmark.", "error");
       setBookmarks(initialBookmarks);
       return;
     }
@@ -113,7 +113,7 @@ export function BookmarksClient({
     setPendingDelete(null);
     const res = await deleteBookmark(id);
     if (!res.ok) {
-      toast(res.error ?? "Gagal menghapus bookmark.");
+      toast(res.error ?? "Gagal menghapus bookmark.", "error");
       setBookmarks(backup);
       return;
     }
