@@ -3,6 +3,7 @@
 import type { Project, Task } from '@repo/types';
 import { cn } from '@repo/ui';
 import { daysLate, isoWIB } from '@/lib/day';
+import { priorityLabel } from './task-schema';
 
 const PRIORITY_BADGE: Record<string, string> = {
   HIGH: 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20',
@@ -18,7 +19,7 @@ export function TaskBadges({ task, projects }: { task: Task; projects: Project[]
   return (
     <div className="flex flex-wrap items-center gap-1.5">
       <span className={cn('rounded border px-1.5 py-0.5 text-[10px] font-medium', PRIORITY_BADGE[task.priority])}>
-        {task.priority}
+        {priorityLabel(task.priority)}
       </span>
       {task.dueDate && (
         <span

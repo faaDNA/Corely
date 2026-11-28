@@ -48,7 +48,7 @@ export default function ProjectDetailClient({
 
         <div className="mt-4">
           <div className="mb-1 flex justify-between text-xs">
-            <span className="text-slate-500 dark:text-slate-400">Progress</span>
+            <span className="text-slate-500 dark:text-slate-400">Progres</span>
             <span className="font-mono text-blue-600 dark:text-blue-400">{pct}%</span>
           </div>
           <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
@@ -62,12 +62,12 @@ export default function ProjectDetailClient({
           )}
           {project.repoUrl && (
             <a href={project.repoUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
-              <Github className="h-4 w-4" />Repository
+              <Github className="h-4 w-4" />Repositori
             </a>
           )}
           {project.deployUrl && (
             <a href={project.deployUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
-              <ExternalLink className="h-4 w-4" />Deployment
+              <ExternalLink className="h-4 w-4" />Situs
             </a>
           )}
           {project.technologies?.length ? (

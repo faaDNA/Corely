@@ -116,7 +116,7 @@ export function NotificationsBell() {
         <div className="absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border border-slate-200 bg-white p-4 shadow-xl dark:border-slate-800 dark:bg-slate-900">
           <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Notifikasi</h3>
           <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-            Pengingat tenggat dikirim sebagai notifikasi browser OS. Aktifkan agar pengingat H-1 dan H tiba di perangkat ini.
+            Pengingat tenggat dikirim sebagai notifikasi di perangkat. Aktifkan agar pengingat H-1 dan H tiba di perangkat ini.
           </p>
           <p className="mt-2 text-[11px] text-slate-500">
             Status: {blocked ? 'diblokir' : subscribed ? 'aktif' : 'mati'}
@@ -153,6 +153,7 @@ export function NotificationsBell() {
               type="button"
               onClick={test}
               title="Kirim notifikasi uji"
+              aria-label="Kirim notifikasi uji"
               className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs transition hover:bg-slate-50 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800"
               disabled={!subscribed}
             >

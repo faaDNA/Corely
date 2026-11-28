@@ -24,12 +24,16 @@ export const taskSchema = z
 export type TaskFormValues = z.infer<typeof taskSchema>;
 
 export const STATUS_LABELS = {
-  TODO: 'Todo',
-  COMPLETED: 'Completed',
+  TODO: 'Belum',
+  COMPLETED: 'Selesai',
 } as const;
 
 export const PRIORITY_LABELS = {
-  LOW: 'Low',
-  MEDIUM: 'Medium',
-  HIGH: 'High',
+  LOW: 'Rendah',
+  MEDIUM: 'Sedang',
+  HIGH: 'Tinggi',
 } as const;
+
+// Nilai enum tak dikenal → tampil apa adanya.
+export const priorityLabel = (p: string) => PRIORITY_LABELS[p as keyof typeof PRIORITY_LABELS] ?? p;
+export const statusLabel = (s: string) => STATUS_LABELS[s as keyof typeof STATUS_LABELS] ?? s;

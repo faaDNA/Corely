@@ -85,7 +85,7 @@ export function TaskFormModal({ open, initial, defaultProjectId, projects, onSub
           <X className="h-4 w-4" />
         </button>
 
-        <DialogTitle className="text-lg font-semibold text-slate-900 dark:text-white">{initial ? 'Edit Tugas' : 'Tugas Baru'}</DialogTitle>
+        <DialogTitle className="text-lg font-semibold text-slate-900 dark:text-white">{initial ? 'Ubah Tugas' : 'Tugas Baru'}</DialogTitle>
 
         <div className="mt-4 space-y-4">
           <div className="space-y-1.5">
@@ -173,7 +173,7 @@ export function TaskFormModal({ open, initial, defaultProjectId, projects, onSub
 
           <div className="space-y-1.5">
             <label htmlFor="t-tags" className="text-xs font-medium text-slate-600 dark:text-slate-300">Tag (pisahkan koma, opsional)</label>
-            <input id="t-tags" {...register('tags')} className={inputCls} placeholder="urgent, kuliah" />
+            <input id="t-tags" {...register('tags')} className={inputCls} placeholder="penting, kuliah" />
           </div>
         </div>
 

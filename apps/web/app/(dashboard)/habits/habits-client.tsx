@@ -8,6 +8,10 @@ import type { Habit } from '@repo/types';
 import { addHabit, deleteHabit, toggleHabitToday } from './actions';
 import { toast } from '@/components/toast';
 
+// Nilai frekuensi di DB tetap ('daily'); ini cuma label tampilan. Nilai tak dikenal → apa adanya.
+const FREQUENCY_LABELS: Record<string, string> = { daily: 'Harian', weekly: 'Mingguan', monthly: 'Bulanan' };
+const frequencyLabel = (f: string) => FREQUENCY_LABELS[f.toLowerCase()] ?? f;
+
 function isoDay(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
@@ -93,7 +97,7 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Kebiasaan</h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Bangun kebiasaan baik dengan penandaan harian dan visualisasi streak.</p>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Bangun kebiasaan baik dengan penandaan harian dan rekap hari beruntun.</p>
         </div>
         <Button onClick={() => setOpen(true)}><Plus className="mr-2 h-4 w-4" />Kebiasaan Baru</Button>
       </header>
@@ -105,6 +109,8 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
             <button
               type="button"
               onClick={() => handleToggle(h)}
+              aria-label={`Tandai ${h.name} hari ini`}
+              aria-pressed={h.completedToday}
               className={cn(
                 'flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border transition',
                 h.completedToday
@@ -118,10 +124,10 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
             <div className="min-w-0 flex-1 space-y-1">
               <div className="flex items-center gap-2">
                 <h3 className="font-semibold text-slate-900 dark:text-white">{h.name}</h3>
-                <span className="rounded bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] uppercase text-slate-600 dark:text-slate-400">{h.frequency}</span>
+                <span className="rounded bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] uppercase text-slate-600 dark:text-slate-400">{frequencyLabel(h.frequency)}</span>
               </div>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
-                <span className="inline-flex items-center gap-1 text-amber-400"><Flame className="h-3.5 w-3.5" />Streak: {h.streak} hari</span>
+                <span className="inline-flex items-center gap-1 text-amber-400"><Flame className="h-3.5 w-3.5" />Beruntun: {h.streak} hari</span>
                 <span className="inline-flex items-center gap-1 text-slate-500"><Trophy className="h-3.5 w-3.5" />Rekor: {h.longestStreak} hari</span>
               </div>
             </div>
@@ -147,7 +153,7 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
               </div>
             </div>
 
-            <button type="button" onClick={() => setPendingDelete(h.id)} aria-label="Delete" className="shrink-0 rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:text-slate-600 dark:hover:bg-red-950 dark:hover:text-red-400">
+            <button type="button" onClick={() => setPendingDelete(h.id)} aria-label={`Hapus ${h.name}`} className="shrink-0 rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:text-slate-600 dark:hover:bg-red-950 dark:hover:text-red-400">
               <Trash2 className="h-4 w-4" />
             </button>
           </div>
@@ -188,7 +194,7 @@ export function HabitsClient({ initialHabits }: { initialHabits: Habit[] }) {
         <Dialog open onClose={() => setPendingDelete(null)} withDescription>
           <div className="relative w-full max-w-sm rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 p-6 shadow-2xl">
             <DialogTitle className="text-sm font-semibold text-slate-900 dark:text-white">Hapus kebiasaan ini?</DialogTitle>
-            <DialogDescription className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">Streak dan riwayat penandaan ikut terhapus. Tindakan ini tidak bisa dibatalkan.</DialogDescription>
+            <DialogDescription className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">Hari beruntun dan riwayat penandaan ikut terhapus. Tindakan ini tidak bisa dibatalkan.</DialogDescription>
             <div className="mt-4 flex justify-end gap-2">
               <Button variant="ghost" size="sm" onClick={() => setPendingDelete(null)}>Batal</Button>
               <Button variant="danger" size="sm" onClick={confirmDelete}>Hapus</Button>

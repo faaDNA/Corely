@@ -36,13 +36,13 @@ import { logoutAndReleasePush } from '@/lib/logout-client';
 
 export const NAV_ITEMS = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { label: 'Tasks', href: '/tasks', icon: CheckSquare },
-  { label: 'Projects', href: '/projects', icon: FolderKanban },
-  { label: 'Notes', href: '/notes', icon: NotebookPen },
-  { label: 'Bookmarks', href: '/bookmarks', icon: Bookmark },
-  { label: 'Habits', href: '/habits', icon: Flame },
-  { label: 'Calendar', href: '/calendar', icon: Calendar },
-  { label: 'Analytics', href: '/analytics', icon: BarChart3 },
+  { label: 'Tugas', href: '/tasks', icon: CheckSquare },
+  { label: 'Proyek', href: '/projects', icon: FolderKanban },
+  { label: 'Catatan', href: '/notes', icon: NotebookPen },
+  { label: 'Bookmark', href: '/bookmarks', icon: Bookmark },
+  { label: 'Kebiasaan', href: '/habits', icon: Flame },
+  { label: 'Kalender', href: '/calendar', icon: Calendar },
+  { label: 'Analitik', href: '/analytics', icon: BarChart3 },
 ];
 
 export function ThemeToggle() {
@@ -78,7 +78,7 @@ export function ThemeToggle() {
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label="Pilih tema"
-        title={theme === 'system' ? `Sistem (${resolvedTheme})` : theme}
+        title={theme === 'system' ? `Sistem (${resolvedTheme === 'dark' ? 'Gelap' : 'Terang'})` : theme === 'dark' ? 'Gelap' : 'Terang'}
         className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:text-white"
         type="button"
       >
@@ -133,7 +133,7 @@ function SidebarContent({
         <LogoMark className="h-9 w-9 text-blue-600 dark:text-blue-500" />
         <div className="leading-tight">
           <p className="font-bold text-slate-900 dark:text-white">Corely</p>
-          <p className="text-[11px] text-slate-500">Your productivity hub</p>
+          <p className="text-[11px] text-slate-500">Ruang produktivitasmu</p>
         </div>
       </Link>
 
@@ -143,13 +143,13 @@ function SidebarContent({
         onClick={() => window.dispatchEvent(new Event('pd-open-search'))}
       >
         <Search className="h-4 w-4" />
-        <span>Search...</span>
+        <span>Cari...</span>
         <kbd className="ml-auto hidden rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] md:inline-block dark:border-slate-800 dark:bg-slate-950">Ctrl K</kbd>
       </button>
 
       <nav className="flex-1 space-y-1 overflow-y-auto px-3">
         <p className="px-2 pb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
-          Main Menu
+          Menu Utama
         </p>
         {NAV_ITEMS.map((item) => {
           const active = pathname === item.href;
@@ -261,7 +261,7 @@ export function AppShell({
           <button
             className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 md:hidden"
             onClick={() => setMobileOpen((v) => !v)}
-            aria-label="Toggle menu"
+            aria-label={mobileOpen ? 'Tutup menu' : 'Buka menu'}
             type="button"
           >
             {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}

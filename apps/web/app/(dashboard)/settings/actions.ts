@@ -47,7 +47,7 @@ export async function updateProfile(profile: Profile): Promise<Result> {
 
 /** Verifikasi password lama via re-auth, lalu ganti password baru. */
 export async function changePassword(current: string, next: string): Promise<Result> {
-  if (!current || !next) return { error: 'Lengkapi semua field password.' };
+  if (!current || !next) return { error: 'Lengkapi semua kolom password.' };
   if (next.length < 6) return { error: 'Password baru minimal 6 karakter.' };
   if (current === next) return { error: 'Password baru harus berbeda dari yang lama.' };
 

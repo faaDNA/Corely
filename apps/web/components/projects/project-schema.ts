@@ -12,10 +12,10 @@ export const projectSchema = z.object({
 export type ProjectFormValues = z.infer<typeof projectSchema>;
 
 export const PROJECT_STATUS_LABELS = {
-  IN_PROGRESS: 'In Progress',
-  COMPLETED: 'Completed',
-  ON_HOLD: 'On Hold',
-  ARCHIVED: 'Archived',
+  IN_PROGRESS: 'Berjalan',
+  COMPLETED: 'Selesai',
+  ON_HOLD: 'Dijeda',
+  ARCHIVED: 'Diarsipkan',
 } as const;
 
 export const PROJECT_STATUS_BADGE: Record<string, string> = {

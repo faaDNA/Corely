@@ -34,7 +34,7 @@ export function ForgotPasswordForm() {
 
           <FormAlert state={state} />
 
-          <SubmitButton className="w-full" type="submit">Kirim Tautan Reset</SubmitButton>
+          <SubmitButton className="w-full" type="submit">Kirim Tautan Atur Ulang</SubmitButton>
         </form>
       </CardContent>
     </Card>

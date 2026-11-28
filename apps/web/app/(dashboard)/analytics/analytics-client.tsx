@@ -55,8 +55,8 @@ export function AnalyticsClient({
   const completionRate = completed + pending ? Math.round((completed / (completed + pending)) * 100) : 0;
 
   const statusData = [
-    { name: 'Todo', value: pending, key: 'TODO' },
-    { name: 'Completed', value: completed, key: 'COMPLETED' },
+    { name: 'Belum', value: pending, key: 'TODO' },
+    { name: 'Selesai', value: completed, key: 'COMPLETED' },
   ];
 
   const projectData = projects
@@ -89,9 +89,9 @@ export function AnalyticsClient({
       </header>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Tugas Selesai" value={String(completed)} sub={`${completionRate}% completion rate`} color="#10b981" />
-        <StatCard label="Tugas Tertunda" value={String(pending)} sub="Belum diselesaikan" color="#3b82f6" />
-        <StatCard label="Streak Terpanjang" value={`${habits.length ? `${Math.max(...habits.map((h) => h.longestStreak))} Hari` : '—'}`} sub="Dari semua kebiasaan" color="#f59e0b" />
+        <StatCard label="Tugas Selesai" value={String(completed)} sub={`${completionRate}% tingkat penyelesaian`} color="#10b981" />
+        <StatCard label="Tugas Belum Selesai" value={String(pending)} sub="Masih perlu dikerjakan" color="#3b82f6" />
+        <StatCard label="Rekor Beruntun" value={`${habits.length ? `${Math.max(...habits.map((h) => h.longestStreak))} Hari` : '—'}`} sub="Dari semua kebiasaan" color="#f59e0b" />
         <StatCard
           label="Progres Proyek"
           value={projects.filter((p) => deriveProjectStatus(p, workingTasks) === 'IN_PROGRESS').length ? `${Math.round(projects.filter((p) => deriveProjectStatus(p, workingTasks) === 'IN_PROGRESS').reduce((a, p) => a + projectProgress(p, workingTasks), 0) / Math.max(1, projects.filter((p) => deriveProjectStatus(p, workingTasks) === 'IN_PROGRESS').length))}%` : '—'}

@@ -88,13 +88,13 @@ export function CalendarClient({ tasks, projects }: { tasks: Task[]; projects: P
       <div className="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60">
         <div className="flex flex-col gap-3 border-b border-slate-200 dark:border-slate-800 p-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-2">
-            <button type="button" onClick={() => move(-1)} aria-label="Previous" className="rounded-lg border border-slate-200 dark:border-slate-700 p-1.5 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"><ChevronLeft className="h-4 w-4" /></button>
+            <button type="button" onClick={() => move(-1)} aria-label="Sebelumnya" className="rounded-lg border border-slate-200 dark:border-slate-700 p-1.5 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"><ChevronLeft className="h-4 w-4" /></button>
             <span className="min-w-[120px] flex-1 text-center text-sm font-semibold text-slate-900 dark:text-white">
               {view === 'day'
                 ? fromISO(selected).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
                 : monthLabel}
             </span>
-            <button type="button" onClick={() => move(1)} aria-label="Next" className="rounded-lg border border-slate-200 dark:border-slate-700 p-1.5 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"><ChevronRight className="h-4 w-4" /></button>
+            <button type="button" onClick={() => move(1)} aria-label="Berikutnya" className="rounded-lg border border-slate-200 dark:border-slate-700 p-1.5 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"><ChevronRight className="h-4 w-4" /></button>
             <Button variant="outline" size="sm" onClick={() => { const now = new Date(); setCursor(now); setSelected(toISO(now)); }}>Hari Ini</Button>
           </div>
           <div className="flex w-full rounded-lg border border-slate-200 dark:border-slate-700 sm:w-auto">

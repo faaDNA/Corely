@@ -124,6 +124,7 @@ export function GlobalSearch() {
             value={q}
             onChange={(e) => { setQ(e.target.value); setCursor(0); }}
             onKeyDown={onInputKey}
+            aria-label="Cari"
             placeholder="Cari tugas, proyek, catatan, bookmark..."
             className="flex-1 bg-transparent text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none"
           />

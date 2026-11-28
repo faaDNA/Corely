@@ -17,6 +17,8 @@ import { getHabits, getNotes, getProjects, getTasks } from '@/lib/mappers';
 import { workingTasks } from '@/lib/task-retention';
 import { daysLate, isoWIB } from '@/lib/day';
 import { deriveProjectStatus, projectProgress } from '@/lib/project-status';
+import { priorityLabel } from '@/components/tasks/task-schema';
+import { noteCategoryLabel } from '@/components/notes/note-schema';
 
 const PRIORITY_BADGE: Record<string, string> = {
   HIGH: 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20',
@@ -56,9 +58,9 @@ export default async function DashboardPage() {
     .sort((a, b) => (a.dueDate! < b.dueDate! ? -1 : 1));
 
   const stats = [
-    { label: 'Tugas Pending', value: tasks.filter((t) => t.status === 'TODO' && !t.deletedAt).length, sub: `${tasks.filter((t) => t.completedAt === today).length} selesai hari ini`, icon: Circle, color: 'text-blue-600 dark:text-blue-400' },
+    { label: 'Tugas Belum Selesai', value: tasks.filter((t) => t.status === 'TODO' && !t.deletedAt).length, sub: `${tasks.filter((t) => t.completedAt === today).length} selesai hari ini`, icon: Circle, color: 'text-blue-600 dark:text-blue-400' },
     { label: 'Proyek Aktif', value: activeProjects.length, sub: `${tasks.filter((t) => t.dueDate && (t.dueDate > today) && t.status !== 'COMPLETED' && t.dateMode !== 'schedule' && !t.deletedAt).length} mendekati tenggat`, icon: FolderKanban, color: 'text-emerald-600 dark:text-emerald-400' },
-    { label: 'Streak Kebiasaan', value: `${habits.length ? Math.max(...habits.map((h) => h.streak)) : 0} Hari`, sub: 'Rekor: ' + (habits.length ? Math.max(...habits.map((h) => h.longestStreak)) : 0) + ' hari', icon: Flame, color: 'text-amber-600 dark:text-amber-400' },
+    { label: 'Kebiasaan Beruntun', value: `${habits.length ? Math.max(...habits.map((h) => h.streak)) : 0} Hari`, sub: 'Rekor: ' + (habits.length ? Math.max(...habits.map((h) => h.longestStreak)) : 0) + ' hari', icon: Flame, color: 'text-amber-600 dark:text-amber-400' },
     { label: 'Catatan', value: notes.length, sub: `${notes.filter((n) => n.pinned).length} disematkan`, icon: NotebookPen, color: 'text-purple-600 dark:text-purple-400' },
   ];
 
@@ -116,7 +118,7 @@ export default async function DashboardPage() {
                   {t.title}
                 </span>
                 <span className={cn('shrink-0 rounded border px-2 py-0.5 text-[10px]', PRIORITY_BADGE[t.priority])}>
-                  {t.priority}
+                  {priorityLabel(t.priority)}
                 </span>
               </div>
             ))}
@@ -185,7 +187,7 @@ export default async function DashboardPage() {
                 <div key={n.id} className="flex items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-2.5 text-xs">
                   <NotebookPen className="h-4 w-4 shrink-0 text-purple-600 dark:text-purple-400" />
                   <span className="flex-1 truncate text-slate-800 dark:text-slate-200">{n.title}</span>
-                  <span className="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-600 dark:bg-slate-800 dark:text-slate-400">{n.category}</span>
+                  <span className="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-600 dark:bg-slate-800 dark:text-slate-400">{noteCategoryLabel(n.category)}</span>
                 </div>
               ))}
             </CardContent>
@@ -194,7 +196,7 @@ export default async function DashboardPage() {
           {/* Habit summary */}
           <Card>
             <CardHeader className="flex-row items-center justify-between space-y-0">
-              <CardTitle className="text-base">Habit Hari Ini</CardTitle>
+              <CardTitle className="text-base">Kebiasaan Hari Ini</CardTitle>
               <Link href="/habits" className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">Semua</Link>
             </CardHeader>
             <CardContent>

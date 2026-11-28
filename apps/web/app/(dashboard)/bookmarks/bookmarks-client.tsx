@@ -8,6 +8,7 @@ import type { Bookmark } from "@repo/types";
 import { BookmarkFormModal } from "@/components/bookmarks/bookmark-form-modal";
 import {
   BOOKMARK_CATEGORIES,
+  bookmarkCategoryLabel,
   type BookmarkFormValues,
 } from "@/components/bookmarks/bookmark-schema";
 import { deleteBookmark, saveBookmark, toggleBookmark } from "./actions";
@@ -128,7 +129,7 @@ export function BookmarksClient({
             Bookmark
           </h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Simpan situs atau link penting dengan kategori, tag, dan favorit.
+            Simpan situs atau tautan penting dengan kategori, tag, dan favorit.
           </p>
         </div>
         <Button onClick={() => setModal({ open: true, initial: null })}>
@@ -153,7 +154,7 @@ export function BookmarksClient({
           ariaLabel="Filter kategori bookmark"
           options={[
             { value: "all", label: "Semua Kategori" },
-            ...BOOKMARK_CATEGORIES.map((c) => ({ value: c, label: c })),
+            ...BOOKMARK_CATEGORIES.map((c) => ({ value: c, label: bookmarkCategoryLabel(c) })),
           ]}
           className="px-3 py-2"
         />
@@ -190,7 +191,8 @@ export function BookmarksClient({
                 <button
                   type="button"
                   onClick={() => handleToggle(b)}
-                  aria-label="Favorite"
+                  aria-label={b.favorite ? `Hapus ${b.title} dari favorit` : `Jadikan ${b.title} favorit`}
+                  aria-pressed={!!b.favorite}
                   className={cn(
                     "rounded-lg p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800",
                     b.favorite
@@ -221,7 +223,7 @@ export function BookmarksClient({
               )}
               <div className="mt-2 flex flex-wrap gap-1">
                 <span className="rounded bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-600 dark:text-slate-400">
-                  {b.category}
+                  {bookmarkCategoryLabel(b.category)}
                 </span>
                 {b.tags?.map((t) => (
                   <span
@@ -236,7 +238,7 @@ export function BookmarksClient({
                 <button
                   type="button"
                   onClick={() => setModal({ open: true, initial: b })}
-                  aria-label="Edit"
+                  aria-label={`Ubah ${b.title}`}
                   className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
                 >
                   <Pencil className="h-4 w-4" />
@@ -244,7 +246,7 @@ export function BookmarksClient({
                 <button
                   type="button"
                   onClick={() => setPendingDelete(b.id)}
-                  aria-label="Delete"
+                  aria-label={`Hapus ${b.title}`}
                   className="rounded-lg p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
                 >
                   <Trash2 className="h-4 w-4" />

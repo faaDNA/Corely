@@ -9,6 +9,7 @@ import { NoteFormModal } from "@/components/notes/note-form-modal";
 import { NoteDetailPanel } from "@/components/notes/note-detail-panel";
 import {
   NOTE_CATEGORIES,
+  noteCategoryLabel,
   type NoteFormValues,
 } from "@/components/notes/note-schema";
 import { deleteNote, saveNote, toggleNote } from "./actions";
@@ -209,7 +210,7 @@ export function NotesClient({
           ariaLabel="Filter kategori catatan"
           options={[
             { value: "all", label: "Semua Kategori" },
-            ...NOTE_CATEGORIES.map((c) => ({ value: c, label: c })),
+            ...NOTE_CATEGORIES.map((c) => ({ value: c, label: noteCategoryLabel(c) })),
           ]}
           className="px-3 py-2"
         />
@@ -270,7 +271,7 @@ export function NotesClient({
                   </p>
                   <div className="mt-2 flex flex-wrap gap-1">
                     <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-                      {n.category}
+                      {noteCategoryLabel(n.category)}
                     </span>
                     {n.tags?.map((t) => (
                       <span
@@ -289,7 +290,7 @@ export function NotesClient({
                 <div className="flex items-center gap-1 border-t border-slate-200 px-2 py-1 dark:border-slate-800 lg:hidden">
                   <button
                     type="button"
-                    aria-label={n.pinned ? "Lepas pin" : "Pin catatan"}
+                    aria-label={n.pinned ? `Lepas sematan ${n.title}` : `Sematkan ${n.title}`}
                     onClick={() => handleToggle("pinned", n.id)}
                     className={cn(
                       "rounded-lg p-1.5 transition hover:bg-slate-100 dark:hover:bg-slate-800",
@@ -300,7 +301,7 @@ export function NotesClient({
                   </button>
                   <button
                     type="button"
-                    aria-label={n.archived ? "Buka arsip" : "Arsipkan"}
+                    aria-label={n.archived ? `Keluarkan ${n.title} dari arsip` : `Arsipkan ${n.title}`}
                     onClick={() => handleToggle("archived", n.id)}
                     className={cn(
                       "rounded-lg p-1.5 transition hover:bg-slate-100 dark:hover:bg-slate-800",
@@ -311,7 +312,7 @@ export function NotesClient({
                   </button>
                   <button
                     type="button"
-                    aria-label="Edit judul/kategori/tag"
+                    aria-label={`Ubah judul, kategori, tag ${n.title}`}
                     onClick={() => setModal({ open: true, initial: n })}
                     className="rounded-lg p-1.5 text-slate-500 transition hover:bg-slate-100 dark:hover:bg-slate-800"
                   >
@@ -319,7 +320,7 @@ export function NotesClient({
                   </button>
                   <button
                     type="button"
-                    aria-label="Hapus catatan"
+                    aria-label={`Hapus ${n.title}`}
                     onClick={() => setPendingDelete(n.id)}
                     className="rounded-lg p-1.5 text-slate-500 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
                   >

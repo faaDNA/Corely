@@ -131,11 +131,11 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
         <div className="flex flex-wrap gap-2">
           {(
             [
-              ['all', 'All'],
-              ['IN_PROGRESS', 'In Progress'],
-              ['COMPLETED', 'Completed'],
-              ['ON_HOLD', 'On Hold'],
-              ['ARCHIVED', 'Archived'],
+              ['all', 'Semua'],
+              ['IN_PROGRESS', PROJECT_STATUS_LABELS.IN_PROGRESS],
+              ['COMPLETED', PROJECT_STATUS_LABELS.COMPLETED],
+              ['ON_HOLD', PROJECT_STATUS_LABELS.ON_HOLD],
+              ['ARCHIVED', PROJECT_STATUS_LABELS.ARCHIVED],
             ] as const
           ).map(([v, l]) => (
             <button
@@ -181,7 +181,7 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
 
               <div className="mt-3">
                 <div className="mb-1 flex justify-between text-[11px]">
-                  <span className="text-slate-400">Progress</span>
+                  <span className="text-slate-400">Progres</span>
                   <span className={cn('font-mono', p.onHold ? 'text-amber-600 dark:text-amber-400' : 'text-blue-600 dark:text-blue-400')}>{pr}%</span>
                 </div>
                 <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
@@ -201,21 +201,21 @@ export function ProjectsClient({ initialProjects, tasks, initialQ = '' }: { init
 
               {(p.repoUrl || p.deployUrl) && (
                 <div className="relative mt-3 flex items-center gap-3 text-xs">
-                  {p.repoUrl && <a href={p.repoUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300"><Github className="h-3.5 w-3.5" />Repo</a>}
-                  {p.deployUrl && <a href={p.deployUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300"><ExternalLink className="h-3.5 w-3.5" />Live</a>}
+                  {p.repoUrl && <a href={p.repoUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300"><Github className="h-3.5 w-3.5" />Repositori</a>}
+                  {p.deployUrl && <a href={p.deployUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300"><ExternalLink className="h-3.5 w-3.5" />Situs</a>}
                   <Link href={`/projects/${p.id}`} className="ml-auto text-blue-400 hover:text-blue-300">Detail →</Link>
                 </div>
               )}
 
               <div className="relative mt-3 flex justify-end gap-1 border-t border-slate-200 pt-3 transition lg:opacity-0 lg:group-hover:opacity-100 dark:border-slate-800">
-                <button type="button" onClick={() => toggleFlag(p, 'onHold')} aria-label={p.onHold ? 'Lanjutkan proyek' : 'Jeda proyek (On Hold)'} title={p.onHold ? 'Lanjutkan proyek' : 'Jeda proyek'} className={cn('rounded-lg p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800', p.onHold ? 'text-amber-500 dark:text-amber-400' : 'text-slate-500')}>
+                <button type="button" onClick={() => toggleFlag(p, 'onHold')} aria-label={p.onHold ? 'Lanjutkan proyek' : 'Jeda proyek'} title={p.onHold ? 'Lanjutkan proyek' : 'Jeda proyek'} className={cn('rounded-lg p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800', p.onHold ? 'text-amber-500 dark:text-amber-400' : 'text-slate-500')}>
                   {p.onHold ? <CirclePlay className="h-4 w-4" /> : <CirclePause className="h-4 w-4" />}
                 </button>
                 <button type="button" onClick={() => toggleFlag(p, 'archived')} aria-label={p.archived ? 'Keluarkan dari arsip' : 'Arsipkan proyek'} title={p.archived ? 'Keluarkan dari arsip' : 'Arsipkan proyek'} className={cn('rounded-lg p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800', p.archived ? 'text-slate-800 dark:text-slate-200' : 'text-slate-500')}>
                   {p.archived ? <ArchiveRestore className="h-4 w-4" /> : <Archive className="h-4 w-4" />}
                 </button>
-                <button type="button" onClick={() => setModal({ open: true, initial: p })} aria-label="Edit" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"><Pencil className="h-4 w-4" /></button>
-                <button type="button" onClick={() => setPendingDelete(p.id)} aria-label="Delete" className="rounded-lg p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"><Trash2 className="h-4 w-4" /></button>
+                <button type="button" onClick={() => setModal({ open: true, initial: p })} aria-label={`Ubah ${p.name}`} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"><Pencil className="h-4 w-4" /></button>
+                <button type="button" onClick={() => setPendingDelete(p.id)} aria-label={`Hapus ${p.name}`} className="rounded-lg p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"><Trash2 className="h-4 w-4" /></button>
               </div>
             </div>
           ))}

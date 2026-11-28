@@ -27,7 +27,7 @@ function idError(msg?: string) {
   if (m.includes('different from the old')) return 'Password baru harus berbeda dari password saat ini.';
   if (m.includes('at least 6') || m.includes('too short')) return 'Password minimal 6 karakter.';
   if (m.includes('at least one character')) return 'Password terlalu lemah. Tambahkan variasi huruf, angka, atau simbol.';
-  if (m.includes('email not confirmed')) return 'Email belum dikonfirmasi. Cek inbox.';
+  if (m.includes('email not confirmed')) return 'Email belum dikonfirmasi. Cek kotak masuk.';
   if (m.includes('rate limit')) return 'Terlalu banyak percobaan. Coba lagi nanti.';
   return msg ?? 'Terjadi kesalahan. Coba lagi.';
 }
@@ -125,7 +125,7 @@ export async function forgotPassword(_prev: unknown, formData: FormData): Promis
   if (error && error.message.toLowerCase().includes('rate limit')) {
     return reply({ error: 'Terlalu banyak permintaan. Coba lagi nanti.' });
   }
-  return reply({ message: 'Jika email terdaftar, tautan reset dikirim ke inbox.' });
+  return reply({ message: 'Jika email terdaftar, tautan atur ulang dikirim ke kotak masuk.' });
 }
 
 /** Set password baru dari sesi recovery (link email). */

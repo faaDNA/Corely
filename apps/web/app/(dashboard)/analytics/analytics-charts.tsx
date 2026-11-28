@@ -59,7 +59,7 @@ export function AnalyticsCharts({
         <h2 className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">Tugas Selesai vs Dibuat — {periodLabel}</h2>
         {!nonEmpty ? (
           <div className="flex h-[260px] items-center justify-center rounded-lg border border-dashed border-slate-200 dark:border-slate-800 text-xs text-slate-500">
-            Belum ada tugas pada periode ini — buat tugas untuk melihat deret waktu.
+            Belum ada tugas pada periode ini — buat tugas untuk melihat grafiknya.
           </div>
         ) : (
           <ResponsiveContainer width="100%" height={260}>
@@ -113,14 +113,14 @@ export function AnalyticsCharts({
                 <XAxis type="number" domain={[0, 100]} stroke="#64748b" fontSize={11} tickMargin={6} />
                 <YAxis type="category" dataKey="name" width={88} stroke="#64748b" fontSize={10} />
                 <Tooltip content={<ChartTooltip />} cursor={{ fill: '#1e293b40' }} />
-                <Bar dataKey="progress" fill="#3b82f6" radius={[0, 6, 6, 0]} barSize={16} />
+                <Bar dataKey="progress" fill="#3b82f6" radius={[0, 6, 6, 0]} barSize={16} name="Progres" />
               </BarChart>
             </ResponsiveContainer>
           )}
         </div>
 
         <div className="min-w-0 rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60 p-4 lg:col-span-2">
-          <h2 className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">Konsistensi Kebiasaan — Streak Aktif vs Rekor</h2>
+          <h2 className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">Konsistensi Kebiasaan — Beruntun Saat Ini vs Rekor</h2>
           {habitData.length === 0 ? (
             <div className="flex h-[260px] items-center justify-center rounded-lg border border-dashed border-slate-200 dark:border-slate-800 text-xs text-slate-500">
               Belum ada kebiasaan.
@@ -133,7 +133,7 @@ export function AnalyticsCharts({
                 <YAxis stroke="#64748b" fontSize={11} allowDecimals={false} />
                 <Tooltip content={<ChartTooltip />} cursor={{ fill: '#1e293b40' }} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
-                <Bar dataKey="streak" fill="#f59e0b" radius={[6, 6, 0, 0]} name="Streak aktif" />
+                <Bar dataKey="streak" fill="#f59e0b" radius={[6, 6, 0, 0]} name="Beruntun saat ini" />
                 <Bar dataKey="rekor" fill="#64748b" radius={[6, 6, 0, 0]} name="Rekor" />
               </BarChart>
             </ResponsiveContainer>

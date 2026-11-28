@@ -197,7 +197,7 @@ export function SettingsClient({ initialProfile }: { initialProfile: Profile }) 
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base"><SlidersHorizontal className="h-4 w-4 text-emerald-400" />Preferensi</CardTitle>
-          <CardDescription>Format dan tampilan default.</CardDescription>
+          <CardDescription>Format dan tampilan bawaan.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1.5">
@@ -209,7 +209,7 @@ export function SettingsClient({ initialProfile }: { initialProfile: Profile }) 
               ariaLabel="Format Tanggal"
               options={[
                 { value: "id-ID", label: "DD/MM/YYYY (Indonesia)" },
-                { value: "en-US", label: "MM/DD/YYYY (US)" },
+                { value: "en-US", label: "MM/DD/YYYY (AS)" },
                 { value: "ISO", label: "YYYY-MM-DD (ISO)" },
               ]}
               className="w-full px-3 py-2 text-sm"

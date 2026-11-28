@@ -213,9 +213,9 @@ export function TasksClient({
           <div className="flex flex-wrap gap-2">
             {(
               [
-                ["all", "All"],
-                ["TODO", "Todo"],
-                ["COMPLETED", "Completed"],
+                ["all", "Semua"],
+                ["TODO", "Belum"],
+                ["COMPLETED", "Selesai"],
               ] as const
             ).map(([v, l]) => (
               <button
@@ -241,10 +241,10 @@ export function TasksClient({
             onValueChange={setPriority}
             ariaLabel="Filter prioritas"
             options={[
-              { value: "all", label: "All Priorities" },
-              { value: "HIGH", label: "High" },
-              { value: "MEDIUM", label: "Medium" },
-              { value: "LOW", label: "Low" },
+              { value: "all", label: "Semua prioritas" },
+              { value: "HIGH", label: "Tinggi" },
+              { value: "MEDIUM", label: "Sedang" },
+              { value: "LOW", label: "Rendah" },
             ]}
           />
 
@@ -254,7 +254,7 @@ export function TasksClient({
             ariaLabel="Filter proyek"
             options={[
               { value: "none", label: "Tanpa proyek" },
-              { value: "all", label: "Semua tasks" },
+              { value: "all", label: "Semua tugas" },
               ...projects.map((p) => ({ value: p.id, label: p.name })),
             ]}
           />
@@ -264,8 +264,8 @@ export function TasksClient({
             onValueChange={(v) => setSort(v as typeof sort)}
             ariaLabel="Urutan tugas"
             options={[
-              { value: "due", label: "Sort: Due date" },
-              { value: "new", label: "Sort: Newest" },
+              { value: "due", label: "Urutkan: Tenggat" },
+              { value: "new", label: "Urutkan: Terbaru" },
             ]}
           />
         </div>

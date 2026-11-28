@@ -59,7 +59,7 @@ export function ProjectFormModal({ open, initial, onSubmit, onClose }: Props) {
           <X className="h-4 w-4" />
         </button>
 
-        <DialogTitle className="text-lg font-semibold text-slate-900 dark:text-white">{initial ? 'Edit Proyek' : 'Proyek Baru'}</DialogTitle>
+        <DialogTitle className="text-lg font-semibold text-slate-900 dark:text-white">{initial ? 'Ubah Proyek' : 'Proyek Baru'}</DialogTitle>
 
         <div className="mt-4 space-y-4">
           <div className="space-y-1.5">
@@ -86,12 +86,12 @@ export function ProjectFormModal({ open, initial, onSubmit, onClose }: Props) {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label htmlFor="p-repo" className="text-xs font-medium text-slate-600 dark:text-slate-300">Repository URL</label>
+              <label htmlFor="p-repo" className="text-xs font-medium text-slate-600 dark:text-slate-300">URL repositori</label>
               <input id="p-repo" {...register('repoUrl')} className={inputCls} placeholder="https://github.com/..." />
               {errors.repoUrl && <p className="text-xs text-red-600 dark:text-red-400">{errors.repoUrl.message}</p>}
             </div>
             <div className="space-y-1.5">
-              <label htmlFor="p-deploy" className="text-xs font-medium text-slate-600 dark:text-slate-300">Deployment URL</label>
+              <label htmlFor="p-deploy" className="text-xs font-medium text-slate-600 dark:text-slate-300">URL situs</label>
               <input id="p-deploy" {...register('deployUrl')} className={inputCls} placeholder="https://..." />
               {errors.deployUrl && <p className="text-xs text-red-600 dark:text-red-400">{errors.deployUrl.message}</p>}
             </div>

@@ -8,7 +8,7 @@ import { X } from 'lucide-react';
 import { Button } from '@repo/ui';
 import type { Note } from '@repo/types';
 import { Select } from '@/components/select';
-import { noteSchema, type NoteFormValues, NOTE_CATEGORIES } from './note-schema';
+import { noteSchema, type NoteFormValues, NOTE_CATEGORIES, noteCategoryLabel } from './note-schema';
 
 interface Props {
   open: boolean;
@@ -50,7 +50,7 @@ export function NoteFormModal({ open, initial, onSubmit, onClose }: Props) {
         <button type="button" onClick={onClose} className="absolute right-3 top-3 rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200" aria-label="Tutup">
           <X className="h-4 w-4" />
         </button>
-        <DialogTitle className="text-lg font-semibold text-slate-900 dark:text-white">{initial ? 'Edit Metadata Catatan' : 'Catatan Baru'}</DialogTitle>
+        <DialogTitle className="text-lg font-semibold text-slate-900 dark:text-white">{initial ? 'Ubah Detail Catatan' : 'Catatan Baru'}</DialogTitle>
         <div className="mt-4 space-y-4">
           <div className="space-y-1.5">
             <label htmlFor="n-title" className="text-xs font-medium text-slate-600 dark:text-slate-300">Judul *</label>
@@ -72,7 +72,7 @@ export function NoteFormModal({ open, initial, onSubmit, onClose }: Props) {
                     value={field.value}
                     onValueChange={field.onChange}
                     ariaLabel="Kategori"
-                    options={NOTE_CATEGORIES.map((c) => ({ value: c, label: c }))}
+                    options={NOTE_CATEGORIES.map((c) => ({ value: c, label: noteCategoryLabel(c) }))}
                     className="w-full px-3 py-2 text-sm"
                   />
                 )}
@@ -81,7 +81,7 @@ export function NoteFormModal({ open, initial, onSubmit, onClose }: Props) {
             </div>
             <div className="space-y-1.5">
               <label htmlFor="n-tags" className="text-xs font-medium text-slate-600 dark:text-slate-300">Tag (pisahkan koma, opsional)</label>
-              <input id="n-tags" {...register('tags')} className={inputCls} placeholder="app, karir" />
+              <input id="n-tags" {...register('tags')} className={inputCls} placeholder="aplikasi, karier" />
             </div>
           </div>
         </div>

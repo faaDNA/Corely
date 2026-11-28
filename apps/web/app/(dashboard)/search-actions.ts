@@ -4,6 +4,9 @@ import { getUser } from '@/lib/auth';
 import { getBookmarks, getNotes, getProjects, getTasks } from '@/lib/mappers';
 import { deriveProjectStatus, projectProgress } from '@/lib/project-status';
 import type { SearchItem } from '@/components/app-shell';
+import { PROJECT_STATUS_LABELS } from '@/components/projects/project-schema';
+import { noteCategoryLabel } from '@/components/notes/note-schema';
+import { priorityLabel, statusLabel } from '@/components/tasks/task-schema';
 
 export async function fetchSearchItems(): Promise<SearchItem[]> {
   const user = await getUser();
@@ -19,8 +22,8 @@ export async function fetchSearchItems(): Promise<SearchItem[]> {
     items.push({
       id: `p-${p.id}`,
       label: p.name,
-      sub: `${projectProgress(p, tasks)}% • ${deriveProjectStatus(p, tasks).replace('_', ' ')}`,
-      group: 'Projects',
+      sub: `${projectProgress(p, tasks)}% • ${PROJECT_STATUS_LABELS[deriveProjectStatus(p, tasks) as keyof typeof PROJECT_STATUS_LABELS] ?? deriveProjectStatus(p, tasks)}`,
+      group: 'Proyek',
       href: `/projects/${p.id}`,
       icon: 'project',
     });
@@ -29,8 +32,8 @@ export async function fetchSearchItems(): Promise<SearchItem[]> {
     items.push({
       id: `n-${n.id}`,
       label: n.title,
-      sub: n.category,
-      group: 'Notes',
+      sub: noteCategoryLabel(n.category),
+      group: 'Catatan',
       href: `/notes?q=${encodeURIComponent(n.title)}`,
       icon: 'note',
     });
@@ -40,7 +43,7 @@ export async function fetchSearchItems(): Promise<SearchItem[]> {
       id: `b-${b.id}`,
       label: b.title,
       sub: b.url,
-      group: 'Bookmarks',
+      group: 'Bookmark',
       href: `/bookmarks?q=${encodeURIComponent(b.title)}`,
       icon: 'bookmark',
     });
@@ -50,8 +53,8 @@ export async function fetchSearchItems(): Promise<SearchItem[]> {
     items.push({
       id: `t-${t.id}`,
       label: t.title,
-      sub: `${t.status} • ${t.priority}`,
-      group: 'Tasks',
+      sub: `${statusLabel(t.status)} • ${priorityLabel(t.priority)}`,
+      group: 'Tugas',
       href: `/tasks?q=${encodeURIComponent(t.title)}`,
       icon: 'task',
     });

@@ -20,7 +20,7 @@ export function LoginForm() {
     <Card className="w-full max-w-md bg-white dark:bg-slate-900/80">
       <CardHeader>
         <CardTitle className="text-xl">Selamat datang kembali</CardTitle>
-        <CardDescription>Masuk untuk membuka workspace Anda.</CardDescription>
+        <CardDescription>Masuk untuk membuka ruang kerja Anda.</CardDescription>
       </CardHeader>
       <CardContent>
         <form action={googleLogin} className="mb-4">
